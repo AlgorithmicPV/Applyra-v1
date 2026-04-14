@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{{ title }}</title>
+        <!--  <link rel="stylesheet"
+        href="{{ url_for('static', filename='css/main.css') }}"> -->
+        <link rel="stylesheet"
+              href="{{ url_for('static', filename='css/base.css') }}">
+        <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+        <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/json-enc.js"></script>
+    </head>
+    <body>
+        <main id="app" hx-history-elt>
+            {% block content %}{% endblock %}
+        </main>
+        <script src="{{ url_for('static', filename='js/base.js') }}"></script>
+    </body>
+</html>
