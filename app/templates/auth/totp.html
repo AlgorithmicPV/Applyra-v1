@@ -1,0 +1,12 @@
+<h1>Authentication Verification</h1>
+<h3>Please enter the 6-digit code we sent to your email.</h3>
+<form hx-post="{{ url_for("auth_api.confirm_email") }}"
+      hx-target="#app"
+      hx-swap="innerHTML"
+      hx-on="htmx:load: this.reset()"
+      id="totp-form"
+      hx-push-url="true">
+  {{ form.hidden_tag() }}
+  {{ form.code(placeholder="XXXXXX") }}
+  <button type="submit">Confirm</button>
+</form>

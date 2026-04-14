@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Landing</h1>
+    <button hx-get="{{ url_for("auth_web.sign_up") }}"
+            hx-target="#app"
+            hx-swag="innerHTML"
+            hx-push-url="true">Sign up</button>
+    {# <a href="{{ url_for("auth_web.sign_up") }}">Sign Up</a> #}
+{% endblock %}

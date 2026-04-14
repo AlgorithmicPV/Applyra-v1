@@ -1,0 +1,16 @@
+{% macro auth_base() %}
+    <h1>Auth Base</h1>
+    {% if page == 'sign-up' %}
+        {% include "auth/sign-up.html" %}
+    {% elif page == 'login' %}
+        {% include "auth/login.html" %}
+    {% elif page == 'totp' %}
+        {% include "auth/totp.html" %}
+    {% endif %}
+{% endmacro %}
+{% if not request.headers.get("HX-Request") %}
+    {% extends "base.html" %}
+    {% block content %}{{ auth_base() }}{% endblock %}
+{% else %}
+    {{ auth_base() }}
+{% endif %}

@@ -1,0 +1,30 @@
+<div>
+    <title>Sign Up</title>
+    <h1>Sign up</h1>
+    <form hx-post="{{ url_for("auth_api.sign_up") }}"
+          hx-target="#app"
+          hx-swap="innerHTML"
+          hx-on="htmx:load: this.reset()"
+          id="sign-up-form"
+          hx-push-url="true">
+        {{ form.hidden_tag() }}
+        {{ form.full_name(placeholder="Full Name") }}
+        {{ form.email_address(placeholder="Email Address") }}
+        {{ form.password(placeholder="Password") }}
+        {{ form.confirm_password(placeholder="Confirm Password") }}
+        <p>By continuing, you agree to our Terms and Privacy Policy</p>
+        <button type="submit">Sign Up</button>
+    </form>
+    <p id="msg"></p>
+    <button hx-get="{{ url_for("auth_web.login") }}"
+            hx-target="#app"
+            hx-swag="innerHTML"
+            hx-push-url="true">Login</button>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js"
+            integrity="sha512-TZlMGFY9xKj38t/5m2FzJ+RM/aD5alMHDe26p0mYUMoCF5G7ibfHUQILq0qQPV3wlsnCwL+TPRNK4vIWGLOkUQ=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"></script>
+    <script src="{{ url_for('static', filename='js/auth/sign-up.js') }}"></script>
+</div>
+
+

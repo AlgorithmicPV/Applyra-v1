@@ -1,0 +1,13 @@
+<title>Login</title>
+<h1>Login</h1>
+<form hx-post="{{ url_for("auth_api.login") }}"
+      hx-target="#app"
+      hx-swap="innerHTML"
+      hx-on="htmx:load: this.reset()"
+      id="sign-up-form"
+      hx-push-url="true">
+    {{ form.hidden_tag() }}
+    {{ form.email_address(placeholder="Email Address") }}
+    {{ form.password(placeholder="Password") }}
+    <button type="submit">Login</button>
+</form>
