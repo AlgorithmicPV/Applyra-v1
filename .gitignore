@@ -3,3 +3,5 @@ venv/
 instance/app.db
 
 .env
+
+app/__pycache__/
