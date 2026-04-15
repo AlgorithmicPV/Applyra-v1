@@ -1,3 +1,5 @@
+const page = document.getElementById('page')
+
 const serverResponseHandler = (evt) => {
   response = evt.detail.xhr
 
@@ -20,11 +22,50 @@ document.body.addEventListener("htmx:beforeSwap", serverResponseHandler)
 
 /* Remember the csrf_toke, this will expire, so remember to make it as a seperate rror for that */
 
-const handler = (evt) => {
+const notificationBox = (className, message) => {
+  const wrapper = document.createElement('div');
+  wrapper.classList.add(className);
 
-  response = evt.detail.xhr
-  message = JSON.parse(response['response'])
-  console.log(message)
+  const messageText = document.createElement('p');
+  messageText.innerText = message;
+
+  const closeButton = document.createElement('button');
+  closeButton.classList.add('close-btn');
+  closeButton.innerHTML = '&#x292B;';
+
+  wrapper.appendChild(messageText);
+  wrapper.appendChild(closeButton);
+
+  page.appendChild(wrapper);
+
+  // trigger animation after adding to DOM
+  requestAnimationFrame(() => {
+    wrapper.classList.add('show');
+  });
+
+  closeButton.addEventListener('click', () => {
+    wrapper.classList.remove('show');
+    wrapper.classList.add('hide');
+
+    setTimeout(() => {
+      wrapper.remove();
+    }, 350);
+  });
+}
+
+const handler = (evt) => {
+  let response = evt.detail.xhr
+  let message = JSON.parse(response['response'])
+  let key = Object.keys(message)[0]
+  let value = Object.values(message).flat()[0]
+
+  if (key == 'error') {
+    notificationBox('error-notification', value)
+  } else if (key == 'success') {
+    notificationBox('success-notification', value)
+  } else {
+    notificationBox('warning-notification', value)
+  }
 }
 
 
@@ -34,4 +75,3 @@ const handler = (evt) => {
  * exisiting EventListener */
 document.body.removeEventListener("htmx:beforeSwap", handler);
 document.body.addEventListener("htmx:beforeSwap", handler)
-

@@ -1,0 +1,65 @@
+.success-notification,
+.error-notification,
+.warning-notification {
+  border-radius: 8px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  top: 30px;
+  left: 50%;
+  position: absolute;
+
+  transform: translate(-50%, -20px) scale(0.96);
+  opacity: 0;
+  pointer-events: none;
+
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.success-notification.show,
+.error-notification.show,
+.warning-notification.show {
+  opacity: 1;
+  transform: translate(-50%, 0) scale(1);
+  pointer-events: auto;
+}
+
+.success-notification.hide,
+.error-notification.hide,
+.warning-notification.hide {
+  opacity: 0;
+  transform: translate(-50%, -20px) scale(0.96);
+  pointer-events: none;
+}
+
+.success-notification {
+  background-color: rgb(52, 193, 93);
+}
+
+.error-notification {
+  background-color: rgb(253, 48, 51);
+}
+
+.warning-notification {
+  background-color: rgb(254, 189, 2);
+}
+
+.error-notification p,
+.success-notification p,
+.warning-notification p {
+  color: white;
+  margin: 0;
+  font-size: 14px;
+}
+
+.close-btn {
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  background-color: transparent;
+  color: white;
+  border: none;
+  padding: 0;
+}
