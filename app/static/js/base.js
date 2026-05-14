@@ -1,5 +1,3 @@
-const page = document.getElementById('page')
-
 const serverResponseHandler = (evt) => {
   response = evt.detail.xhr
 
@@ -23,6 +21,8 @@ document.body.addEventListener("htmx:beforeSwap", serverResponseHandler)
 /* Remember the csrf_toke, this will expire, so remember to make it as a seperate rror for that */
 
 const notificationBox = (className, message) => {
+  const page = document.getElementById('page')
+
   const wrapper = document.createElement('div');
   wrapper.classList.add(className);
 
@@ -55,6 +55,10 @@ const notificationBox = (className, message) => {
 
 const handler = (evt) => {
   let response = evt.detail.xhr
+
+  let contentType = response.getResponseHeader('Content-Type')
+  if (contentType != 'application/json') return;
+
   let message = JSON.parse(response['response'])
   let key = Object.keys(message)[0]
   let value = Object.values(message).flat()[0]

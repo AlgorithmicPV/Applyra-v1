@@ -1,0 +1,94 @@
+:root {
+  --nav-bar-img-size: 15px;
+  --nav-bar-padding: 10px;
+  --nav-bar-width: calc((var(--nav-bar-padding) * 2) + var(--nav-bar-btn-size));
+  --nav-bar-btn-padding: 5px;
+  --nav-bar-btn-size: calc(var(--nav-bar-padding) * 2 + var(--nav-bar-img-size));
+  --main-content-gap: 10px;
+  --header-height: 50px;
+  --header-padding: 15px;
+}
+
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+body {
+  --angle: 0deg;
+  background-image: linear-gradient(var(--angle), #0E1116, #2A2F3A);
+  background-repeat: no-repeat;
+  animation: spin 5s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    --angle: 360deg;
+  }
+}
+
+.main-content {
+  display: grid;
+  grid-template-columns: var(--nav-bar-width) minmax(0, 1fr);
+  gap: 10px;
+  padding: 10px;
+}
+
+.nav-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: calc(100vh - (var(--nav-bar-padding) * 2));
+  gap: var(--main-content-gap);
+  justify-content: center;
+  /*margin-left: 10px;*/
+}
+
+.user-photo {
+  height: 25px;
+  width: 25px;
+  border-radius: 50%;
+  background-color: #4CAF50;
+  border-radius: 50%;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+.nav-bar button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: var(--nav-bar-btn-padding);
+  height: var(--nav-bar-btn-size);
+  width: var(--nav-bar-btn-size);
+}
+
+.nav-bar button img {
+  height: var(--nav-bar-img-size);
+}
+
+.settings-btn {
+  margin-top: auto;
+  margin-bottom: 15px;
+}
+
+.page {
+  background-color: white;
+  width: 100%;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.page-header {
+  height: calc(var(--header-height) - (var(--header-padding) * 2));
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 1fr;
+  padding: var(--header-padding);
+}
+
+.app-icon {
+  height: 25px;
+}

@@ -151,4 +151,7 @@ def login():
         force=False,
         fresh=True,
     )
+
+    session["first-access-to-dashboard-via-htmx"] = True
+
     return redirect(url_for("dashboard_web.dashboard"))

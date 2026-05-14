@@ -1,0 +1,74 @@
+{% macro user_base() %}
+    <div class="main-content">
+        <link rel="stylesheet"
+              href="{{ url_for('static', filename='css/user/base.css') }}" />
+        <div class="nav-bar">
+            <div class="user-photo"></div>
+            <button class="home-btn"
+                    hx-get="{{ url_for("dashboard_web.dashboard") }}"
+                    hx-target=".page-body"
+                    hx-swag="innerHTML"
+                    hx-push-url="true"
+                >
+                <img src="{{ url_for('static', filename='images/icons/home.svg') }}"
+                     alt="home-icon" />
+            </button>
+            <button>
+                <img src="{{ url_for('static', filename='images/icons/apply.svg') }}"
+                     alt="apply-icon" />
+            </button>
+            <button>
+                <img src="{{ url_for('static', filename='images/icons/track.svg') }}"
+                     alt="track-icon" />
+            </button>
+            <button
+                    hx-get="{{ url_for("documents_web.document_editor") }}"
+                    hx-target=".page-body"
+                    hx-swag="innerHTML"
+                    hx-push-url="true"
+                    >
+                <img src="{{ url_for('static', filename='images/icons/documents.svg') }}"
+                     alt="doc-icon" />
+            </button>
+            <button>
+                <img src="{{ url_for('static', filename='images/icons/rules.svg') }}"
+                     alt="rules-icon" />
+            </button>
+            <button>
+                <img src="{{ url_for('static', filename='images/icons/practice.svg') }}"
+                     alt="practice-icon" />
+            </button>
+            <button>
+                <img src="{{ url_for('static', filename='images/icons/insights.svg') }}"
+                     alt="insights-icon" />
+            </button>
+            <button class="settings-btn">
+                <img src="{{ url_for('static', filename='images/icons/settings.svg') }}"
+                     alt="settings-icon" />
+            </button>
+        </div>
+        <div class="page">
+            <div class="page-header">
+                <img src="{{ url_for('static', filename='images/icons/app-icon.svg') }}"
+                     alt="app-icon"
+                     class="app-icon" />
+            </div>
+            <div class="page-body">
+                {% if page == 'dashboard' %}
+                    {% include "user/dashboard.html" %}
+                {% elif
+                    page == "document-editor" %}
+                    {% include
+                    "user/documents-pages/document-editor.html" %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+{% if not request.headers.get("HX-Request") %}
+    {% extends
+    "base.html" %}
+    {% block content %}{{ user_base() }}{% endblock %}
+{% else %}
+    {{ user_base() }}
+{% endif %}

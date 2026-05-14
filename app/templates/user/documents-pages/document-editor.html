@@ -1,0 +1,30 @@
+<div class="body-cont">
+ <link rel="stylesheet" href="{{ url_for('static', filename='css/user/documents/editor.css') }}">
+<div class="toolbar" id="toolbar">
+  <div class="font-families">
+    <div class="selected-font" id="selected-font">
+      <span>serif</span> 
+      <button class="more-btn"><div class="icon"></div></button>
+    </div>
+    <div class="selections" id="selections">
+      <span data-value="serif">serif</span>
+      <span data-value="monospace">monospace</span>
+      <span data-value="cursive">cursive</span>
+    </div>
+  </div>
+  <button class="bold-btn" id="bold-btn"><div class="icon"></div></button>
+  <button class="italic-btn" id="italic-btn"><div class="icon"></div></button>
+  <button class="underline-btn" id="underline-btn"><div class="icon"></div></button>
+  <input type="number" name="" value="16" class="font-size" id="font-size">
+  <div class="font-styles">
+    <span>p</span>
+    <button class="more-btn"><div class="icon"></div></button>
+  </div>
+  <button class="bullets-btn"><div class="icon"></div></button>
+  <button class="align-btn"><div class="icon"></div></button>
+</div>
+<hr>
+<div class="workspace" id="workspace">
+</div>
+<script type="module" src="{{ url_for('static', filename='js/user/documents/editor-v2.js') }}"></script> 
+<script src="{{ url_for('static', filename='js/user/documents/functionality.js') }}"></script>

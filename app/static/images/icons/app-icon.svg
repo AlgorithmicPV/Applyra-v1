@@ -1,0 +1,23 @@
+<svg width="26" height="31" viewBox="0 0 26 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g filter="url(#filter0_g_192_137)">
+<path d="M25.8033 27.3449C26.6932 29.5648 24.4017 31.7309 22.188 30.7629L17.1299 28.5494L17.4668 15.543L19.9285 12.6953L25.8033 27.3449Z" fill="#0E1116"/>
+<path d="M5.18221 27.6978L2.35055 30.9751C0.732045 30.7577 -0.494027 29.0681 0.196738 27.3449L3.2266 19.7851L5.45573 17.2057L5.18221 27.6978Z" fill="#0E1116"/>
+<path d="M5.11878 30.19L4.61535 30.41L5.12803 29.8176L5.11878 30.19Z" fill="#0E1116"/>
+<path d="M15.7927 27.9634L14.0987 27.2225C13.3994 26.9165 12.6006 26.9165 11.9013 27.2225L6.48639 29.591L6.52206 28.2043L16.0728 17.1562L15.7927 27.9634Z" fill="#0E1116"/>
+<path d="M16.127 15.0378L6.57624 26.0858L6.84976 15.5925L16.4005 4.54438L16.127 15.0378Z" fill="#0E1116"/>
+<path d="M5.50991 15.0872L4.76202 15.9531L5.53898 14.0169L5.50991 15.0872Z" fill="#0E1116"/>
+<path d="M10.4835 1.68634C11.3854 -0.562066 14.6147 -0.562162 15.5165 1.68634L16.016 2.93372L6.90526 13.474L6.98586 10.4089L10.4835 1.68634Z" fill="#0E1116"/>
+<path d="M19.3656 11.2917L17.5223 13.4232L17.6875 7.10425L19.3656 11.2917Z" fill="#0E1116"/>
+</g>
+<defs>
+<filter id="filter0_g_192_137" x="0" y="0" width="26" height="31" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feTurbulence type="fractalNoise" baseFrequency="0.5 0.5" numOctaves="3" seed="3166" />
+<feDisplacementMap in="shape" scale="0" xChannelSelector="R" yChannelSelector="G" result="displacedImage" width="100%" height="100%" />
+<feMerge result="effect1_texture_192_137">
+<feMergeNode in="displacedImage"/>
+</feMerge>
+</filter>
+</defs>
+</svg>
