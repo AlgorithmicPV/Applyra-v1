@@ -24,6 +24,13 @@
 }
 
 
+.toolbar * {
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+
 .toolbar button:hover {
   background-color: rgba(14, 17, 22, 0.05);
 }
@@ -41,6 +48,7 @@
   display: grid;
   place-items: center;
   padding: var(--workspace-padding);
+  background-color: rgba(14, 17, 22, 0.02);
 }
 
 
@@ -50,22 +58,24 @@
   min-height: 297mm;
   outline: none;
   page-break-after: always;
-  border: solid #F3F4F1 var(--hr-height);
+  /* border: solid #F3F4F1 var(--hr-height); */
   border-radius: 5px;
   padding: 15px;
   overflow-wrap: break-word;
   position: relative;
   white-space: pre-line;
   cursor: text;
+  border: 1px solid #F3F4F1;
 }
 
 
 hr {
   height: var(--hr-height);
-  background-color: #F3F4F1;
+  /* background-color: #F3F4F1; */
   border: none;
   margin: 0;
   border-radius: 15px;
+  border-bottom: 1px solid #F3F4F1;
   width: 99.9%;
   margin-left: auto;
   margin-right: auto;
@@ -199,6 +209,7 @@ input[type="number"] {
   cursor: pointer;
 }
 
+
 .font-families,
 .font-styles {
   display: flex;
@@ -207,13 +218,14 @@ input[type="number"] {
   gap: 15px;
 }
 
+
 .font-families {
   width: 100px;
   display: flex;
   flex-direction: column;
   position: relative;
-
 }
+
 
 .selected-font {
   display: flex;
@@ -222,21 +234,42 @@ input[type="number"] {
   gap: 20px;
 }
 
+
 .selections {
   display: flex;
+  opacity: 1;
   flex-direction: column;
   gap: 0.5px;
   position: absolute;
   z-index: 1;
-  top: 35px;
-  display: none;
+  top: 40px;
+  width: inherit;
+  background-color: rgba(14, 17, 22, 0.05);
+  background-color: white;
+  transition: 0.2s ease;
+  padding: 5px;
+  border-radius: 5px;
 }
+
+
+.selections.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
 
 .selections span {
   padding: 5px;
-  background-color: green;
   border-radius: 2px;
+  transition: 0.2s ease;
 }
+
+
+.selections span:hover {
+  background-color: white;
+  background-color: rgba(14, 17, 22, 0.02);
+}
+
 
 .font-styles span {
   width: 15px;
@@ -250,8 +283,9 @@ input[type="number"] {
 
 
 .active {
-  background-color: rgba(14, 17, 22, 0.05);
+  background-color: rgba(14, 17, 22, 0.03);
 }
+
 
 .active .icon {
   background-image: linear-gradient(to right, #7C3AED, #22335C);
