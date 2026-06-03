@@ -3,7 +3,7 @@
 <div class="toolbar" id="toolbar">
   <div class="font-families">
     <div class="selected-font" id="selected-font">
-      <span>serif</span> 
+      <span>Serif</span> 
       <button class="more-btn"><div class="icon"></div></button>
     </div>
     <div class="selections hidden" id="selections">
@@ -26,5 +26,7 @@
 <hr>
 <div class="workspace" id="workspace">
 </div>
+<script id="initial-data" type="application/json">
+  {{ markdown_code | tojson }}
+</script>
 <script type="module" src="{{ url_for('static', filename='js/user/documents/editor-v2.js') }}"></script> 
-<!--<script src="{{ url_for('static', filename='js/user/documents/functionality.js') }}"></script>-->

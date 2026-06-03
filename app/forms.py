@@ -8,6 +8,8 @@ from wtforms import (
     IntegerField,
 )
 from wtforms.validators import DataRequired, Email, EqualTo
+from flask_wtf.file import FileField, FileAllowed, FileRequired
+from wtforms import SubmitField
 from app.models import User
 from app.utilities.validations import email_validation, password_strength_checker
 
@@ -124,3 +126,12 @@ class LoginForm(FlaskForm):
     def validate_email_address(self, field):
         if not email_validation(field.data, True):
             raise ValidationError("Not a valid email address")
+
+
+class fileUplaod(FlaskForm):
+    file = FileField(
+        validators=[
+            FileRequired("File is empty"),
+            FileAllowed(["docx", "doc", "docm", "dotx", "dotm", "dot"]),
+        ],
+    )

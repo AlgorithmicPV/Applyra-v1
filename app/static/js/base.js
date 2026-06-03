@@ -22,7 +22,6 @@ document.body.addEventListener("htmx:beforeSwap", serverResponseHandler)
 
 const notificationBox = (className, message) => {
   const page = document.getElementById('page')
-
   const wrapper = document.createElement('div');
   wrapper.classList.add(className);
 
@@ -55,8 +54,8 @@ const notificationBox = (className, message) => {
 
 const handler = (evt) => {
   let response = evt.detail.xhr
-
   let contentType = response.getResponseHeader('Content-Type')
+
   if (contentType != 'application/json') return;
 
   let message = JSON.parse(response['response'])

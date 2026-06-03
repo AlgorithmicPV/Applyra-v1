@@ -22,7 +22,7 @@
                      alt="track-icon" />
             </button>
             <button
-                    hx-get="{{ url_for("documents_web.document_editor") }}"
+                    hx-get="{{ url_for("documents_web.doc_home") }}"
                     hx-target=".page-body"
                     hx-swag="innerHTML"
                     hx-push-url="true"
@@ -47,7 +47,7 @@
                      alt="settings-icon" />
             </button>
         </div>
-        <div class="page">
+        <div class="page" id="page">
             <div class="page-header">
                 <img src="{{ url_for('static', filename='images/icons/app-icon.svg') }}"
                      alt="app-icon"
@@ -60,6 +60,11 @@
                     page == "document-editor" %}
                     {% include
                     "user/documents-pages/document-editor.html" %}
+                {% elif
+                    page == "doc-home" %}
+                    {% set form = form %}
+                    {% include
+                    "user/documents-pages/doc-home.html" %}
                 {% endif %}
             </div>
         </div>

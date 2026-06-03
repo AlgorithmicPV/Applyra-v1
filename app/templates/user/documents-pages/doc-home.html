@@ -1,0 +1,30 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='css/user/documents/doc-home.css') }}">
+<input type="text" name="" value="" placeholder="search">
+<div>
+  <button type="">
+    <span>New</span>
+  </button>
+  <form hx-post="{{ url_for('documents_api.doc_home') }}"
+      hx-target=".page-body"
+      hx-swap="innerHTML"
+      hx-encoding="multipart/form-data"
+      enctype="multipart/form-data"
+      hx-on="htmx:load: this.reset()"
+      id="upload-form"
+      hx-push-url="true">
+    {{ form.hidden_tag() }}
+
+    {{ form.file(
+        id="file-input",
+        style="display:none",
+        onchange="document.getElementById('upload-form').requestSubmit()"
+    ) }}
+
+    <button type="button"
+            onclick="document.getElementById('file-input').click()">
+      Upload
+    </button>
+  </form>
+  </div>
+</div>
+

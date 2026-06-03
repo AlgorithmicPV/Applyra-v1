@@ -2,13 +2,19 @@ import { Editor } from 'https://esm.sh/@tiptap/core'
 import StarterKit from 'https://esm.sh/@tiptap/starter-kit'
 import { Focus, Selection } from 'https://esm.sh/@tiptap/extensions'
 import { FontSize, TextStyle, FontFamily } from 'https://esm.sh/@tiptap/extension-text-style'
+import { Markdown } from 'https://esm.sh/@tiptap/markdown'
 
 
-document.addEventListener('htmx:load', () => {
+const editor = () => {
   const workspace = document.getElementById('workspace')
 
   if (!workspace) { return }
 
+  const raw = document.getElementById("initial-data").textContent;
+
+  const user = JSON.parse(raw);
+
+  console.log(user);
 
   const boldBtn = document.getElementById('bold-btn')
   const italicBtn = document.getElementById('italic-btn')
@@ -23,8 +29,6 @@ document.addEventListener('htmx:load', () => {
   let isSelectionHide = true
 
 
-
-
   let editor = new Editor({
     element: workspace,
     extensions: [
@@ -32,6 +36,7 @@ document.addEventListener('htmx:load', () => {
       FontSize,
       TextStyle,
       FontFamily,
+      Markdown,
       Focus.configure({
         className: 'has-focus',
         mode: 'all',
@@ -43,7 +48,6 @@ document.addEventListener('htmx:load', () => {
     autofocus: true,
     shouldRerenderOnTransaction: true,
     immediatelyRender: true,
-
   })
 
 
@@ -185,5 +189,6 @@ document.addEventListener('htmx:load', () => {
   workspace.addEventListener('click', () => {
     selections.classList.add('hidden')
   })
+}
 
-})
+editor()
