@@ -6,7 +6,7 @@
       <span>Serif</span> 
       <button class="more-btn"><div class="icon"></div></button>
     </div>
-    <div class="selections hidden" id="selections">
+    <div class="selections hidden" id="font-selections">
       <span data-value="serif">Serif</span>
       <span data-value="Inter">Inter</span>
       <span data-value="cursive">Cursive</span>
@@ -17,8 +17,18 @@
   <button class="underline-btn" id="underline-btn"><div class="icon"></div></button>
   <input type="number" name="" value="16" class="font-size" id="font-size">
   <div class="font-styles">
-    <span>p</span>
-    <button class="more-btn"><div class="icon"></div></button>
+    <div class="selected-font-style" id="selected-font-style">
+      <span>P</span>
+      <button class="more-btn"><div class="icon"></div></button>
+    </div>
+    <div class="selections hidden" id="style-selections">
+      <span data-value="1">H1</span>
+      <span data-value="2">H2</span>
+      <span data-value="3">H3</span>
+      <span data-value="4">H4</span>
+      <span data-value="5">H5</span>
+      <span data-value="6">H6</span>
+    </div>
   </div>
   <button class="bullets-btn"><div class="icon"></div></button>
   <button class="align-btn"><div class="icon"></div></button>
@@ -27,6 +37,6 @@
 <div class="workspace" id="workspace">
 </div>
 <script id="initial-data" type="application/json">
-  {{ markdown_code | tojson }}
+  {{ doc | tojson }}
 </script>
 <script type="module" src="{{ url_for('static', filename='js/user/documents/editor-v2.js') }}"></script> 

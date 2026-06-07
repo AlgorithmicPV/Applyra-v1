@@ -3,6 +3,7 @@ import StarterKit from 'https://esm.sh/@tiptap/starter-kit'
 import { Focus, Selection } from 'https://esm.sh/@tiptap/extensions'
 import { FontSize, TextStyle, FontFamily } from 'https://esm.sh/@tiptap/extension-text-style'
 import { Markdown } from 'https://esm.sh/@tiptap/markdown'
+import Heading from 'https://esm.sh/@tiptap/extension-heading'
 
 
 const editor = () => {
@@ -20,13 +21,18 @@ const editor = () => {
   const italicBtn = document.getElementById('italic-btn')
   const underlineBtn = document.getElementById('underline-btn')
   const fontSizeInputBox = document.getElementById('font-size')
-  const selections = document.getElementById('selections')
+  const fontSelections = document.getElementById('font-selections')
   const selectedFont = document.getElementById('selected-font')
+  const selectedStyle = document.getElementById('selected-font-style')
+  const styleSelections = document.getElementById('style-selections')
+
 
   let fontSize = 16
   const navKeys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown']
   let font
-  let isSelectionHide = true
+  let isFontSelectionHide = true
+  let isStyleSelectionHide = true
+  let headingStyle
 
 
   let editor = new Editor({
@@ -37,6 +43,9 @@ const editor = () => {
       TextStyle,
       FontFamily,
       Markdown,
+      Heading.configure({
+        levels: [1, 2, 3, 4, 5, 6],
+      }),
       Focus.configure({
         className: 'has-focus',
         mode: 'all',
@@ -50,8 +59,6 @@ const editor = () => {
     immediatelyRender: true,
   })
 
-
-  editor.commands.setFontSize(`${fontSize}px`)
   const docPage = document.querySelector('.tiptap')
 
 
@@ -88,10 +95,30 @@ const editor = () => {
   }
 
 
+  const updateHeadingType = () => {
+    if (editor.isActive('heading', { level: 1 })) {
+      selectedStyle.querySelector('span').innerText = 'H1'
+    } else if (editor.isActive('heading', { level: 2 })) {
+      selectedStyle.querySelector('span').innerText = 'H2'
+    } else if (editor.isActive('heading', { level: 3 })) {
+      selectedStyle.querySelector('span').innerText = 'H3'
+    } else if (editor.isActive('heading', { level: 4 })) {
+      selectedStyle.querySelector('span').innerText = 'H4'
+    } else if (editor.isActive('heading', { level: 5 })) {
+      selectedStyle.querySelector('span').innerText = 'H5'
+    } else if (editor.isActive('heading', { level: 6 })) {
+      selectedStyle.querySelector('span').innerText = 'H6'
+    } else {
+      selectedStyle.querySelector('span').innerText = 'P'
+    }
+  }
+
+
   const updateFontStyle = () => {
     boldbtnActivated();
     underlineBtnActivated();
     italicbtnActivated();
+    updateHeadingType();
   }
 
 
@@ -105,14 +132,33 @@ const editor = () => {
   }
 
 
-  const toggleHideShowSelection = () => {
-    if (isSelectionHide) {
-      selections.classList.remove("hidden")
-      isSelectionHide = false
+  const toggleHideShowFontSelection = () => {
+    if (isFontSelectionHide) {
+      fontSelections.classList.remove('hidden')
+      isFontSelectionHide = false
     } else {
-      selections.classList.add("hidden")
-      isSelectionHide = true
+      fontSelections.classList.add('hidden')
+      isFontSelectionHide = true
     }
+  }
+
+
+  const toggleHideShowStyleSelection = () => {
+    if (isStyleSelectionHide) {
+      styleSelections.classList.remove('hidden')
+      isStyleSelectionHide = false
+    } else {
+      styleSelections.classList.add('hidden')
+      isStyleSelectionHide = true
+    }
+  }
+
+
+  const hideSelection = () => {
+    fontSelections.classList.add('hidden')
+    isFontSelectionHide = true
+    styleSelections.classList.add('hidden')
+    isStyleSelectionHide = true
   }
 
 
@@ -129,13 +175,23 @@ const editor = () => {
   })
 
 
-  selections.addEventListener('click', (event) => {
+  fontSelections.addEventListener('click', (event) => {
     let clickedFontFamily = event.target
+    if (clickedFontFamily.tagName.toLowerCase() != 'span') return
     font = clickedFontFamily.dataset.value;
-    console.log(font)
     editor.chain().focus().setFontFamily(font).run()
     selectedFont.querySelector('span').innerText = event.target.innerText
-    toggleHideShowSelection()
+    toggleHideShowFontSelection()
+  })
+
+
+  styleSelections.addEventListener('click', (event) => {
+    let clickedFontStyle = event.target
+    if (clickedFontStyle.tagName.toLowerCase() != 'span') return
+    headingStyle = clickedFontStyle.dataset.value
+    editor.chain().focus().toggleHeading({ level: Number(headingStyle) }).run()
+    toggleHideShowStyleSelection()
+    updateHeadingType()
   })
 
 
@@ -164,7 +220,8 @@ const editor = () => {
   })
 
 
-  selectedFont.addEventListener('click', toggleHideShowSelection)
+  selectedFont.addEventListener('click', toggleHideShowFontSelection)
+  selectedStyle.addEventListener('click', toggleHideShowStyleSelection)
 
 
   // Update the font size input box value, when the user uses the mouse cursor to select texts on the page
@@ -177,7 +234,9 @@ const editor = () => {
 
 
   docPage.addEventListener('keyup', (event) => {
+    updateHeadingType() // Heading type should be updated with typing although it is in the updateFontStyle
     let clickedKey = event.key
+    // used an if statement, to reduce the process of the program
     if (navKeys.includes(clickedKey)) {
       let selectedElement = getElementAtCursor()
       fontSize = selectedElement.style.getPropertyValue('font-size')
@@ -186,8 +245,9 @@ const editor = () => {
     }
   })
 
+
   workspace.addEventListener('click', () => {
-    selections.classList.add('hidden')
+    hideSelection()
   })
 }
 

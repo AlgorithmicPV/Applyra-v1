@@ -205,7 +205,8 @@ input[type="number"] {
 }
 
 
-.font-families * {
+.font-families *,
+.font-styles * {
   cursor: pointer;
 }
 
@@ -213,25 +214,35 @@ input[type="number"] {
 .font-families,
 .font-styles {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
+  position: relative;
   gap: 15px;
 }
 
 
 .font-families {
   width: 100px;
-  display: flex;
-  flex-direction: column;
-  position: relative;
 }
 
 
-.selected-font {
+.font-styles {
+  width: 25px;
+}
+
+
+.selected-font,
+.selected-font-style {
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 20px;
+}
+
+
+.selected-font-style {
+  gap: 5px;
+  color: rgba(14, 17, 22);
 }
 
 
