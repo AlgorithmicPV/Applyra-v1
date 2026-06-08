@@ -174,9 +174,27 @@ hr {
 }
 
 
-.align-btn .icon {
+.align-btn.left .icon {
   mask-image: url("../../../images/icons/toolbar/align.svg");
   -webkit-mask-image: url("../../../images/icons/toolbar/align.svg");
+}
+
+
+.align-btn.center .icon {
+  mask-image: url("../../../images/icons/toolbar/align-center.svg");
+  -webkit-mask-image: url("../../../images/icons/toolbar/align-center.svg");
+}
+
+
+.align-btn.right .icon {
+  mask-image: url("../../../images/icons/toolbar/align-right.svg.svg");
+  -webkit-mask-image: url("../../../images/icons/toolbar/align-right.svg");
+}
+
+
+.align-btn.justify .icon {
+  mask-image: url("../../../images/icons/toolbar/justify.svg");
+  -webkit-mask-image: url("../../../images/icons/toolbar/justify.svg");
 }
 
 
