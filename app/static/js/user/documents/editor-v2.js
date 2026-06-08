@@ -4,6 +4,7 @@ import { Focus, Selection } from 'https://esm.sh/@tiptap/extensions'
 import { FontSize, TextStyle, FontFamily } from 'https://esm.sh/@tiptap/extension-text-style'
 import { Markdown } from 'https://esm.sh/@tiptap/markdown'
 import Heading from 'https://esm.sh/@tiptap/extension-heading'
+import TextAlign from 'https://esm.sh/@tiptap/extension-text-align'
 
 
 const editor = () => {
@@ -25,6 +26,10 @@ const editor = () => {
   const selectedFont = document.getElementById('selected-font')
   const selectedStyle = document.getElementById('selected-font-style')
   const styleSelections = document.getElementById('style-selections')
+  const alignLeft = document.getElementById('align-left')
+  const alignCenter = document.getElementById('align-center')
+  const alignRight = document.getElementById('align-right')
+  const alignJustify = document.getElementById('align-justify')
 
 
   let fontSize = 16
@@ -33,6 +38,7 @@ const editor = () => {
   let isFontSelectionHide = true
   let isStyleSelectionHide = true
   let headingStyle
+  const alignButtons = [alignLeft, alignCenter, alignRight, alignJustify];
 
 
   let editor = new Editor({
@@ -45,6 +51,9 @@ const editor = () => {
       Markdown,
       Heading.configure({
         levels: [1, 2, 3, 4, 5, 6],
+      }),
+      TextAlign.configure({
+        types: ['heading', 'paragraph'],
       }),
       Focus.configure({
         className: 'has-focus',
@@ -86,6 +95,52 @@ const editor = () => {
     } else {
       underlineBtn.classList.remove('active')
     }
+  }
+
+
+  const alignLeftActivated = () => {
+    if (editor.isActive({ textAlign: 'left' })) {
+      alignLeft.classList.add('active')
+    } else {
+      alignLeft.classList.remove('active')
+    }
+  }
+
+
+  const alignRightActivated = () => {
+    if (editor.isActive({ textAlign: 'right' })) {
+      alignRight.classList.add('active')
+    } else {
+      alignRight.classList.remove('active')
+    }
+  }
+
+
+  const alignCenterActivated = () => {
+    if (editor.isActive({ textAlign: 'center' })) {
+      alignCenter.classList.add('active')
+    } else {
+      alignCenter.classList.remove('active')
+    }
+  }
+
+
+  const alignJustifyActivated = () => {
+    if (editor.isActive({ textAlign: 'justify' })) {
+      alignJustify.classList.add('active')
+    } else {
+      alignJustify.classList.remove('active')
+    }
+  }
+
+
+  // This helps to update immediately when the user changes the align of the text
+  // I can use this same function for every single align button
+  const alignButtonsUpdate = () => {
+    alignCenterActivated()
+    alignJustifyActivated()
+    alignLeftActivated()
+    alignRightActivated()
   }
 
 
@@ -213,6 +268,41 @@ const editor = () => {
   })
 
 
+  alignJustify.addEventListener('click', () => {
+    editor.chain().focus().toggleTextAlign('justify').run()
+    alignJustifyActivated()
+  })
+
+
+  alignLeft.addEventListener('click', () => {
+    editor.chain().focus().toggleTextAlign('left').run()
+    alignLeftActivated()
+  })
+
+
+  alignRight.addEventListener('click', () => {
+    editor.chain().focus().toggleTextAlign('right').run()
+    alignRightActivated()
+  })
+
+
+  alignCenter.addEventListener('click', () => {
+    editor.chain().focus().toggleTextAlign('center').run()
+    alignCenterActivated()
+  })
+
+
+  alignJustify.addEventListener('click', () => {
+    editor.chain().focus().toggleTextAlign('justify').run()
+    alignButtonsUpdate()
+  })
+
+
+  alignButtons.forEach((element) => {
+    element.addEventListener('click', alignButtonsUpdate)
+  });
+
+
   fontSizeInputBox.addEventListener('keyup', (event) => {
     if (event.key.toLowerCase() === 'enter') {
       editor.commands.setFontSize(`${fontSizeInputBox.value}px`)
@@ -230,11 +320,14 @@ const editor = () => {
     fontSize = selectedText.style.getPropertyValue('font-size')
     updateFontSize()
     updateFontStyle()
+    updateHeadingType()
+    alignButtonsUpdate()
   })
 
 
   docPage.addEventListener('keyup', (event) => {
     updateHeadingType() // Heading type should be updated with typing although it is in the updateFontStyle
+    alignButtonsUpdate()
     let clickedKey = event.key
     // used an if statement, to reduce the process of the program
     if (navKeys.includes(clickedKey)) {
