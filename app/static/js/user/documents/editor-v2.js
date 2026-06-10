@@ -68,6 +68,7 @@ const editor = () => {
     immediatelyRender: true,
   })
 
+
   const docPage = document.querySelector('.tiptap')
 
 
