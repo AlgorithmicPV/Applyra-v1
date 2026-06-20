@@ -1,0 +1,38 @@
+{% macro onboarding_base() %}
+    <div class="main-content">
+        <div class="page-body">
+            {% if page == 'home' %}
+                {% include "onboarding/home.html" %}
+            {% elif page == 'education' %}
+                {% include "onboarding/education.html" %}
+            {% elif page == 'skills' %}
+                {% include "onboarding/skills.html" %}
+            {% elif page == 'experience' %}
+                {% include "onboarding/experience.html" %}
+            {% endif %}
+        </div>
+        <div class="nav-bar">
+            <button class="nav-btn education"
+                    hx-get="{{ url_for("onboarding_web.education") }}"
+                    hx-target=".page-body"
+                    hx-swag="innerHTML"
+                    hx-push-url="true">Education</button>
+            <button type="nav-btn skills"
+                    hx-get="{{ url_for("onboarding_web.skills") }}"
+                    hx-target=".page-body"
+                    hx-swag="innerHTML"
+                    hx-push-url="true">Skills</button>
+            <button type="nav-btn experience"
+                    hx-get="{{ url_for("onboarding_web.experience") }}"
+                    hx-target=".page-body"
+                    hx-swag="innerHTML"
+                    hx-push-url="true">Experience</button>
+        </div>
+    </div>
+{% endmacro %}
+{% if not request.headers.get("HX-Request") %}
+    {% extends "base.html" %}
+    {% block content %}{{ onboarding_base() }}{% endblock %}
+{% else %}
+    {{ onboarding_base() }}
+{% endif %}
