@@ -1,6 +1,8 @@
 {% macro onboarding_base() %}
     <div class="main-content">
-        <div class="page-body">
+        <link rel="stylesheet"
+              href="{{ url_for('static', filename='css/onboarding/base.css') }}">
+        <div class="page-cont">
             {% if page == 'home' %}
                 {% include "onboarding/home.html" %}
             {% elif page == 'education' %}
@@ -14,19 +16,28 @@
         <div class="nav-bar">
             <button class="nav-btn education"
                     hx-get="{{ url_for("onboarding_web.education") }}"
-                    hx-target=".page-body"
-                    hx-swag="innerHTML"
-                    hx-push-url="true">Education</button>
-            <button type="nav-btn skills"
+                    hx-target=".page-cont"
+                    hx-swag="innerHTML transition:true"
+                    hx-push-url="true">
+                <span>◎</span>
+                Education
+            </button>
+            <button class="nav-btn skills"
                     hx-get="{{ url_for("onboarding_web.skills") }}"
-                    hx-target=".page-body"
-                    hx-swag="innerHTML"
-                    hx-push-url="true">Skills</button>
-            <button type="nav-btn experience"
+                    hx-target=".page-cont"
+                    hx-swag="innerHTML transition:true"
+                    hx-push-url="true">
+                <span>◎</span>
+                Skills
+            </button>
+            <button class="nav-btn experience"
                     hx-get="{{ url_for("onboarding_web.experience") }}"
-                    hx-target=".page-body"
-                    hx-swag="innerHTML"
-                    hx-push-url="true">Experience</button>
+                    hx-target=".page-cont"
+                    hx-swag="innerHTML transition:true"
+                    hx-push-url="true">
+                <span>◎</span>
+                Experience
+            </button>
         </div>
     </div>
 {% endmacro %}
