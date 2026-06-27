@@ -1,0 +1,147 @@
+.card {
+  background-color: white;
+  padding: 5px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+
+.name {
+  margin-bottom: 0px;
+  font-size: large;
+  font-weight: bold;
+}
+
+
+.time {
+  margin-top: 0px;
+  font-size: medium;
+}
+
+
+.delete-btn,
+.edit-btn,
+.cancel-btn {
+  margin-top: 18px;
+  height: 30px;
+  width: 30px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+
+.icon {
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-position: center;
+  mask-position: center;
+  background-color: rgba(14, 17, 22, 0.5);
+  width: 80%;
+  height: 80%;
+  transition: 0.2s ease;
+}
+
+
+.delete-btn .icon {
+  mask-image: url("../../../images/icons/functional-icons/delete.svg");
+  -webkit-mask-image: url("../../../images/icons/functional-icons/delete.svg");
+}
+
+
+.edit-btn .icon {
+  mask-image: url("../../../images/icons/functional-icons/edit.svg");
+  -webkit-mask-image: url("../../../images/icons/functional-icons/edit.svg");
+}
+
+
+.cancel-btn .icon {
+  mask-image: url("../../../images/icons/functional-icons/cross.svg");
+  -webkit-mask-image: url("../../../images/icons/functional-icons/cross.svg");
+}
+
+
+.card input,
+.card textarea {
+  border: none;
+  outline: none;
+  border-bottom: 1px;
+}
+
+
+.name #certificate {
+  font-size: large;
+  font-weight: bold;
+  margin-top: 18px;
+}
+
+
+.time input {
+  width: 4ch;
+  box-sizing: content-box;
+  font-size: medium;
+}
+
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+
+.card .left {
+  flex-grow: 1;
+}
+
+
+.card .left .edit {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  display: none;
+}
+
+
+.card #institution {
+  font-size: medium;
+  margin-top: 10px;
+}
+
+
+.card #location {
+  font-size: medium;
+}
+
+
+.card #description {
+  font-family: "Inter";
+  border: none;
+  resize: vertical;
+  max-height: 100px;
+  min-height: max-content;
+  margin-top: 15px;
+  font-size: medium;
+}
+
+
+.card input:focus,
+.card textarea:focus {
+  border-bottom: 1px solid gray;
+}
+
+
+.cancel-btn {
+  display: none;
+}

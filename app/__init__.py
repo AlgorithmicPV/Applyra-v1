@@ -69,6 +69,7 @@ def create_app(debug=False):
     # register api blueprints
     from app.routes.api.auth import auth_api_bp
     from app.routes.api.documents import documents_api_bp
+    from app.routes.api.onboarding import onboarding_api_bp
 
     # register web blueprints
     from app.routes.web.landing import landing_web_bp
@@ -80,6 +81,7 @@ def create_app(debug=False):
     # api
     app.register_blueprint(auth_api_bp, url_prefix="/api/auth")
     app.register_blueprint(documents_api_bp, url_prefix="/api/doc")
+    app.register_blueprint(onboarding_api_bp, url_prefix="/api/onboarding")
 
     # web
     app.register_blueprint(landing_web_bp, url_prefix="/")

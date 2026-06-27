@@ -1,5 +1,6 @@
 from flask import Blueprint, request, render_template, session
 from flask_login import current_user, login_required
+from app.forms import EducationForm, SkillForm, ExperienceForm
 
 
 onboarding_web_bp = Blueprint("onboarding_web", __name__)
@@ -14,10 +15,11 @@ def home():
 @onboarding_web_bp.route("/education/", methods=["POST", "GET"])
 @login_required
 def education():
+    form = EducationForm()
     if request.headers.get("HX-Request") == "true":
-        return render_template("onboarding/education.html")
+        return render_template("onboarding/education.html", form=form)
     else:
-        return render_template("onboarding/base.html", page="education")
+        return render_template("onboarding/base.html", page="education", form=form)
 
 
 @onboarding_web_bp.route("/experience/", methods=["POST", "GET"])

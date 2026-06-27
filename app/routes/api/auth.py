@@ -7,7 +7,7 @@ from flask import Blueprint, current_app, request, url_for, redirect, session, a
 from app.forms import SignUpForm, TotpForm, LoginForm
 from itsdangerous import SignatureExpired, BadSignature
 from app.extensions import mail, limiter, serializer, password_hasher, db, get_totp
-from app.models import User
+from app.models import User, UserProfile
 from datetime import datetime
 from sqlalchemy import and_
 import time
@@ -45,7 +45,6 @@ def sign_up():
     if email_exist is None:
         # Add a brand new user
         user_id = str(uuid.uuid4())
-
         new_user = User(
             user_id=user_id,
             email=form.email_address.data,
@@ -60,6 +59,13 @@ def sign_up():
         )
 
         db.session.add(new_user)
+
+        new_user_profile = UserProfile(
+            user_profile_id=str(uuid.uuid4()),
+            user_id=user_id,
+        )
+
+        db.session.add(new_user_profile)
     else:
         if email_exist.User.is_verified and email_exist.User.email:
             return {"error": "User email is existing"}

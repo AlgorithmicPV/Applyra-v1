@@ -1,8 +1,29 @@
-<link rel="stylesheet" href="{{ url_for('static', filename='css/onboarding/education.css') }}">
-<div class="left-side">
- <p class="heading">Add your Education and Certifications</p> 
- <p class="p">Tell us about your education background and any relevant certifications</p>
-</div>
-<div class="right-side">
-  
+<div class="cont">
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/onboarding/education.css') }}">
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/onboarding/components/education.css') }}">
+    <div class="left-side">
+        <p class="heading">Add your Education and Certifications</p>
+        <p class="p">Tell us about your education background and any relevant certifications</p>
+        <form hx-post="{{ url_for("onboarding_api.education") }}"
+              hx-swap="beforeend"
+              hx-target=".right-side"
+              hx-on::after-request="this.reset()"
+              id="education-form"
+              class="education-form">
+            {{ form.hidden_tag() }}
+            {{ form.certificate(placeholder=form.certificate.label.text) }}
+            {{ form.institution(placeholder=form.institution.label.text) }}
+            {{ form.location(placeholder=form.location.label.text) }}
+            <div class="time-period">
+                {{ form.start_year(placeholder=form.start_year.label.text) }}
+                {{ form.end_year(placeholder=form.end_year.label.text) }}
+            </div>
+            {{ form.description(placeholder=form.description.label.text) }}
+            <button type="submit" class="submit">Add</button>
+        </form>
+    </div>
+    <div class="right-side"></div>
+    <script src="{{ url_for('static', filename='js/onboarding/components/education.js') }}"></script>
 </div>
