@@ -1,3 +1,4 @@
+{% import 'onboarding/components/education.html' as comp %}
 <div class="cont">
     <link rel="stylesheet"
           href="{{ url_for('static', filename='css/onboarding/education.css') }}">
@@ -6,7 +7,7 @@
     <div class="left-side">
         <p class="heading">Add your Education and Certifications</p>
         <p class="p">Tell us about your education background and any relevant certifications</p>
-        <form hx-post="{{ url_for("onboarding_api.education") }}"
+        <form hx-post="{{ url_for("onboarding_api.education_collect") }}"
               hx-swap="beforeend"
               hx-target=".right-side"
               hx-on::after-request="this.reset()"
@@ -24,6 +25,10 @@
             <button type="submit" class="submit">Add</button>
         </form>
     </div>
-    <div class="right-side"></div>
+    <div class="right-side">
+        {% for q in qualifications %}
+            {{ comp.card(q.education_id, q.qualification, q.start_year.strftime('%Y') | int , q.end_year.strftime('%Y') | int , q.institution, q.location, q.notes, form) }}
+        {% endfor %}
+    </div>
     <script src="{{ url_for('static', filename='js/onboarding/components/education.js') }}"></script>
 </div>

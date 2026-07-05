@@ -1,7 +1,8 @@
 from flask import Blueprint, request, render_template, session
 from flask_login import current_user, login_required
 from app.forms import EducationForm, SkillForm, ExperienceForm
-
+from app.models import Education
+from app.extensions import db
 
 onboarding_web_bp = Blueprint("onboarding_web", __name__)
 
@@ -16,10 +17,22 @@ def home():
 @login_required
 def education():
     form = EducationForm()
+
+    qualifications = db.session.scalars(
+        db.select(Education).where(Education.user_profile_id == current_user.user_id)
+    ).all()
+
     if request.headers.get("HX-Request") == "true":
-        return render_template("onboarding/education.html", form=form)
+        return render_template(
+            "onboarding/education.html", form=form, qualifications=qualifications
+        )
     else:
-        return render_template("onboarding/base.html", page="education", form=form)
+        return render_template(
+            "onboarding/base.html",
+            page="education",
+            form=form,
+            qualifications=qualifications,
+        )
 
 
 @onboarding_web_bp.route("/experience/", methods=["POST", "GET"])

@@ -1,27 +1,39 @@
-<div class="card">
-    <!--NO-BLE-->
-    <div class="left">
-        <p class="name" id="static-certificate-name">{{ certificate }}</p>
-        <p class="time" id="static-time">{{ start_year }} - {{ end_year }}</p>
-        <form class="edit" id="edit-cont">
-            <div class="name">{{ form.certificate(value=certificate) }}</div>
-            <div class="time">{{ form.start_year(value=start_year) }} - {{ form.end_year(value=end_year) }}</div>
-            {{ form.institution(value=institution) }}
-            {{ form.location(value=location) }}
-            {% set _ = form.description.__setattr__('data', notes) %}
-            {{ form.description() }}
-            <button class="done" type="submit">Update</button>
-        </form>
+{% macro card(education_id, certificate, start_year, end_year, institution, location, notes, form) %}
+    <div class="card" id="x{{ education_id }}">
+        <div class="left">
+            <p class="name" id="static-certificate-name">{{ certificate }}</p>
+            <p class="time" id="static-time">{{ start_year }} - {{ end_year }}</p>
+            <form class="edit"
+                  id="edit-cont"
+                  hx-post="{{ url_for('onboarding_api.education_update', id=education_id) }}"
+                  hx-target="#x{{ education_id }}"
+                  hx-swap="outerHTML">
+                {{ form.hidden_tag() }}
+                <div class="name">{{ form.certificate(value=certificate) }}</div>
+                <div class="time">{{ form.start_year(value=start_year) }} - {{ form.end_year(value=end_year) }}</div>
+                {{ form.institution(value=institution) }}
+                {{ form.location(value=location) }}
+                {% set _ = form.description.__setattr__('data', notes) %}
+                {{ form.description() }}
+                <button class="done" type="submit">Update</button>
+            </form>
+        </div>
+        <div class="right">
+            <button class="delete-btn"
+                    hx-delete="{{ url_for('onboarding_api.education_delete', id=education_id) }}"
+                    hx-target="#x{{ education_id }}"
+                    hx-swap="delete">
+                <div class="icon"></div>
+            </button>
+            <button class="edit-btn" id="edit-btn">
+                <div class="icon"></div>
+            </button>
+            <button class="cancel-btn" id="cancel-btn">
+                <div class="icon"></div>
+            </button>
+        </div>
     </div>
-    <div class="right">
-        <button class="delete-btn">
-            <div class="icon"></div>
-        </button>
-        <button class="edit-btn" id="edit-btn">
-            <div class="icon"></div>
-        </button>
-        <button class="cancel-btn" id="cancel-btn">
-            <div class="icon"></div>
-        </button>
-    </div>
-</div>
+{% endmacro %}
+{% if api %}
+    {{ card(education_id, certificate, start_year, end_year, institution, location, notes, form) }}
+{% endif %}
