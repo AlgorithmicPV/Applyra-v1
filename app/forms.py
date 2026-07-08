@@ -7,6 +7,7 @@ from wtforms import (
     ValidationError,
     IntegerField,
     TextAreaField,
+    SelectField,
 )
 from wtforms.validators import (
     DataRequired,
@@ -221,28 +222,15 @@ class EducationForm(FlaskForm):
 
 
 class SkillForm(FlaskForm):
-    skill_name = StringField(
+    skill_name = SelectField(
         "Skill Name",
-        validators=[
-            DataRequired("Please enter a skill name."),
-            Length(
-                min=2,
-                max=100,
-                message="Skill name must be between 2 and 100 characters.",
-            ),
-        ],
-    )
-
-    skill_category = StringField(
-        "Skill Category",
-        validators=[
-            DataRequired("Please enter a skill category."),
-            Length(
-                min=2,
-                max=50,
-                message="Skill category must be between 2 and 50 characters.",
-            ),
-        ],
+        choices=[],
+        validators=[DataRequired("Please enter your skills.")],
+        # Disable built-in WTForms choice validation because the options are loaded
+        # dynamically on the client via Tom Select (AJAX) rather than being populated
+        # in the field's choices list. The submitted skill ID is validated separately
+        # on the server against the database.
+        validate_choice=False,
     )
 
 

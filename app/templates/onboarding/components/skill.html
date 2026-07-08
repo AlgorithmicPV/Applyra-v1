@@ -1,0 +1,66 @@
+{% macro card(user_skill_id, skill_name, current_id, form) %}
+    <div class="card">
+        <div class="left">
+            <p class="name">{{ skill_name }}</p>
+            <form class="edit" id="edit-cont">
+                {{ form.hidden_tag() }}
+                {{ form.skill_name(id="x"~user_skill_id) }}
+                <button type="submit" class="done">Update</button>
+            </form>
+        </div>
+        <div class="right">
+            <button class="delete-btn"
+                    hx-delete="{{ url_for('onboarding_api.education_delete', id=education_id) }}"
+                    hx-target="#x{{ education_id }}"
+                    hx-swap="delete">
+                <div class="icon"></div>
+            </button>
+            <button class="edit-btn" id="edit-btn">
+                <div class="icon"></div>
+            </button>
+            <button class="cancel-btn" id="cancel-btn">
+                <div class="icon"></div>
+            </button>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.6.1/dist/js/tom-select.complete.min.js"></script>
+    <script>
+        new TomSelect('#x{{ user_skill_id }}', {
+            valueField: 'id',
+            labelField: 'name',
+            searchField: 'name',
+            maxItems: 1,
+            options: [
+                {
+                    id: "{{ current_id }}",
+                    name: "{{ skill_name }}"
+                }
+            ],
+            items: ["{{ current_id }}"],
+
+            // fetch remote data
+            load: function(query, callback) {
+                let url = "{{ url_for('onboarding_api.search_skills') }}?q=" + encodeURIComponent(query);
+                fetch(url)
+                    .then(response => response.json())
+                    .then(json => {
+                        callback(json);
+                    }).catch(() => {
+                        callback();
+                    });
+            },
+
+            render: {
+                option: function(item, escape) {
+                    return `<div>${escape(item.name)}</div>`;
+                },
+                item: function(item, escape) {
+                    return `<div>${escape(item.name)}</div>`;
+                }
+            }
+        })
+    </script>
+{% endmacro %}
+{% if api %}
+    {{ card(user_skill_id, skill_name, current_id, form) }}
+{% endif %}

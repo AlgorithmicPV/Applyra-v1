@@ -10,7 +10,7 @@ const initialize = () => {
     const editCont = cards[i].querySelector('#edit-cont')
     const editBtn = cards[i].querySelector('#edit-btn')
     const cancelBtn = cards[i].querySelector('#cancel-btn')
-    const staticCertificateName = cards[i].querySelector('#static-certificate-name')
+    const staticCertificateName = cards[i].querySelector('.name')
 
     editBtn.addEventListener('click', () => {
       staticCertificateName.style.display = 'none'

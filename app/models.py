@@ -58,7 +58,7 @@ class Education(db.Model):
 class Skill(db.Model):
     skill_id = db.Column(db.VARCHAR(36), primary_key=True)
     skill_name = db.Column(db.TEXT, nullable=False, unique=True)
-    skill_category = db.Column(db.TEXT, nullable=False)
+    # skill_category = db.Column(db.TEXT, nullable=False) removed
 
     user_skills = db.relationship("UserSkill", backref="skill")
 

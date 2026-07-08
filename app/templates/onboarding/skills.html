@@ -1,1 +1,70 @@
-skills
+{% import 'onboarding/components/skill.html' as comp %}
+<div class="cont">
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/onboarding/skill.css') }}">
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/onboarding/components/skill.css') }}">
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/onboarding/common.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.6.1/dist/css/tom-select.css"
+          rel="stylesheet">
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/onboarding/components/common.css') }}">
+    <div class="left-side">
+        <p class="heading">List Your Key Skills</p>
+        <p class="p">What are your strengths?</p>
+        <form hx-post="{{ url_for("onboarding_api.skill_collect") }}"
+              hx-swap="beforeend"
+              hx-target=".right-side"
+              hx-on::after-request="this.reset()"
+              id="skill-form"
+              class="skill-form">
+            {{ form.hidden_tag() }}
+            {{ form.skill_name(id="select-skill", placeholder="Skill Name") }}
+            <button id="submit" type="submit" class="submit">Add</button>
+        </form>
+    </div>
+    <div class="right-side">
+        {% for s in skills %}
+            {{ comp.card(s["user_profile_id"], s["skill_name"], s["current_id"], form) }}
+        {% endfor %}
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.6.1/dist/js/tom-select.complete.min.js"></script>
+    <script>
+        new TomSelect('#select-skill', {
+            valueField: 'id',
+            labelField: 'name',
+            searchField: 'name',
+            maxItems: 1,
+
+            // fetch remote data
+            load: function(query, callback) {
+                let url = "{{ url_for('onboarding_api.search_skills') }}?q=" + encodeURIComponent(query);
+                fetch(url)
+                    .then(response => response.json())
+                    .then(json => {
+                        callback(json);
+                    }).catch(() => {
+                        callback();
+                    });
+            },
+
+            render: {
+                option: function(item, escape) {
+                    return `<div>${escape(item.name)}</div>`;
+                },
+                item: function(item, escape) {
+                    return `<div>${escape(item.name)}</div>`;
+                }
+            }
+        })
+
+        document.body.addEventListener('htmx:afterRequest', function (event) {
+            if (event.detail.successful) {
+                const ts = document.getElementById("select-skill").tomselect;
+                ts.clear();
+            }
+        })
+    </script>
+    <script src="{{ url_for('static', filename='js/onboarding/components/skill.js') }}"></script>
+</div>
