@@ -63,8 +63,7 @@
 }
 
 
-.card .left .edit {
-  display: flex;
+.card .edit {
   flex-direction: column;
   width: 100%;
   display: none;

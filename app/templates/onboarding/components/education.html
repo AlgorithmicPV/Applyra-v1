@@ -32,8 +32,39 @@
                 <div class="icon"></div>
             </button>
         </div>
-    </div>
+        <script>
+            {# Can't move to an external file, because it is hard to indentify specific card
+            and, if I move this part to an external file, I have to use addEventListeners,
+            and if I do, I run into an issue with varaibles because there are more than one card,
+            and if I use a varaible, I am getting 
+            Uncaught SyntaxError: Identifier '[varaible name]' has already been declared */ #}
+            (() => {
+                const card = document.getElementById('x{{ education_id }}')
+                const editBtn = card.querySelector('#edit-btn')
+                const editCont = card.querySelector('#edit-cont')
+                const cancelBtn = card.querySelector('#cancel-btn')
+                const staticCertificateName = card.querySelector('.name')
+                const staticTime = card.querySelector('#static-time')
+
+                editBtn.addEventListener('click', ()=>{
+                    staticCertificateName.style.display = 'none'
+                    staticTime.style.display = 'none'
+                    editCont.style.display = 'flex'
+                    editBtn.style.display = 'none'
+                    cancelBtn.style.display = 'inline'
+                })
+
+                cancelBtn.addEventListener('click', () => {
+                    staticCertificateName.style.display = 'block'
+                    staticTime.style.display = 'block'
+                    editCont.style.display = 'none'
+                    editBtn.style.display = 'inline'
+                    cancelBtn.style.display = 'none'
+                })
+            })();
+</script>
+</div>
 {% endmacro %}
 {% if api %}
-    {{ card(education_id, certificate, start_year, end_year, institution, location, notes, form) }}
+{{ card(education_id, certificate, start_year, end_year, institution, location, notes, form) }}
 {% endif %}

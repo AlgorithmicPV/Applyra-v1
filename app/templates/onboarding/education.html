@@ -34,5 +34,4 @@
             {{ comp.card(q.education_id, q.qualification, q.start_year.strftime('%Y') | int , q.end_year.strftime('%Y') | int , q.institution, q.location, q.notes, form) }}
         {% endfor %}
     </div>
-    <script src="{{ url_for('static', filename='js/onboarding/components/education.js') }}"></script>
 </div>

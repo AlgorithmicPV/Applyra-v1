@@ -1,3 +1,5 @@
+# WARNING: Error handling pending: User can change values, like ids, and options
+# WARNING: Put a limit for everything, otherwise, users will put 10k skills, etc
 from flask import Blueprint, render_template, request, session, jsonify
 from flask_login import current_user, login_required
 from app.forms import EducationForm, SkillForm
@@ -172,3 +174,48 @@ def skill_collect():
         form=update_form,
         api=True,
     )
+
+
+@onboarding_api_bp.route("/skill/update/<id>", methods=["GET", "POST"])
+@login_required
+def skill_update(id):
+    # id is user_skill_id (primary key of user_skill table)
+    form = SkillForm(request.form)
+
+    if not (request.method == "POST" and form.validate()):
+        return form.errors
+
+    stmt = db.select(UserSkill).where(UserSkill.user_skill_id == id)
+    user_skill = db.session.execute(stmt).scalar_one()
+
+    update_skill_id = form.skill_name.data
+
+    try:
+        user_skill.skill_id = update_skill_id
+        db.session.commit()
+    except IntegrityError as e:
+        db.session.rollback()
+        return {"error": "The data you're trying to add already exists"}
+
+    stmt = db.select(Skill).where(Skill.skill_id == update_skill_id)
+    skill_name = db.session.execute(stmt).scalar_one().skill_name
+    update_form = SkillForm()
+
+    return render_template(
+        "onboarding/components/skill.html",
+        user_skill_id=id,
+        skill_name=skill_name,
+        current_id=id,
+        form=update_form,
+        api=True,
+    )
+
+
+@onboarding_api_bp.route("/skill/delete/<id>", methods=["DELETE"])
+@login_required
+def skill_delete(id):
+    stmt = delete(UserSkill).where(UserSkill.user_skill_id == id)
+    db.session.execute(stmt)
+    db.session.commit()
+
+    return "", 200

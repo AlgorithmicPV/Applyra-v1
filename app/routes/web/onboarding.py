@@ -60,6 +60,8 @@ def skills():
             db.select(Skill).where(Skill.skill_id == item.skill_id)
         ).first()
 
+        print(item.skill_id)
+
         if skill_row:
             s = {
                 "user_profile_id": item.user_skill_id,

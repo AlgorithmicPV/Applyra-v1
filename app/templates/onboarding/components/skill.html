@@ -1,17 +1,22 @@
 {% macro card(user_skill_id, skill_name, current_id, form) %}
-    <div class="card">
+    {# current_id means current skill id #}
+    <div class="card" id="x{{ user_skill_id }}">
         <div class="left">
             <p class="name">{{ skill_name }}</p>
-            <form class="edit" id="edit-cont">
+            <form class="edit"
+                  id="x{{ current_id }}"
+                  hx-post="{{ url_for('onboarding_api.skill_update', id=user_skill_id) }}"
+                  hx-target="#x{{ user_skill_id }}"
+                  hx-swap="outerHTML">
                 {{ form.hidden_tag() }}
-                {{ form.skill_name(id="x"~user_skill_id) }}
+                {{ form.skill_name(id="f"~user_skill_id) }}
                 <button type="submit" class="done">Update</button>
             </form>
         </div>
         <div class="right">
             <button class="delete-btn"
-                    hx-delete="{{ url_for('onboarding_api.education_delete', id=education_id) }}"
-                    hx-target="#x{{ education_id }}"
+                    hx-delete="{{ url_for('onboarding_api.skill_delete', id=user_skill_id) }}"
+                    hx-target="#x{{ user_skill_id }}"
                     hx-swap="delete">
                 <div class="icon"></div>
             </button>
@@ -25,7 +30,7 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.6.1/dist/js/tom-select.complete.min.js"></script>
     <script>
-        new TomSelect('#x{{ user_skill_id }}', {
+        new TomSelect('#f{{ user_skill_id }}', {
             valueField: 'id',
             labelField: 'name',
             searchField: 'name',
@@ -60,7 +65,39 @@
             }
         })
     </script>
+    <script>
+        {# Can't move to an external file, because it is hard to indentify specific card
+        and, if I move this part to an external file, I have to use addEventListeners,
+        and if I do, I run into an issue with varaibles because there are more than one card,
+        and if I use a varaible, I am getting 
+        Uncaught SyntaxError: Identifier '[varaible name]' has already been declared */ #}
+
+        (() => {
+            const card = document.getElementById('x{{ user_skill_id }}')
+            const editCont = card.querySelector('.edit')
+            const editBtn = card.querySelector('#edit-btn')
+            const cancelBtn = card.querySelector('#cancel-btn')
+            const skillName = card.querySelector('.name')
+            const tsWrapper = card.querySelector('.ts-wrapper')
+
+            editBtn.addEventListener('click', () => {
+                skillName.style.display = 'none'
+                editCont.style.display = 'flex'
+                tsWrapper.style.display = 'flex'
+                editBtn.style.display = 'none'
+                cancelBtn.style.display = 'inline'
+            })
+
+            cancelBtn.addEventListener('click', () => {
+                skillName.style.display = 'block'
+                editCont.style.display = 'none'
+                tsWrapper.style.display = 'none'
+                editBtn.style.display = 'inline'
+                cancelBtn.style.display = 'none'
+            })
+        })();
+</script>
 {% endmacro %}
 {% if api %}
-    {{ card(user_skill_id, skill_name, current_id, form) }}
+{{ card(user_skill_id, skill_name, current_id, form) }}
 {% endif %}
