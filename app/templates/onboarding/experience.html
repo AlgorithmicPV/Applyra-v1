@@ -1,1 +1,37 @@
-experience
+<div class="cont">
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/onboarding/common.css') }}">
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/onboarding/components/common.css') }}">
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/onboarding/experience.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.6.1/dist/css/tom-select.css"
+          rel="stylesheet">
+    <div class="left-side">
+        <p class="heading">Add Your Work Experience</p>
+        <p class="p">Enter your job history so we can showcase your experience on your resume</p>
+        <form class="experience-form">
+            {{ form.hidden_tag() }}
+            {{ form.job_title(placeholder=form.job_title.label.text) }}
+            {{ form.company(placeholder=form.company.label.text) }}
+            {{ form.employment_type() }}
+            <div class="time-period">
+                {{ form.start_year(placeholder=form.start_year.label.text) }}
+                {{ form.end_year(placeholder=form.end_year.label.text) }}
+            </div>
+            {{ form.location(placeholder=form.location.label.text) }}
+            {{ form.responsibilities(placeholder=form.responsibilities.label.text) }}
+            <button type="submit" class="submit">Add</button>
+        </form>
+    </div>
+    <div class="right-side"></div>
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.6.1/dist/js/tom-select.complete.min.js"></script>
+    <script>
+      new TomSelect('#employment_type', {
+        maxItems: 1,
+        create: false,
+        placeholder: "Employment Type",
+        allowEmptyOption: true
+      })
+    </script>
+</div>

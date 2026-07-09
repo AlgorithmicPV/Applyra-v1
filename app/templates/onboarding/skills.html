@@ -28,11 +28,13 @@
     </div>
     <div class="right-side">
         {% for s in skills %}
-            {{ comp.card(s["user_profile_id"], s["skill_name"], s["current_id"], form) }}
+            {{ comp.card(s["user_skill_id"], s["skill_name"], s["current_id"], form) }}
         {% endfor %}
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.6.1/dist/js/tom-select.complete.min.js"></script>
-    <script>
+    {# Same <script src=... is in the base.html, but to make all things run smoothly, I have to put the same line in this file too,
+        because, if user reloads the skill page, it does not work, so I need to put this line before the JS code below#}
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.6.1/dist/js/tom-select.complete.min.js"></script>
+<script>
         new TomSelect('#select-skill', {
             valueField: 'id',
             labelField: 'name',
@@ -54,13 +56,13 @@
             render: {
                 option: function(item, escape) {
                     return `<div>${escape(item.name)}</div>`;
-                },
+                    },
                 item: function(item, escape) {
                     return `<div>${escape(item.name)}</div>`;
+                    }
                 }
-            }
-        })
-
+            })
+       
         document.body.addEventListener('htmx:afterRequest', function (event) {
             if (document.querySelector('.cont').classList.contains('skill')) { // Prevent undefined error on other pages
                 if (event.detail.successful) {
@@ -72,5 +74,5 @@
                 }
             }
             })
-    </script>
+</script>
 </div>

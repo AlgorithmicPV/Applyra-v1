@@ -7,6 +7,7 @@ from app.extensions import db
 onboarding_web_bp = Blueprint("onboarding_web", __name__)
 
 
+# NOTE: remeber to remove the user_id from here
 @onboarding_web_bp.route("/", methods=["POST", "GET"])
 @login_required
 def home():
@@ -19,7 +20,7 @@ def education():
     form = EducationForm()
 
     qualifications = db.session.scalars(
-        db.select(Education).where(Education.user_profile_id == current_user.user_id)
+        db.select(Education).where(Education.user_id == current_user.user_id)
     ).all()
 
     if request.headers.get("HX-Request") == "true":
@@ -38,10 +39,11 @@ def education():
 @onboarding_web_bp.route("/experience/", methods=["POST", "GET"])
 @login_required
 def experience():
+    form = ExperienceForm()
     if request.headers.get("HX-Request") == "true":
-        return render_template("onboarding/experience.html")
+        return render_template("onboarding/experience.html", form=form)
     else:
-        return render_template("onboarding/base.html", page="experience")
+        return render_template("onboarding/base.html", page="experience", form=form)
 
 
 @onboarding_web_bp.route("/skills/", methods=["POST", "GET"])
@@ -50,7 +52,7 @@ def skills():
     form = SkillForm()
 
     user_skill_data_list = db.session.scalars(
-        db.select(UserSkill).where(UserSkill.user_profile_id == current_user.user_id)
+        db.select(UserSkill).where(UserSkill.user_id == current_user.user_id)
     ).all()
 
     skills = []
@@ -64,7 +66,7 @@ def skills():
 
         if skill_row:
             s = {
-                "user_profile_id": item.user_skill_id,
+                "user_skill_id": item.user_skill_id,
                 "skill_name": skill_row.skill_name,
                 "current_id": item.skill_id,
             }

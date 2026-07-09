@@ -1,0 +1,42 @@
+{% macro card() %}
+    <div class="card">
+        <div class="left">
+            <p class="name">Experience</p>
+            <p class="time">xxxx - xxxx</p>
+            <form class="edit" id="edit-cont">
+                {{ form.hidden_tag() }}
+                <div class="name">{{ form.job_title() }}</div>
+                <div class="time">{{ form.start_year() }} - {{ form.end_year() }}</div>
+                {{ form.location() }}
+                {{ form.responsibilities() }}
+                <button class="done" type="submit">Update</button>
+            </form>
+        </div>
+        <div class="right">
+            <button class="delete-btn"
+                    hx-delete="{{ url_for('onboarding_api.education_delete', id=education_id) }}"
+                    hx-target="#x{{ education_id }}"
+                    hx-swap="delete">
+                <div class="icon"></div>
+            </button>
+            <button class="edit-btn" id="edit-btn">
+                <div class="icon"></div>
+            </button>
+            <button class="cancel-btn" id="cancel-btn">
+                <div class="icon"></div>
+            </button>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/tom-select@2.6.1/dist/js/tom-select.complete.min.js"></script>
+        <script>
+      new TomSelect('#employment_type', {
+        maxItems: 1,
+        create: false,
+        placeholder: "Employment Type",
+        allowEmptyOption: true
+      })
+        </script>
+    </div>
+{% endmacro %}
+{% if api %}
+    {{ card() }}
+{% endif %}

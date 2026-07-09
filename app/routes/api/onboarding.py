@@ -1,14 +1,15 @@
 # WARNING: Error handling pending: User can change values, like ids, and options
 # WARNING: Put a limit for everything, otherwise, users will put 10k skills, etc
+import re
 from flask import Blueprint, render_template, request, session, jsonify
 from flask_login import current_user, login_required
-from app.forms import EducationForm, SkillForm
-from app.models import UserProfile, Education, Skill, UserSkill
+from app.forms import EducationForm, SkillForm, ExperienceForm
+from app.models import Education, Skill, UserSkill, WorkExperience
 import uuid
 from app.extensions import db
 from datetime import date
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy import delete
+from sqlalchemy import Null, delete
 from sqlalchemy.inspection import inspect
 import json
 
@@ -34,7 +35,7 @@ def education_collect():
 
     new_qualification = Education(
         education_id=education_id,
-        user_profile_id=current_user.user_id,  # this is not the user_profile_id, this id is from the user table
+        user_id=current_user.user_id,  # this is not the user_profile_id, this id is from the user table
         qualification=certificate,
         institution=institution,
         location=location,
@@ -151,7 +152,7 @@ def skill_collect():
 
     new_skill = UserSkill(
         user_skill_id=user_skill_id,
-        user_profile_id=current_user.user_id,
+        user_id=current_user.user_id,
         skill_id=skill_id,
     )
 
@@ -219,3 +220,39 @@ def skill_delete(id):
     db.session.commit()
 
     return "", 200
+
+
+@onboarding_api_bp.route("/work_experience/collect", methods=["POST", "GET"])
+@login_required
+def work_experience_collect():
+    form = ExperienceForm(request.form)
+
+    if not (request.method == "POST" and form.validate):
+        return form.errors
+
+    experience_id = str(uuid.uuid4)
+    company = form.company.data
+    job_title = form.job_title.data
+    employment_type = form.employment_type.data
+    location = form.location.data
+    start_year = form.start_year.data
+    end_year = form.end_year.data
+    notes = form.notes.data
+    update_form = ExperienceForm()
+
+    date_version_end_year = Null
+
+    if end_year:
+        date_version_end_year = date(end_year, 1, 1)
+
+    new_work_experience = WorkExperience(
+        experience_id=experience_id,
+        user_id=current_user.user_id,
+        job_title=job_title,
+        company=company,
+        employment_type=employment_type,
+        location=location,
+        start_year=date(start_year, 1, 1),
+        end_year=date_version_end_year,
+        responsibilities=notes,
+    )

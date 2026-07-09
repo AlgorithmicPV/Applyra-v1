@@ -1,0 +1,33 @@
+.experience-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+
+.experience-form>input,
+.experience-form>textarea,
+.experience-form>select,
+.time-period>input {
+  background-color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  font-family: 'Inter';
+}
+
+
+.experience-form>textarea {
+  resize: vertical;
+  max-height: 100px;
+  min-height: max-content;
+}
+
+
+.ts-control {
+  background-color: white !important;
+  border: none !important;
+  padding: 10px;
+  border-radius: 5px;
+  font-family: 'Inter';
+}

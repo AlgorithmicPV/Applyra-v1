@@ -1,6 +1,5 @@
 from flask import Blueprint, request, render_template
 
-
 landing_web_bp = Blueprint("landing_web", __name__)
 
 

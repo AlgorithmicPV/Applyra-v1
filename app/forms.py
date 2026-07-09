@@ -259,8 +259,21 @@ class ExperienceForm(FlaskForm):
         ],
     )
 
-    employment_type = StringField(
+    employment_type = SelectField(
         "Employment Type",
+        choices=[
+            ("Full-time", "Full-time"),
+            ("Part-time", "Part-time"),
+            ("Permanent", "Permanent"),
+            ("Temporary", "Temporary"),
+            ("Fixed-term", "Fixed-term"),
+            ("Casual", "Casual"),
+            ("Contract", "Contract"),
+            ("Seasonal", "Seasonal"),
+            ("Freelance", "Freelance"),
+            ("Intership", "Intership"),
+            ("Apprenticeship", "Apprenticeship"),
+        ],
         validators=[
             DataRequired("Please enter the employment type."),
             validators.Length(

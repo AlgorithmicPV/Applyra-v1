@@ -16,7 +16,6 @@ class User(UserMixin, db.Model):
     onbaording_completed = db.Column(db.BOOLEAN, nullable=False)
     is_verified = db.Column(db.BOOLEAN)
 
-    user_profile = db.relationship("UserProfile", backref="user", uselist=False)
     practice_answers = db.relationship("PracticeAnswer", backref="user")
     documents = db.relationship("Document", backref="user")
     job_entries = db.relationship("JobEntry", backref="user")
@@ -26,21 +25,9 @@ class User(UserMixin, db.Model):
         return str(self.user_id)
 
 
-class UserProfile(db.Model):
-    user_profile_id = db.Column(db.VARCHAR(36), primary_key=True)
-    user_id = db.Column(
-        db.VARCHAR(36), db.ForeignKey("user.user_id"), nullable=False, unique=True
-    )
-    education = db.relationship("Education", backref="user_profile")
-
-    work_experiences = db.relationship("WorkExperience", backref="user_profile")
-
-
 class Education(db.Model):
     education_id = db.Column(db.VARCHAR(36), primary_key=True)
-    user_profile_id = db.Column(
-        db.VARCHAR(36), db.ForeignKey("user_profile.user_profile_id"), nullable=False
-    )
+    user_id = db.Column(db.VARCHAR(36), db.ForeignKey("user.user_id"), nullable=False)
     qualification = db.Column(db.TEXT, nullable=False)
     institution = db.Column(db.TEXT, nullable=False)
     location = db.Column(db.TEXT, nullable=False)
@@ -49,48 +36,42 @@ class Education(db.Model):
     notes = db.Column(db.TEXT)
 
     __table_args__ = (
-        UniqueConstraint(
-            "user_profile_id", "qualification", "institution", "start_year"
-        ),
+        UniqueConstraint("user_id", "qualification", "institution", "start_year"),
     )
 
 
 class Skill(db.Model):
     skill_id = db.Column(db.VARCHAR(36), primary_key=True)
     skill_name = db.Column(db.TEXT, nullable=False, unique=True)
-    # skill_category = db.Column(db.TEXT, nullable=False) removed
 
     user_skills = db.relationship("UserSkill", backref="skill")
 
 
 class UserSkill(db.Model):
     user_skill_id = db.Column(db.VARCHAR(36), primary_key=True)
-    user_profile_id = db.Column(
-        db.VARCHAR(36), db.ForeignKey("user_profile.user_profile_id"), nullable=False
-    )
+    user_id = db.Column(db.VARCHAR(36), db.ForeignKey("user.user_id"), nullable=False)
     skill_id = db.Column(
         db.VARCHAR(36), db.ForeignKey("skill.skill_id"), nullable=False
     )
 
-    __table_args__ = (UniqueConstraint("user_profile_id", "skill_id"),)
+    __table_args__ = (UniqueConstraint("user_id", "skill_id"),)
 
 
 class WorkExperience(db.Model):
     experience_id = db.Column(db.VARCHAR(36), primary_key=True)
-    user_profile_id = db.Column(
-        db.VARCHAR(36), db.ForeignKey("user_profile.user_profile_id"), nullable=False
-    )
+    user_id = db.Column(db.VARCHAR(36), db.ForeignKey("user.user_id"), nullable=False)
+    job_title = db.Column(db.TEXT, nullable=False)
     company = db.Column(db.TEXT, nullable=False)
     employment_type = db.Column(db.TEXT, nullable=False)
     location = db.Column(db.TEXT, nullable=False)
     start_year = db.Column(db.DATE, nullable=False)
     end_year = db.Column(db.DATE)
-    is_current = db.Column(db.BOOLEAN)
-    notes = db.Column(db.TEXT)
+    responsibilities = db.Column(db.TEXT)
 
     __table_args__ = (
         UniqueConstraint(
-            "user_profile_id",
+            "user_id",
+            "job_title",
             "company",
             "employment_type",
             "start_year",
