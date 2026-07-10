@@ -1,21 +1,23 @@
-{% macro card() %}
-    <div class="card">
+{% macro card(experience_id, job_title, company, employment_type, start_year, end_year, responsibilities, form, location) %}
+    <div class="card" id="x{{ experience_id }}">
         <div class="left">
-            <p class="name">Experience</p>
-            <p class="time">xxxx - xxxx</p>
+            <p class="name">{{ job_title }}</p>
+            <p class="time">{{ start_year }} - {{ end_year }}</p>
             <form class="edit" id="edit-cont">
                 {{ form.hidden_tag() }}
-                <div class="name">{{ form.job_title() }}</div>
-                <div class="time">{{ form.start_year() }} - {{ form.end_year() }}</div>
-                {{ form.location() }}
-                {{ form.responsibilities() }}
+                <div class="name">{{ form.job_title(value=job_title) }}</div>
+                <div class="time">{{ form.start_year(value=start_year) }} - {{ form.end_year(value=end_year) }}</div>
+                {{ form.company(value=company) }}
+                {{ form.employment_type(id="f"~experience_id, value=employment_type) }}
+                {{ form.location(value=location) }}
+                {{ form.responsibilities(value=responsibilities) }}
                 <button class="done" type="submit">Update</button>
             </form>
         </div>
         <div class="right">
             <button class="delete-btn"
                     hx-delete="{{ url_for('onboarding_api.education_delete', id=education_id) }}"
-                    hx-target="#x{{ education_id }}"
+                    hx-target="#x{{ experience_id }}"
                     hx-swap="delete">
                 <div class="icon"></div>
             </button>
@@ -28,15 +30,51 @@
         </div>
         <script src="https://cdn.jsdelivr.net/npm/tom-select@2.6.1/dist/js/tom-select.complete.min.js"></script>
         <script>
-      new TomSelect('#employment_type', {
-        maxItems: 1,
-        create: false,
-        placeholder: "Employment Type",
-        allowEmptyOption: true
-      })
+            new TomSelect('#f{{ experience_id }}', {
+                maxItems: 1,
+                create: false,
+                placeholder: "Employment Type",
+                allowEmptyOption: true
+            })
         </script>
-    </div>
+        <script>
+        {# Can't move to an external file, because it is hard to indentify specific card
+        and, if I move this part to an external file, I have to use addEventListeners,
+        and if I do, I run into an issue with varaibles because there are more than one card,
+        and if I use a varaible, I am getting 
+        Uncaught SyntaxError: Identifier '[varaible name]' has already been declared */ #}
+
+        (() => {
+            const card = document.getElementById('x{{ experience_id }}')
+            const editCont = card.querySelector('.edit')
+            const editBtn = card.querySelector('#edit-btn')
+            const cancelBtn = card.querySelector('#cancel-btn')
+            const jobTitle = card.querySelector('.name')
+            const tsWrapper = card.querySelector('.ts-wrapper')
+            const timePeriod = card.querySelector('.time')
+
+            editBtn.addEventListener('click', () => {
+                jobTitle.style.display = 'none'
+                timePeriod.style.display = 'none'
+                editCont.style.display = 'flex'
+                tsWrapper.style.display = 'flex'
+                editBtn.style.display = 'none'
+                cancelBtn.style.display = 'inline'
+            })
+
+            cancelBtn.addEventListener('click', () => {
+                jobTitle.style.display = 'block'
+                timePeriod.style.display = 'block'
+                editCont.style.display = 'none'
+                tsWrapper.style.display = 'none'
+                editBtn.style.display = 'inline'
+                cancelBtn.style.display = 'none'
+            })
+        })();
+
+</script>
+</div>
 {% endmacro %}
 {% if api %}
-    {{ card() }}
+{{ card(experience_id, job_title, company, employment_type, start_year, end_year, responsibilities, form, location) }}
 {% endif %}

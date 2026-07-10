@@ -1,8 +1,11 @@
+{% import 'onboarding/components/experience.html' as comp %}
 <div class="cont">
     <link rel="stylesheet"
           href="{{ url_for('static', filename='css/onboarding/common.css') }}">
     <link rel="stylesheet"
           href="{{ url_for('static', filename='css/onboarding/components/common.css') }}">
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/onboarding/components/experience.css') }}">
     <link rel="stylesheet"
           href="{{ url_for('static', filename='css/onboarding/experience.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.6.1/dist/css/tom-select.css"
@@ -10,7 +13,12 @@
     <div class="left-side">
         <p class="heading">Add Your Work Experience</p>
         <p class="p">Enter your job history so we can showcase your experience on your resume</p>
-        <form class="experience-form">
+        <form hx-post="{{ url_for("onboarding_api.work_experience_collect") }}"
+              hx-swap="beforeend"
+              hx-target=".right-side"
+              hx-on::after-request="this.reset()"
+              class="experience-form"
+              id="experience-form">
             {{ form.hidden_tag() }}
             {{ form.job_title(placeholder=form.job_title.label.text) }}
             {{ form.company(placeholder=form.company.label.text) }}
@@ -24,7 +32,11 @@
             <button type="submit" class="submit">Add</button>
         </form>
     </div>
-    <div class="right-side"></div>
+    <div class="right-side">
+        {% for e in experiences %}
+            {{ comp.card(e.experience_id, e.job_title, e.company, e.employment_type, e.start_year, e.end_year, e.responsibilities, form, e.location) }}
+        {% endfor %}
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.6.1/dist/js/tom-select.complete.min.js"></script>
     <script>
       new TomSelect('#employment_type', {

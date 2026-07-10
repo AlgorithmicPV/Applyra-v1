@@ -35,7 +35,7 @@ def education_collect():
 
     new_qualification = Education(
         education_id=education_id,
-        user_id=current_user.user_id,  # this is not the user_profile_id, this id is from the user table
+        user_id=current_user.user_id,
         qualification=certificate,
         institution=institution,
         location=location,
@@ -230,14 +230,14 @@ def work_experience_collect():
     if not (request.method == "POST" and form.validate):
         return form.errors
 
-    experience_id = str(uuid.uuid4)
+    experience_id = str(uuid.uuid4())
     company = form.company.data
     job_title = form.job_title.data
     employment_type = form.employment_type.data
     location = form.location.data
     start_year = form.start_year.data
     end_year = form.end_year.data
-    notes = form.notes.data
+    responsibilities = form.responsibilities.data
     update_form = ExperienceForm()
 
     date_version_end_year = Null
@@ -254,5 +254,25 @@ def work_experience_collect():
         location=location,
         start_year=date(start_year, 1, 1),
         end_year=date_version_end_year,
-        responsibilities=notes,
+        responsibilities=responsibilities,
+    )
+
+    try:
+        db.session.add(new_work_experience)
+        db.session.commit()
+    except IntegrityError as e:
+        db.session.rollback()
+        return {"error": "The data you're trying to add already exists"}
+
+    return render_template(
+        "onboarding/components/experience.html",
+        experience_id=experience_id,
+        job_title=job_title,
+        company=company,
+        employment_type=employment_type,
+        start_year=start_year,
+        end_year=end_year,
+        responsibilities=responsibilities,
+        form=update_form,
+        api=True,
     )

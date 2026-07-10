@@ -1,0 +1,84 @@
+.time {
+  margin-top: 0px;
+  font-size: medium;
+}
+
+.card input,
+.card textarea {
+  border: none;
+  outline: none;
+  border-bottom: 1px;
+}
+
+
+.name #certificate {
+  font-size: large;
+  font-weight: bold;
+  margin-top: 18px;
+}
+
+
+.time input {
+  width: 4ch;
+  box-sizing: content-box;
+  font-size: medium;
+}
+
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+
+.card #company {
+  font-size: medium;
+  margin-top: 10px;
+}
+
+
+.card #location {
+  font-size: medium;
+}
+
+
+.card #responsibilities {
+  font-family: "Inter";
+  border: none;
+  resize: vertical;
+  max-height: 100px;
+  min-height: max-content;
+  margin-top: 15px;
+  font-size: medium;
+}
+
+
+.card input:focus,
+.card textarea:focus {
+  border-bottom: 1px solid gray;
+}
+
+
+.card .ts-control>* {
+  font-size: medium;
+}
+
+
+.card .ts-control {
+  padding-left: 2px !important;
+}
+
+
+.card #job_title {
+  margin-bottom: 0px;
+  font-size: large;
+  font-weight: bold;
+}
