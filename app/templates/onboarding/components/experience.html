@@ -3,7 +3,11 @@
         <div class="left">
             <p class="name">{{ job_title }}</p>
             <p class="time">{{ start_year }} - {{ end_year }}</p>
-            <form class="edit" id="edit-cont">
+            <form class="edit"
+                  id="edit-cont"
+                  hx-post="{{ url_for('onboarding_api.work_experience_update', id=experience_id) }}"
+                  hx-target="#x{{ experience_id }}"
+                  hx-swap="outerHTML">
                 {{ form.hidden_tag() }}
                 <div class="name">{{ form.job_title(value=job_title) }}</div>
                 <div class="time">{{ form.start_year(value=start_year) }} - {{ form.end_year(value=end_year) }}</div>
@@ -16,7 +20,7 @@
         </div>
         <div class="right">
             <button class="delete-btn"
-                    hx-delete="{{ url_for('onboarding_api.education_delete', id=education_id) }}"
+                    hx-delete="{{ url_for('onboarding_api.work_experience_delete', id=experience_id) }}"
                     hx-target="#x{{ experience_id }}"
                     hx-swap="delete">
                 <div class="icon"></div>

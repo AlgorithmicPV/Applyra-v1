@@ -240,6 +240,12 @@ def work_experience_collect():
     responsibilities = form.responsibilities.data
     update_form = ExperienceForm()
 
+    # Currently, I have made end_year complusory,
+    # in future development, I will remove
+    # therefore, I am keeping this code
+
+    # Users can use the end_year as the present year
+
     date_version_end_year = Null
 
     if end_year:
@@ -274,5 +280,74 @@ def work_experience_collect():
         end_year=end_year,
         responsibilities=responsibilities,
         form=update_form,
+        location=location,
         api=True,
     )
+
+
+@onboarding_api_bp.route("/work_experience/update/<id>", methods=["POST", "GET"])
+@login_required
+def work_experience_update(id):
+    form = ExperienceForm(request.form)
+
+    if not (request.method == "POST" and form.validate()):
+        return form.errors
+
+    stmt = db.select(WorkExperience).where(WorkExperience.experience_id == id)
+    experience = db.session.execute(stmt).scalar_one()
+
+    company = form.company.data
+    job_title = form.job_title.data
+    employment_type = form.employment_type.data
+    location = form.location.data
+    start_year = form.start_year.data
+    end_year = form.end_year.data
+    responsibilities = form.responsibilities.data
+    update_form = ExperienceForm()
+
+    # Currently, I have made end_year complusory,
+    # in future development, I will remove
+    # therefore, I am keeping this code
+
+    # Users can use the end_year as the present year
+    date_version_end_year = Null
+
+    if end_year:
+        date_version_end_year = date(end_year, 1, 1)
+
+    try:
+        experience.job_title = job_title
+        experience.company = company
+        experience.employment_type = employment_type
+        experience.location = location
+        experience.start_year = date(start_year, 1, 1)
+        experience.end_year = date_version_end_year
+        experience.responsibilities = responsibilities
+        db.session.commit()
+    except IntegrityError as e:
+        db.session.rollback()
+        return {"error": "The data you're trying to add already exists"}
+
+    return render_template(
+        "onboarding/components/experience.html",
+        experience_id=id,
+        job_title=job_title,
+        company=company,
+        employment_type=employment_type,
+        start_year=start_year,
+        end_year=end_year,
+        responsibilities=responsibilities,
+        form=update_form,
+        location=location,
+        api=True,
+    )
+
+
+@onboarding_api_bp.route("/work_experience/delete/<id>", methods=["DELETE"])
+@login_required
+def work_experience_delete(id):
+    stmt = delete(WorkExperience).where(WorkExperience.experience_id == id)
+    db.session.execute(stmt)
+    db.session.commit()
+
+    return "", 200
