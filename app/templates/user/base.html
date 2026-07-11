@@ -1,3 +1,4 @@
+<!-- NOTE: Put a logout button in the nav bar -->
 {% macro user_base() %}
     <div class="main-content">
         <link rel="stylesheet"
@@ -8,40 +9,37 @@
                     hx-get="{{ url_for("dashboard_web.dashboard") }}"
                     hx-target=".page-body"
                     hx-swag="innerHTML"
-                    hx-push-url="true"
-                >
+                    hx-push-url="true">
                 <img src="{{ url_for('static', filename='images/icons/home.svg') }}"
                      alt="home-icon" />
             </button>
-            <button>
+            <button hx-get="{{ url_for("apply_web.apply") }}"
+                    hx-target=".page-body"
+                    hx-swap="innerHTML"
+                    hx-push-url="true">
                 <img src="{{ url_for('static', filename='images/icons/apply.svg') }}"
                      alt="apply-icon" />
             </button>
-            <button>
+            <!--<button>
                 <img src="{{ url_for('static', filename='images/icons/track.svg') }}"
                      alt="track-icon" />
-            </button>
-            <button
-                    hx-get="{{ url_for("documents_web.doc_home") }}"
+            </button>-->
+            <button hx-get="{{ url_for("documents_web.doc_home") }}"
                     hx-target=".page-body"
                     hx-swag="innerHTML"
-                    hx-push-url="true"
-                    >
+                    hx-push-url="true">
                 <img src="{{ url_for('static', filename='images/icons/documents.svg') }}"
                      alt="doc-icon" />
             </button>
-            <button>
-                <img src="{{ url_for('static', filename='images/icons/rules.svg') }}"
-                     alt="rules-icon" />
+            <!--<button>
+                <img src="{{ url_for('static', filename='images/icons/rules.svg') }}" alt="rules-icon" />
             </button>
             <button>
-                <img src="{{ url_for('static', filename='images/icons/practice.svg') }}"
-                     alt="practice-icon" />
+                <img src="{{ url_for('static', filename='images/icons/practice.svg') }}" alt="practice-icon" />
             </button>
             <button>
-                <img src="{{ url_for('static', filename='images/icons/insights.svg') }}"
-                     alt="insights-icon" />
-            </button>
+                <img src="{{ url_for('static', filename='images/icons/insights.svg') }}" alt="insights-icon" />
+            </button>-->
             <button class="settings-btn">
                 <img src="{{ url_for('static', filename='images/icons/settings.svg') }}"
                      alt="settings-icon" />
@@ -65,6 +63,9 @@
                     {% set form = form %}
                     {% include
                     "user/documents-pages/doc-home.html" %}
+                {% elif
+                    page == "apply"%}
+                    {% include "user/apply/base.html" %}
                 {% endif %}
             </div>
         </div>

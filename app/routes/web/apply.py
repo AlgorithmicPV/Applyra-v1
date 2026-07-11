@@ -8,6 +8,6 @@ apply_web_bp = Blueprint("apply_web", __name__)
 @login_required
 def apply():
     if request.headers.get("HX-Request") == "true":
-        return render_template("user/dashboard.html")
+        return render_template("user/apply/base.html")
     else:
-        return render_template("user/base.html", page="dashboard")
+        return render_template("user/base.html", page="apply")

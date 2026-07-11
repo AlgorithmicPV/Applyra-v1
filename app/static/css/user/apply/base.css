@@ -1,0 +1,165 @@
+.page-body {
+  height: 100%;
+  width: 100%;
+}
+
+
+.body-cont {
+  height: 100%;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 25% 1fr;
+}
+
+
+.left {
+  border-right: 3px solid #F3F4F1;
+  padding: 5px 20px 5px 20px;
+  gap: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+.right {
+  display: flex;
+}
+
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+
+.add {
+  padding: 5px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  font-family: 'Inter';
+  height: 25px;
+  width: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  outline: none;
+  transition: 0.2s linear;
+}
+
+
+.add .icon {
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-position: center;
+  mask-position: center;
+  background-color: rgba(14, 17, 22, 0.5);
+  width: 80%;
+  height: 80%;
+  transition: 0.2s ease;
+}
+
+.add:hover .icon {
+  background-color: rgba(14, 17, 22, 0.8);
+}
+
+
+.add .icon {
+  mask-image: url("../../../images/icons/functional-icons/add.svg");
+  -webkit-mask-image: url("../../../images/icons/functional-icons/add.svg");
+}
+
+
+.hide {
+  background-color: transparent;
+  border: none;
+  font-size: x-small;
+  font-family: 'Inter';
+  cursor: pointer;
+  color: rgba(14, 17, 22, 0.5);
+  transition: 0.2s ease;
+}
+
+
+.hide:hover {
+  color: rgba(14, 17, 22, 0.8);
+}
+
+
+.search {
+  padding: 10px 5px 10px 5px;
+  border: none;
+  border-radius: 5px;
+  background-color: #F3F4F1;
+  font-family: 'Inter';
+  width: 100%;
+  outline: none;
+}
+
+input[type="search"]::-webkit-search-cancel-button {
+  /* Remove default styling */
+  -webkit-appearance: none;
+
+  /* Create a custom round button */
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  cursor: pointer;
+  background-image: url("../../../images/icons/functional-icons/cross.svg");
+  background-size: 10px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+
+.default {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  flex: 1;
+}
+
+
+.default img {
+  height: 400px;
+  width: auto;
+  /* Prevents text/image selection highlight */
+  -webkit-user-select: none;
+  /* Safari */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* IE10+/Edge */
+  user-select: none;
+  /* Standard */
+
+  /* Prevents dragging the image entirely */
+  -webkit-user-drag: none;
+  user-drag: none;
+  animation: growAndShrink 2s ease-in-out infinite alternate;
+}
+
+
+.default p {
+  font-family: "Inter";
+  color: rgba(14, 17, 22, 0.5);
+  font-size: smaller;
+}
+
+
+@keyframes growAndShrink {
+  0% {
+    transform: scale(1);
+  }
+
+  100% {
+    transform: scale(1.05);
+  }
+}
