@@ -1,17 +1,15 @@
 # WARNING: Error handling pending: User can change values, like ids, and options
 # WARNING: Put a limit for everything, otherwise, users will put 10k skills, etc
-import re
-from flask import Blueprint, render_template, request, session, jsonify
+import uuid
+from datetime import date
+from flask import Blueprint, render_template, request, jsonify
 from flask_login import current_user, login_required
 from app.forms import EducationForm, SkillForm, ExperienceForm
 from app.models import Education, Skill, UserSkill, WorkExperience
-import uuid
 from app.extensions import db
-from datetime import date
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import Null, delete
 from sqlalchemy.inspection import inspect
-import json
 
 onboarding_api_bp = Blueprint("onboarding_api", __name__)
 

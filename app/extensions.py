@@ -17,22 +17,19 @@ db = SQLAlchemy()
 socketio = SocketIO()
 mail = Mail()
 limiter = Limiter(get_remote_address, default_limits=[], storage_uri="memory://")
-serializer = URLSafeTimedSerializer("temporary")
+serializer = URLSafeTimedSerializer("temporary")  # This will be updated by __init__.py
 migrate = Migrate()
 password_hasher = PasswordHasher()
 login_manager = LoginManager()
 
 
 def get_totp():
-    secret = current_app.config["OTP_SECRET"]
-    return pyotp.TOTP(secret)
+    return pyotp.TOTP(current_app.config["OTP_SECRET"])
 
 
 def get_fernet():
-    secret = current_app.config["FERNET_KEY"]
-    return Fernet(secret)
+    return Fernet(current_app.config["FERNET_KEY"])
 
 
 def get_aessiv():
-    secret = current_app.config["FERNET_KEY"]
-    return AESSIV(secret)
+    return AESSIV(current_app.config["FERNET_KEY"])

@@ -16,7 +16,6 @@ class User(UserMixin, db.Model):
     onbaording_completed = db.Column(db.BOOLEAN, nullable=False)
     is_verified = db.Column(db.BOOLEAN)
 
-    practice_answers = db.relationship("PracticeAnswer", backref="user")
     documents = db.relationship("Document", backref="user")
     job_entries = db.relationship("JobEntry", backref="user")
     applications = db.relationship("Application", backref="user")
@@ -79,46 +78,10 @@ class WorkExperience(db.Model):
     )
 
 
-class Question(db.Model):
-    question_id = db.Column(db.VARCHAR(36), primary_key=True)
-    question_text = db.Column(db.TEXT, nullable=False)
-    category = db.Column(db.TEXT, nullable=False)
-    created_at = db.Column(db.TIMESTAMP, nullable=False)
-
-    practice_answers = db.relationship("PracticeAnswer", backref="question")
-
-
-class PracticeAnswer(db.Model):
-    practice_answer_id = db.Column(db.VARCHAR(36), primary_key=True)
-    user_id = db.Column(db.VARCHAR(36), db.ForeignKey("user.user_id"), nullable=False)
-    question_id = db.Column(
-        db.VARCHAR(36), db.ForeignKey("question.question_id"), nullable=False
-    )
-    user_answer = db.Column(db.TEXT, nullable=False)
-    ai_suggested_answer = db.Column(db.TEXT)
-    tone_feedback = db.Column(db.TEXT)
-    clarity_feedback = db.Column(db.TEXT)
-    impact_feedback = db.Column(db.TEXT)
-    created_at = db.Column(db.TIMESTAMP, nullable=False)
-    updated_at = db.Column(db.TIMESTAMP)
-
-
-class Template(db.Model):
-    template_id = db.Column(db.VARCHAR(36), primary_key=True)
-    doc_type = db.Column(db.TEXT, nullable=False)
-    country_code = db.Column(db.VARCHAR(10), nullable=False)
-    template_content = db.Column(db.TEXT, nullable=False)
-
-    documents = db.relationship("Document", backref="template")
-
-
 class Document(db.Model):
     doc_id = db.Column(db.VARCHAR(36), primary_key=True)
     doc_type = db.Column(db.TEXT, nullable=False)
     user_id = db.Column(db.VARCHAR(36), db.ForeignKey("user.user_id"), nullable=False)
-    template_id = db.Column(
-        db.VARCHAR(36), db.ForeignKey("template.template_id"), nullable=False
-    )
     content = db.Column(db.TEXT, nullable=False)
     created_at = db.Column(db.TIMESTAMP, nullable=False)
     updated_at = db.Column(db.TIMESTAMP)
@@ -165,6 +128,3 @@ class Application(db.Model):
     cover_letter_document_id = db.Column(
         db.VARCHAR(36), db.ForeignKey("document.doc_id"), nullable=False
     )
-    status = db.Column(db.VARCHAR(255), nullable=False)
-    applied_on = db.Column(db.TIMESTAMP, nullable=False)
-    notes = db.Column(db.TEXT)

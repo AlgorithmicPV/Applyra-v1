@@ -3,18 +3,29 @@
           href="{{ url_for('static', filename='css/user/apply/base.css') }}">
     <div class="left">
         <div class="top">
-            <button class="add">
-                <div class="icon"></div>
-            </button>
-            <button class="hide">Hide</button>
+            <form hx-post="{{ url_for("apply_api.job_entry") }}"
+                  hx-on::after-request="this.reset()">
+                {{ form.hidden_tag() }}
+                {{ form.job_url(placeholder="Paste Your Job Link") }}
+                <button class="add" type="submit">
+                    <div class="icon"></div>
+                </button>
+            </form>
         </div>
         <input type="search" name="" value="" placeholder="Search" class="search">
     </div>
     <div class="right">
         <div class="default">
-            <img src="{{ url_for('static', filename='images/apply/base.png') }}"
-                 alt="base image">
-            <p>Turn Any Job Description into a Winning Application.</p>
+            {# TODO: Loading screen #}
+            {% if message %}
+                <div class="onboarding-banner"
+                     onclick="window.location.href='{{ url_for("onboarding_web.home") }}'">{{ message }}</div>
+            {% endif %}
+            <div class="cont">
+                <img src="{{ url_for('static', filename='images/apply/base.png') }}"
+                     alt="base image">
+                <p>Turn Any Job Description into a Winning Application.</p>
+            </div>
         </div>
     </div>
 </div>

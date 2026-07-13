@@ -52,10 +52,13 @@ def create_app(debug=False):
     login_manager.init_app(app)
     #    login_manager.login_view = "login"
 
+    # Load the logged-in user from the database using their session ID.
     @login_manager.user_loader
     def load_user(user_id):
         return User.query.get(user_id)
 
+    # Add the real secret key, (there is a temp key in the extensions file)
+    # WARNING: try to make this more nice, or if u cant just keep this as it is
     if Config.SECRET_KEY is not None:
         serializer = URLSafeTimedSerializer(Config.SECRET_KEY)
 
@@ -70,6 +73,7 @@ def create_app(debug=False):
     from app.routes.api.auth import auth_api_bp
     from app.routes.api.documents import documents_api_bp
     from app.routes.api.onboarding import onboarding_api_bp
+    from app.routes.api.apply import apply_api_bp
 
     # register web blueprints
     from app.routes.web.landing import landing_web_bp
@@ -83,6 +87,7 @@ def create_app(debug=False):
     app.register_blueprint(auth_api_bp, url_prefix="/api/auth")
     app.register_blueprint(documents_api_bp, url_prefix="/api/doc")
     app.register_blueprint(onboarding_api_bp, url_prefix="/api/onboarding")
+    app.register_blueprint(apply_api_bp, url_prefix="/api/apply")
 
     # web
     app.register_blueprint(landing_web_bp, url_prefix="/")

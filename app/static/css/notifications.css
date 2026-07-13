@@ -5,6 +5,7 @@
   padding: 10px 14px;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   top: 30px;
   left: 50%;
