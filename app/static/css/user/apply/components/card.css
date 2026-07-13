@@ -1,0 +1,44 @@
+.job-card {
+  background-color: #F3F4F1;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-right {
+  height: 100%;
+}
+
+.card-left p {
+  margin: 0;
+}
+
+.icon {
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-position: center;
+  mask-position: center;
+  background-color: rgba(14, 17, 22, 0.5);
+  width: 80%;
+  height: 80%;
+  transition: 0.2s ease;
+}
+
+.card-right .delete-btn {
+  margin-top: 18px;
+  height: 30px;
+  width: 30px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  background-color: black;
+}
+
+.delete-btn .icon {
+  mask-image: url("../../../images/icons/functional-icons/delete.svg");
+  -webkit-mask-image: url("../../../images/icons/functional-icons/delete.svg");
+}

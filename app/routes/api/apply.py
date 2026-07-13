@@ -1,3 +1,4 @@
+from datetime import date
 from ollama import chat
 from pydantic import BaseModel, Field
 from flask import Blueprint, render_template, request
@@ -6,10 +7,23 @@ import uuid
 from app.extensions import db
 from playwright.sync_api import sync_playwright
 from app.forms import JobLinkForm
-from app.models import UserSkill, Education, WorkExperience, Skill
+from app.models import (
+    UserSkill,
+    Education,
+    WorkExperience,
+    Skill,
+    UserPersonal,
+    User,
+    Document,
+    JobEntry,
+)
 from app.utilities.ai_service import ai_service
 from app.ai.prompts.job_analyse import PROMPT as analyse_prompt
 from app.ai.schemas.job_analyse import JSON_SCHEMA as analyse_schema
+from app.ai.prompts.cv import PROMPT as cv_prompt
+from app.ai.schemas.cv import JSON_SCHEMA as cv_schema
+from app.ai.prompts.cover_letter import PROMPT as cover_letter_prompt
+from app.ai.schemas.cover_letter import JSON_SCHEMA as conver_letter_schema
 
 
 apply_api_bp = Blueprint("apply_api", __name__)
@@ -28,10 +42,16 @@ def job_entry():
     stmt_education = db.select(Education).where(
         Education.user_id == current_user.user_id
     )
+    stmt_user_personal = db.select(UserPersonal).where(
+        UserPersonal.user_id == current_user.user_id
+    )
+    stmt_user = db.select(User).where(User.user_id == current_user.user_id)
 
     user_skills_data = db.session.scalars(stmt_skill).all()
     work_experiences_data = db.session.scalars(stmt_experience).all()
     education_data = db.session.scalars(stmt_education).all()
+    user_personal = db.session.scalar(stmt_user_personal)
+    user_data = db.session.scalar(stmt_user)
 
     # Check whether user has completed the onboarding
     # Because ai model needs that data to process the rest
@@ -39,17 +59,16 @@ def job_entry():
         len(user_skills_data) == 0
         or len(work_experiences_data) == 0
         or len(education_data) == 0
+        or not (user_personal)
     ):
         return {"warning": "You have to complete the onboarding"}
 
     if not (request.method == "POST" and form.validate()):
         return form.errors
 
-    job_entry_id = str(uuid.uuid4())
-    job_url = form.job_url.data
-
     job = ""
 
+    job_url = form.job_url.data
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         page = browser.new_page()
@@ -59,6 +78,14 @@ def job_entry():
         browser.close()
 
     # Collect all users info
+    user_info = {
+        "full_name": user_data.full_name,
+        "email": "dev@gmail.com",  # user_data.email
+        "phone_number": user_personal.phone_number,
+        "city": user_personal.city,
+        "country": user_personal.country,
+        "linkedin_url": user_personal.linkedin_url,
+    }
     skills_list = []
     work_experiences_list = []
     education_list = []
@@ -94,9 +121,10 @@ def job_entry():
         }
         education_list.append(e)
 
-    response = ai_service(
+    job_entry_json = ai_service(
         analyse_prompt.format(
             job=job,
+            job_url=form.job_url.data,
             skills_list=skills_list,
             work_experiences_list=work_experiences_list,
             education_list=education_list,
@@ -104,11 +132,95 @@ def job_entry():
         analyse_schema,
     )
 
-    if not response["is_valid"]:
-        return {"error": response["invalid_reason"]}
+    if not job_entry_json["is_valid"]:
+        return {"error": job_entry_json["invalid_reason"]}
 
-    print(response)
-    # TODO: Save to the database (check the validity), and think how to make the cv and the resume letter
+    print("Complete the job analysing part")
 
-    # save the markdown or the html content, and via js mostly convert that to a downladble pdf
-    return "hi"
+    cv_json = ai_service(
+        cv_prompt.format(
+            job_entry=job_entry,
+            user_info=user_info,
+            skills_list=skills_list,
+            work_experiences_list=work_experiences_list,
+            education_list=education_list,
+        ),
+        cv_schema,
+    )
+
+    print("Generate the CV")
+
+    cover_letter_json = ai_service(
+        cover_letter_prompt.format(
+            job_entry=job_entry,
+            user_info=user_info,
+            skills_list=skills_list,
+            work_experiences_list=work_experiences_list,
+            education_list=education_list,
+        ),
+        conver_letter_schema,
+    )
+
+    print("Generate the cover letter")
+
+    job_entry_id = str(uuid.uuid4())
+
+    new_job_entry = JobEntry(
+        job_entry_id=job_entry_id,
+        user_id=current_user.user_id,
+        source_url=job_url,
+        platform=job_entry_json["source_platform"],
+        job_title=job_entry_json["job_title"],
+        company_name=job_entry_json["company_name"],
+        country_code=job_entry_json["country"],
+        job_description=job_entry_json["job_description"],
+        captured_at=date.today(),
+        relevancy=int(job_entry_json["relevancy"]),
+        matching_skills=job_entry_json["matching_skills"],
+        tips=job_entry_json["tips"],
+    )
+
+    db.session.add(new_job_entry)
+
+    print("new_job_entry is added to the db session")
+
+    cv_id = str(uuid.uuid4())
+    new_cv = Document(
+        doc_id=cv_id,
+        doc_type="cv",
+        user_id=current_user.user_id,
+        content=cv_json["html_code"],
+        created_at=date.today(),
+        country_code=cv_json["country"],
+        role=cv_json["role"],
+    )
+
+    db.session.add(new_cv)
+
+    print("new_cv is added to the db session")
+
+    cover_letter_id = str(uuid.uuid4())
+    new_cover_letter = Document(
+        doc_id=cover_letter_id,
+        doc_type="coverLetter",
+        user_id=current_user.user_id,
+        content=cover_letter_json["html_code"],
+        created_at=date.today(),
+        country_code=cover_letter_json["country"],
+        role=cover_letter_json["role"],
+    )
+
+    db.session.add(new_cover_letter)
+
+    print("new_cover_letter is added to the db session")
+
+    db.session.commit()
+
+    print("commit to the db")
+
+    return render_template(
+        "user/apply/components/card.html",
+        job_role=job_entry_json["job_title"],
+        company_name=job_entry_json["company_name"],
+        relevancy=job_entry_json["relevancy"],
+    )

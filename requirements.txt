@@ -5,6 +5,8 @@ argon2-cffi==25.1.0
 argon2-cffi-bindings==25.1.0
 attrs==26.1.0
 Authlib==1.6.10
+azure-ai-inference==1.0.0b9
+azure-core==1.41.0
 bidict==0.23.1
 blinker==1.9.0
 cachelib==0.13.0
@@ -17,6 +19,7 @@ colorama==0.4.6
 cryptography==40.0.2
 Deprecated==1.3.1
 diskcache==5.6.3
+distro==1.9.0
 dnspython==2.8.0
 email-validator==2.3.0
 filelock==3.29.7
@@ -38,8 +41,10 @@ httpcore==1.0.9
 httpx==0.28.1
 huggingface_hub==1.23.0
 idna==3.11
+isodate==0.7.2
 itsdangerous==2.2.0
 Jinja2==3.1.6
+jiter==0.16.0
 limits==5.8.0
 llama_cpp_python==0.3.33
 Mako==1.3.10
@@ -49,9 +54,12 @@ marshmallow==4.2.1
 msgspec==0.20.0
 numpy==2.5.1
 ollama==0.6.2
+openai==2.45.0
 ordered-set==4.1.0
 outcome==1.3.0.post0
 packaging==26.0
+phonenumbers==9.0.34
+playwright==1.61.0
 pycparser==3.0
 pydantic==2.13.4
 pydantic_core==2.46.4
@@ -67,7 +75,6 @@ python-socketio==5.16.0
 PyYAML==6.0.3
 redis==7.2.0
 requests==2.32.5
-selenium==4.46.0
 simple-websocket==1.1.0
 six==1.17.0
 sniffio==1.3.1
@@ -80,6 +87,7 @@ typing-inspection==0.4.2
 typing_extensions==4.15.0
 urllib3==2.6.3
 uuid==1.30
+webdriver-manager==4.1.2
 websocket-client==1.9.0
 Werkzeug==3.1.4
 wrapt==2.1.1

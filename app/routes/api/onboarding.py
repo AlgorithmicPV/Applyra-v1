@@ -2,16 +2,58 @@
 # WARNING: Put a limit for everything, otherwise, users will put 10k skills, etc
 import uuid
 from datetime import date
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, redirect, url_for
 from flask_login import current_user, login_required
-from app.forms import EducationForm, SkillForm, ExperienceForm
-from app.models import Education, Skill, UserSkill, WorkExperience
+from app.forms import EducationForm, SkillForm, ExperienceForm, UserInfoForm
+from app.models import Education, Skill, UserSkill, WorkExperience, UserPersonal
 from app.extensions import db
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import Null, delete
 from sqlalchemy.inspection import inspect
 
 onboarding_api_bp = Blueprint("onboarding_api", __name__)
+
+
+@onboarding_api_bp.route("/user-info/collect", methods=["POST", "GET"])
+@login_required
+def user_info_collect():
+    form = UserInfoForm(request.form)
+
+    stmt = (
+        db.select(UserPersonal)
+        .where(UserPersonal.user_id == current_user.user_id)
+        .exists()
+    )
+
+    data_exists = db.session.scalar(db.select(stmt))
+
+    if data_exists:
+        return {
+            "error": "You have submited your personal info. Use setting page to do any changes"
+        }
+
+    if not (request.method == "POST" and form.validate()):
+        return form.errors
+
+    user_personal_id = str(uuid.uuid4())
+    phone_number = form.phone.data
+    city = form.city.data
+    country = form.country.data
+    linkedin_url = form.linkedin_url.data
+
+    user_personal = UserPersonal(
+        user_personal_id=user_personal_id,
+        user_id=current_user.user_id,
+        phone_number=phone_number,
+        city=city,
+        country=country,
+        linkedin_url=linkedin_url,
+    )
+
+    db.session.add(user_personal)
+    db.session.commit()
+
+    return redirect(url_for("onboarding_web.education"))
 
 
 @onboarding_api_bp.route("/education/collect", methods=["POST", "GET"])

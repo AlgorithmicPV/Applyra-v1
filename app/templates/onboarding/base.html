@@ -5,6 +5,8 @@
         <div class="page-cont">
             {% if page == 'home' %}
                 {% include "onboarding/home.html" %}
+            {% elif page == "user_info" %}
+                {% include "onboarding/user_info.html" %}
             {% elif page == 'education' %}
                 {% include "onboarding/education.html" %}
             {% elif page == 'skills' %}
@@ -14,6 +16,14 @@
             {% endif %}
         </div>
         <div class="nav-bar">
+            <button class="nav-btn education"
+                    hx-get="{{ url_for("onboarding_web.user") }}"
+                    hx-target=".page-cont"
+                    hx-swag="innerHTML transition:true"
+                    hx-push-url="true">
+                <span>◎</span>
+                About You
+            </button>
             <button class="nav-btn education"
                     hx-get="{{ url_for("onboarding_web.education") }}"
                     hx-target=".page-cont"
@@ -41,6 +51,7 @@
             <button type="">Skip Now</button>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/tom-select@2.6.1/dist/js/tom-select.complete.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/16.0.4/js/intlTelInput.min.js"></script>
     </div>
 {% endmacro %}
 {% if not request.headers.get("HX-Request") %}

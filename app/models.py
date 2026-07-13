@@ -19,9 +19,19 @@ class User(UserMixin, db.Model):
     documents = db.relationship("Document", backref="user")
     job_entries = db.relationship("JobEntry", backref="user")
     applications = db.relationship("Application", backref="user")
+    user_personal = db.relationship("UserPersonal", backref="user", uselist=False)
 
     def get_id(self):
         return str(self.user_id)
+
+
+class UserPersonal(db.Model):
+    user_personal_id = db.Column(db.VARCHAR(36), primary_key=True)
+    user_id = db.Column(db.VARCHAR(36), db.ForeignKey("user.user_id"), nullable=False)
+    phone_number = db.Column(db.TEXT, nullable=False)
+    city = db.Column(db.TEXT, nullable=False)
+    country = db.Column(db.TEXT, nullable=False)
+    linkedin_url = db.Column(db.TEXT)
 
 
 class Education(db.Model):
@@ -106,12 +116,11 @@ class JobEntry(db.Model):
     job_title = db.Column(db.TEXT, nullable=False)
     company_name = db.Column(db.TEXT, nullable=False)
     country_code = db.Column(db.VARCHAR(10), nullable=False)
-    job_descripton = db.Column(db.TEXT, nullable=False)
-    due_date = db.Column(db.DATETIME)
     captured_at = db.Column(db.TIMESTAMP, nullable=False)
     relevancy = db.Column(db.Integer, nullable=False)
-    matching_skills = db.Column(db.TEXT, nullable=False)
+    matching_skills = db.Column(db.JSON, nullable=False)
     tips = db.Column(db.TEXT)
+    job_description = db.Column(db.JSON, nullable=False)
 
     applications = db.relationship("Application", backref="job_entry")
 

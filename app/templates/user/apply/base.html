@@ -1,10 +1,14 @@
 <div class="body-cont">
     <link rel="stylesheet"
           href="{{ url_for('static', filename='css/user/apply/base.css') }}">
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/user/apply/components/card.css') }}">
     <div class="left">
         <div class="top">
             <form hx-post="{{ url_for("apply_api.job_entry") }}"
-                  hx-on::after-request="this.reset()">
+                  hx-on::after-request="this.reset()"
+                  hx-swap="beforeend"
+                  hx-target=".left">
                 {{ form.hidden_tag() }}
                 {{ form.job_url(placeholder="Paste Your Job Link") }}
                 <button class="add" type="submit">

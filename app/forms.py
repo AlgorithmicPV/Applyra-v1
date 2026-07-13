@@ -25,6 +25,7 @@ from wtforms import SubmitField
 from app.models import User
 from app.utilities.validations import email_validation, password_strength_checker
 import requests
+import phonenumbers
 
 
 class SignUpForm(FlaskForm):
@@ -151,6 +152,52 @@ class fileUplaod(FlaskForm):
 
 
 # Onboarding forms
+class UserInfoForm(FlaskForm):
+    phone = StringField(
+        "Phone", validators=[DataRequired("Please enter your phone number")]
+    )
+
+    city = StringField(
+        "City",
+        validators=[
+            DataRequired("Please enter your city"),
+            validators.Length(
+                min=3,
+                message="City must be at least 3 characters long",
+            ),
+            validators.Length(max=100, message="City cannot exceed 100 characters"),
+        ],
+    )
+
+    country = StringField(
+        "Country",
+        validators=[
+            DataRequired("Please enter your country"),
+            validators.Length(
+                min=3,
+                message="Country must be at least 3 characters long",
+            ),
+            validators.Length(max=100, message="Country cannot exceed 100 characters"),
+        ],
+    )
+
+    linkedin_url = URLField(
+        "Linkedin URL",
+        validators=[
+            Optional(),
+            URL(message="Invalid URL. Please include http:// or https://"),
+        ],
+    )
+
+    def validate_phone(self, phone):
+        try:
+            p = phonenumbers.parse(phone.data)
+            if not phonenumbers.is_valid_number(p):
+                raise ValueError()
+        except (phonenumbers.phonenumberutil.NumberParseException, ValueError):
+            raise ValidationError("Invalid phone number")
+
+
 class EducationForm(FlaskForm):
     certificate = StringField(
         "Degree / Certiications",
@@ -331,275 +378,6 @@ class ExperienceForm(FlaskForm):
             Length(
                 max=2000,
                 message="Responsibilities cannot exceed 2000 characters.",
-            ),
-        ],
-    )
-
-
-class JobEntry(FlaskForm):
-    job_url = URLField(
-        "Job Link",
-        validators=[
-            DataRequired("Please paste the Job Link."),
-            URL(message="Invalid URL. Please include http:// or https://"),
-        ],
-    )
-
-    job_title = StringField(
-        "Job Title",
-        validators=[
-            DataRequired("Please paste your job title."),
-            validators.Length(
-                min=2,
-                max=100,
-                message="Job title must be between 2 and 100 characters long.",
-            ),
-        ],
-    )
-
-    company = StringField(
-        "Company",
-        validators=[
-            DataRequired("Please paste the company name."),
-            validators.Length(
-                min=2,
-                max=150,
-                message="Company name must be between 2 and 150 characters long.",
-            ),
-        ],
-    )
-
-    platform = StringField(
-        "Platform",
-        validators=[
-            DataRequired("Please enter the platform name."),
-            validators.Length(
-                min=2,
-                max=150,
-                message="Platform name must be between 2 and 150 characters long.",
-            ),
-        ],
-    )
-
-    job_description = TextAreaField(
-        "Job description",
-        validators=[
-            DataRequired("Please paste the Job Description."),
-            Length(max=6000, message="Description cannot exceed 6000 characters."),
-        ],
-    )
-
-    due_date = DateField(
-        "Due Date",
-        format="%Y-%m-%d",
-        validators=[DataRequired("Please Enter the Due Date for this application")],
-    )
-
-    country = SelectField(
-        "Country Name",
-        choices=[
-            ("afghanistan", "Afghanistan"),
-            ("albania", "Albania"),
-            ("algeria", "Algeria"),
-            ("andorra", "Andorra"),
-            ("angola", "Angola"),
-            ("antigua-and-barbuda", "Antigua and Barbuda"),
-            ("argentina", "Argentina"),
-            ("armenia", "Armenia"),
-            ("australia", "Australia"),
-            ("austria", "Austria"),
-            ("azerbaijan", "Azerbaijan"),
-            ("bahamas", "Bahamas"),
-            ("bahrain", "Bahrain"),
-            ("bangladesh", "Bangladesh"),
-            ("barbados", "Barbados"),
-            ("belarus", "Belarus"),
-            ("belgium", "Belgium"),
-            ("belize", "Belize"),
-            ("benin", "Benin"),
-            ("bhutan", "Bhutan"),
-            ("bolivia", "Bolivia"),
-            ("bosnia-and-herzegovina", "Bosnia and Herzegovina"),
-            ("botswana", "Botswana"),
-            ("brazil", "Brazil"),
-            ("brunei", "Brunei"),
-            ("bulgaria", "Bulgaria"),
-            ("burkina-faso", "Burkina Faso"),
-            ("burundi", "Burundi"),
-            ("cabo-verde", "Cabo Verde"),
-            ("cambodia", "Cambodia"),
-            ("cameroon", "Cameroon"),
-            ("canada", "Canada"),
-            ("central-african-republic", "Central African Republic"),
-            ("chad", "Chad"),
-            ("chile", "Chile"),
-            ("china", "China"),
-            ("colombia", "Colombia"),
-            ("comoros", "Comoros"),
-            ("congo", "Congo"),
-            ("costa-rica", "Costa Rica"),
-            ("cote-divoire", "Côte d'Ivoire"),
-            ("croatia", "Croatia"),
-            ("cuba", "Cuba"),
-            ("cyprus", "Cyprus"),
-            ("czechia", "Czechia"),
-            ("democratic-republic-of-the-congo", "Democratic Republic of the Congo"),
-            ("denmark", "Denmark"),
-            ("djibouti", "Djibouti"),
-            ("dominica", "Dominica"),
-            ("dominican-republic", "Dominican Republic"),
-            ("ecuador", "Ecuador"),
-            ("egypt", "Egypt"),
-            ("el-salvador", "El Salvador"),
-            ("equatorial-guinea", "Equatorial Guinea"),
-            ("eritrea", "Eritrea"),
-            ("estonia", "Estonia"),
-            ("eswatini", "Eswatini"),
-            ("ethiopia", "Ethiopia"),
-            ("fiji", "Fiji"),
-            ("finland", "Finland"),
-            ("france", "France"),
-            ("gabon", "Gabon"),
-            ("gambia", "Gambia"),
-            ("georgia", "Georgia"),
-            ("germany", "Germany"),
-            ("ghana", "Ghana"),
-            ("greece", "Greece"),
-            ("grenada", "Grenada"),
-            ("guatemala", "Guatemala"),
-            ("guinea", "Guinea"),
-            ("guinea-bissau", "Guinea-Bissau"),
-            ("guyana", "Guyana"),
-            ("haiti", "Haiti"),
-            ("honduras", "Honduras"),
-            ("hungary", "Hungary"),
-            ("iceland", "Iceland"),
-            ("india", "India"),
-            ("indonesia", "Indonesia"),
-            ("iran", "Iran"),
-            ("iraq", "Iraq"),
-            ("ireland", "Ireland"),
-            ("israel", "Israel"),
-            ("italy", "Italy"),
-            ("jamaica", "Jamaica"),
-            ("japan", "Japan"),
-            ("jordan", "Jordan"),
-            ("kazakhstan", "Kazakhstan"),
-            ("kenya", "Kenya"),
-            ("kiribati", "Kiribati"),
-            ("kuwait", "Kuwait"),
-            ("kyrgyzstan", "Kyrgyzstan"),
-            ("laos", "Laos"),
-            ("latvia", "Latvia"),
-            ("lebanon", "Lebanon"),
-            ("lesotho", "Lesotho"),
-            ("liberia", "Liberia"),
-            ("libya", "Libya"),
-            ("liechtenstein", "Liechtenstein"),
-            ("lithuania", "Lithuania"),
-            ("luxembourg", "Luxembourg"),
-            ("madagascar", "Madagascar"),
-            ("malawi", "Malawi"),
-            ("malaysia", "Malaysia"),
-            ("maldives", "Maldives"),
-            ("mali", "Mali"),
-            ("malta", "Malta"),
-            ("marshall-islands", "Marshall Islands"),
-            ("mauritania", "Mauritania"),
-            ("mauritius", "Mauritius"),
-            ("mexico", "Mexico"),
-            ("micronesia", "Micronesia"),
-            ("moldova", "Moldova"),
-            ("monaco", "Monaco"),
-            ("mongolia", "Mongolia"),
-            ("montenegro", "Montenegro"),
-            ("morocco", "Morocco"),
-            ("mozambique", "Mozambique"),
-            ("myanmar", "Myanmar"),
-            ("namibia", "Namibia"),
-            ("nauru", "Nauru"),
-            ("nepal", "Nepal"),
-            ("netherlands", "Netherlands"),
-            ("new-zealand", "New Zealand"),
-            ("nicaragua", "Nicaragua"),
-            ("niger", "Niger"),
-            ("nigeria", "Nigeria"),
-            ("north-korea", "North Korea"),
-            ("north-macedonia", "North Macedonia"),
-            ("norway", "Norway"),
-            ("oman", "Oman"),
-            ("pakistan", "Pakistan"),
-            ("palau", "Palau"),
-            ("palestine", "Palestine"),
-            ("panama", "Panama"),
-            ("papua-new-guinea", "Papua New Guinea"),
-            ("paraguay", "Paraguay"),
-            ("peru", "Peru"),
-            ("philippines", "Philippines"),
-            ("poland", "Poland"),
-            ("portugal", "Portugal"),
-            ("qatar", "Qatar"),
-            ("romania", "Romania"),
-            ("russia", "Russia"),
-            ("rwanda", "Rwanda"),
-            ("saint-kitts-and-nevis", "Saint Kitts and Nevis"),
-            ("saint-lucia", "Saint Lucia"),
-            ("saint-vincent-and-the-grenadines", "Saint Vincent and the Grenadines"),
-            ("samoa", "Samoa"),
-            ("san-marino", "San Marino"),
-            ("sao-tome-and-principe", "São Tomé and Príncipe"),
-            ("saudi-arabia", "Saudi Arabia"),
-            ("senegal", "Senegal"),
-            ("serbia", "Serbia"),
-            ("seychelles", "Seychelles"),
-            ("sierra-leone", "Sierra Leone"),
-            ("singapore", "Singapore"),
-            ("slovakia", "Slovakia"),
-            ("slovenia", "Slovenia"),
-            ("solomon-islands", "Solomon Islands"),
-            ("somalia", "Somalia"),
-            ("south-africa", "South Africa"),
-            ("south-korea", "South Korea"),
-            ("south-sudan", "South Sudan"),
-            ("spain", "Spain"),
-            ("sri-lanka", "Sri Lanka"),
-            ("sudan", "Sudan"),
-            ("suriname", "Suriname"),
-            ("sweden", "Sweden"),
-            ("switzerland", "Switzerland"),
-            ("syria", "Syria"),
-            ("tajikistan", "Tajikistan"),
-            ("tanzania", "Tanzania"),
-            ("thailand", "Thailand"),
-            ("timor-leste", "Timor-Leste"),
-            ("togo", "Togo"),
-            ("tonga", "Tonga"),
-            ("trinidad-and-tobago", "Trinidad and Tobago"),
-            ("tunisia", "Tunisia"),
-            ("turkey", "Turkey"),
-            ("turkmenistan", "Turkmenistan"),
-            ("tuvalu", "Tuvalu"),
-            ("uganda", "Uganda"),
-            ("ukraine", "Ukraine"),
-            ("united-arab-emirates", "United Arab Emirates"),
-            ("united-kingdom", "United Kingdom"),
-            ("united-states", "United States"),
-            ("uruguay", "Uruguay"),
-            ("uzbekistan", "Uzbekistan"),
-            ("vanuatu", "Vanuatu"),
-            ("vatican-city", "Vatican City"),
-            ("venezuela", "Venezuela"),
-            ("vietnam", "Vietnam"),
-            ("yemen", "Yemen"),
-            ("zambia", "Zambia"),
-            ("zimbabwe", "Zimbabwe"),
-        ],
-        validators=[
-            DataRequired("Please select the country."),
-            validators.Length(
-                min=2,
-                max=50,
-                message="Country name must be between 2 and 50 characters long.",
             ),
         ],
     )

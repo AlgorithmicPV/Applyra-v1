@@ -1,0 +1,42 @@
+<div class="cont">
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/onboarding/common.css') }}">
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/onboarding/user_info.css') }}">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/16.0.4/css/intlTelInput.css">
+    <div class="left-side">
+        <p class="heading">Add your personal information</p>
+        <p class="p">We'll use this information to personalise your CV and cover letters, making it easy for employers to contact you.</p>
+        <form class="user-form"
+              hx-post="{{ url_for("onboarding_api.user_info_collect") }}"
+              hx-target=".page-cont"
+              hx-swag="innerHTML transition:true"
+              hx-push-url="true">
+            {{ form.hidden_tag() }}
+            <div class="phone-wrapper">{{ form.phone() }}</div>
+            {{ form.city(placeholder="Enter your City name") }}
+            {{ form.country(placeholder="Enter your Country name") }}
+            {{ form.linkedin_url(placeholder="Paste your linkedin url (Optional)") }}
+            <button type="submit" class="submit">Submit</button>
+        </form>
+    </div>
+    <div class="right-side"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/16.0.4/js/intlTelInput.min.js"></script>
+    <script>
+      var wtf_phone_field = document.getElementById('phone');
+      wtf_phone_field.style.position = 'absolute';
+      wtf_phone_field.style.top = '-9999px';
+      wtf_phone_field.style.left = '-9999px';
+      wtf_phone_field.parentElement.insertAdjacentHTML('beforeend', '<div><input type="tel" id="_phone"></div>');
+      var fancy_phone_field = document.getElementById('_phone');
+      var fancy_phone_iti = window.intlTelInput(fancy_phone_field, {
+          separateDialCode: true,
+          utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/16.0.4/js/utils.js",
+      });
+      fancy_phone_iti.setNumber(wtf_phone_field.value);
+      fancy_phone_field.addEventListener('blur', function() {
+          wtf_phone_field.value = fancy_phone_iti.getNumber();
+      });
+    </script>
+</div>

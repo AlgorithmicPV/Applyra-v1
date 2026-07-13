@@ -1,7 +1,7 @@
 from flask import Blueprint, request, render_template, session
 from flask_login import current_user, login_required
 from app.forms import JobLinkForm
-from app.models import UserSkill, Education, WorkExperience
+from app.models import UserPersonal, UserSkill, Education, WorkExperience
 from app.extensions import db
 
 apply_web_bp = Blueprint("apply_web", __name__)
@@ -23,7 +23,11 @@ def apply():
     stmt_education = (
         db.select(Education).where(Education.user_id == current_user.user_id).exists()
     )
-
+    stmt_user_profile = (
+        db.select(UserPersonal)
+        .where(UserPersonal.user_id == current_user.user_id)
+        .exists()
+    )
     message = ""
 
     # Execute using session.scalar() to get a boolean
@@ -31,6 +35,7 @@ def apply():
         db.session.scalar(db.select(stmt_skill))
         and db.session.scalar(db.select(stmt_experience))
         and db.session.scalar(db.select(stmt_education))
+        and db.session.scalar(db.select(stmt_user_profile))
     ):
         message = "You need to complete the onboarding before proceeding. Click here to Continue"
 

@@ -8,30 +8,54 @@ JSON_SCHEMA = {
                 "type": "boolean",
                 "description": (
                     "True only if the supplied content is a valid job advertisement "
-                    "with enough information to analyse."
+                    "for a single vacancy and contains enough information to analyse."
                 ),
             },
             "invalid_reason": {
                 "type": ["string", "null"],
                 "description": (
-                    "Reason why the content is invalid. Null if is_valid is true."
+                    "The reason the supplied content is not a valid job advertisement. "
+                    "Must be null when is_valid is true."
+                ),
+            },
+            "source_platform": {
+                "type": ["string", "null"],
+                "description": (
+                    "The job platform or website identified from the source URL, "
+                    "such as LinkedIn, SEEK, Indeed, Glassdoor, Trade Me Jobs, "
+                    "Jora, Workday, Greenhouse, Lever, SmartRecruiters, Jobvite, "
+                    "SuccessFactors, or Company careers website. "
+                    "Must be null when the platform cannot be reliably identified."
                 ),
             },
             "job_title": {
                 "type": ["string", "null"],
+                "description": (
+                    "The job title extracted from the advertisement. "
+                    "Must be null when is_valid is false."
+                ),
             },
             "company_name": {
                 "type": ["string", "null"],
+                "description": (
+                    "The employer or company name extracted from the advertisement. "
+                    "Must be null when is_valid is false."
+                ),
             },
             "country": {
                 "type": ["string", "null"],
-                "description": "Country or job location.",
+                "description": (
+                    "The country or job location extracted from the advertisement. "
+                    "Must be null when is_valid is false."
+                ),
             },
             "job_description": {
                 "type": "array",
                 "description": (
-                    "Concise bullet-point summary of the job responsibilities, "
-                    "requirements, and other important details."
+                    "A concise list summarising the role's responsibilities, "
+                    "requirements, qualifications, and other important details. "
+                    "Each item may be a sentence or short paragraph. "
+                    "Must be an empty array when is_valid is false."
                 ),
                 "items": {
                     "type": "string",
@@ -42,20 +66,27 @@ JSON_SCHEMA = {
                 "minimum": 0,
                 "maximum": 100,
                 "description": (
-                    "Overall match score between the user's skills and the job."
+                    "The overall match score between the job requirements and the "
+                    "user's supplied skills, work experience, and education. "
+                    "Must be 0 when is_valid is false."
                 ),
             },
             "tips": {
                 "type": "string",
                 "description": (
-                    "Practical advice for improving the user's suitability for this job."
+                    "Practical and truthful advice for improving the user's suitability "
+                    "for the job, focusing on important missing skills, qualifications, "
+                    "certifications, or experience. Must be an empty string when "
+                    "is_valid is false."
                 ),
             },
             "matching_skills": {
                 "type": "array",
                 "description": (
-                    "Comparison of each required job skill or qualification "
-                    "against the user's provided skills."
+                    "A comparison of each required job skill, qualification, "
+                    "certification, technology, experience requirement, competency, "
+                    "or soft skill against the user's supplied skills, work experience, "
+                    "and education. Must be an empty array when is_valid is false."
                 ),
                 "items": {
                     "type": "object",
@@ -64,16 +95,17 @@ JSON_SCHEMA = {
                             "type": "string",
                             "description": (
                                 "A required skill, qualification, certification, "
-                                "technology, experience requirement, or competency "
-                                "from the job advertisement. This may be a single "
-                                "word, phrase, or complete sentence."
+                                "technology, experience requirement, competency, "
+                                "or soft skill from the job advertisement. "
+                                "This may be a single word, phrase, or complete sentence."
                             ),
                         },
                         "does_user_have": {
                             "type": "boolean",
                             "description": (
-                                "True only if the user's supplied skills clearly "
-                                "demonstrate this requirement."
+                                "True only when the user's supplied skills, work "
+                                "experience, or education clearly demonstrate this "
+                                "requirement. Do not infer unsupported abilities."
                             ),
                         },
                     },
@@ -88,6 +120,7 @@ JSON_SCHEMA = {
         "required": [
             "is_valid",
             "invalid_reason",
+            "source_platform",
             "job_title",
             "company_name",
             "country",
@@ -99,3 +132,4 @@ JSON_SCHEMA = {
         "additionalProperties": False,
     },
 }
+
