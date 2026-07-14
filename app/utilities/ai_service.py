@@ -8,7 +8,7 @@ import json
 load_dotenv()
 
 
-model = "openai/gpt-4o"
+model = "openai/gpt-4.1"
 
 client = OpenAI(
     base_url="https://models.github.ai/inference",

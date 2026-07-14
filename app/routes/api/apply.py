@@ -16,6 +16,7 @@ from app.models import (
     User,
     Document,
     JobEntry,
+    Application,
 )
 from app.utilities.ai_service import ai_service
 from app.ai.prompts.job_analyse import PROMPT as analyse_prompt
@@ -214,13 +215,27 @@ def job_entry():
 
     print("new_cover_letter is added to the db session")
 
+    application_id = str(uuid.uuid4())
+    new_application = Application(
+        application_id=application_id,
+        user_id=current_user.user_id,
+        job_entry_id=job_entry_id,
+        cv_document_id=cv_id,
+        cover_letter_document_id=cover_letter_id,
+    )
+
+    db.session.add(new_application)
+
+    print("new_application is added to the db session")
+
     db.session.commit()
 
     print("commit to the db")
 
     return render_template(
         "user/apply/components/card.html",
-        job_role=job_entry_json["job_title"],
+        job_title=job_entry_json["job_title"],
         company_name=job_entry_json["company_name"],
         relevancy=job_entry_json["relevancy"],
+        api=True,
     )

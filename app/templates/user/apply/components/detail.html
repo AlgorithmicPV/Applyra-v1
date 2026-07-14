@@ -1,0 +1,109 @@
+<div class="detail">
+    <title>{{ detail["job_title"] }}</title>
+    <div class="header">
+        <p class="job-title">{{ detail["job_title"] }}</p>
+        <p class="company-name">{{ detail["company_name"] }}</p>
+        <p class="country">{{ detail["country"] }}</p>
+        <p class="captured-at">{{ detail["captured_at"] }}</p>
+        <p class="relevancy">Relevancy {{ detail["relevancy"] }}%</p>
+    </div>
+    <div class="skill-detail">
+        <p class="heading">How you match this job</p>
+        <table>
+            <tr>
+                <th>Skill</th>
+                <th>Fulfil</th>
+            </tr>
+            {% for row in detail["matching_skills"] %}
+                <tr>
+                    <td>{{ row["required_skill"] }}</td>
+                    <td>
+                        {% if row["does_user_have"] %}
+                            <img src="{{ url_for('static', filename='images/icons/apply/yes.svg') }}"
+                                 alt="yes">
+                        {% else %}
+                            <img src="{{ url_for('static', filename='images/icons/apply/no.svg') }}"
+                                 alt="no">
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        <div class="tips">
+            <p class="h">Tips</p>
+            <p>{{ detail["tips"] }}</p>
+        </div>
+    </div>
+    <div class="documents">
+        <p class="heading">Your Applications</p>
+        <div class="cv">
+            <div class="icon-wrapper">
+                <div class="icon"></div>
+            </div>
+            <p>Your CV</p>
+            <button type="" class="view">View</button>
+            <button id="cv-btn" class="download" onclick="downloadCV()">Download</button>
+        </div>
+        <div class="cover-letter">
+            <div class="icon-wrapper">
+                <div class="icon"></div>
+            </div>
+            <p>Your Cover Letter</p>
+            <button type="" class="view">View</button>
+            <button type="" class="download" onclick="downloadCoverLetter()">Download</button>
+        </div>
+    </div>
+    <div class="job-description">
+        <p class="heading">Job Description</p>
+        <ul>
+            {% for row in detail["job_description"] %}
+                <li>{{ row }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <!--<div>
+        {{ detail["cv"] | safe }}
+        <br>
+        <br>
+        {{ detail["cover_letter"] | safe }}
+    </div>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html-docx-js/0.3.1/html-docx.min.js"></script>
+    <script>
+      function downloadCV() {
+          const cvHTML = `{{ detail["cv"] | safe }}`;
+
+          const blob = new Blob(["\ufeff", cvHTML], {
+              type: "application/msword;charset=utf-8"
+          });
+
+          const downloadURL = URL.createObjectURL(blob);
+          const downloadLink = document.createElement("a");
+
+          downloadLink.href = downloadURL;
+        downloadLink.download = "{{ detail["job_title"] }} CV.doc";
+
+          downloadLink.click();
+
+          URL.revokeObjectURL(downloadURL);
+      }
+
+      function downloadCoverLetter() {
+          const cvHTML = `{{ detail["cover_letter"] | safe }}`;
+
+          const blob = new Blob(["\ufeff", cvHTML], {
+              type: "application/msword;charset=utf-8"
+          });
+
+          const downloadURL = URL.createObjectURL(blob);
+          const downloadLink = document.createElement("a");
+
+          downloadLink.href = downloadURL;
+        downloadLink.download = "{{ detail["job_title"] }} Cover Letter.doc";
+
+          downloadLink.click();
+
+          URL.revokeObjectURL(downloadURL);
+      }
+
+    </script>
+</div>

@@ -1,9 +1,20 @@
 PROMPT = """
-You are an expert CV writer, recruitment specialist, and professional HTML document designer.
+You are generating a factual, job-targeted CV.
 
-Your task is to create a highly professional, job-specific CV using the information provided below.
+Your highest-priority requirement is factual accuracy.
 
-The CV will be converted directly from HTML to PDF. Therefore, return complete, valid, self-contained HTML with professional inline CSS.
+You must use only information explicitly contained in the supplied USER INFORMATION,
+USER SKILLS, USER EXPERIENCE, and USER EDUCATION.
+
+The job advertisement may be used only to:
+- identify the target role
+- identify the company
+- identify the job location
+- identify relevant keywords
+- decide which supplied user information should be prioritised
+
+The job advertisement must never be treated as evidence that the user has a skill,
+qualification, responsibility, achievement, project, technology, or experience.
 
 JOB INFORMATION:
 {job_entry}
@@ -20,157 +31,210 @@ USER EXPERIENCE:
 USER EDUCATION:
 {education_list}
 
-INSTRUCTIONS:
+FACTUAL ACCURACY RULES:
 
-1. Analyse the job advertisement carefully and identify:
-   - The target role
-   - The company’s main requirements
-   - Relevant technical and soft skills
-   - Important keywords
-   - The country where the job is located
-   - The CV conventions commonly used in that country.
+1. Every factual statement about the user must be directly supported by the supplied user data.
 
-2. Create the CV specifically for the provided job and company.
+2. Never invent, infer, assume, exaggerate, or complete missing information.
 
-3. Use the information supplied in USER INFORMATION exactly as provided.
+3. Never copy a job requirement into the CV as though the user possesses it unless that
+   skill or experience is explicitly present in the supplied user data.
 
-4. USER INFORMATION may include:
-   - Full name
-   - Professional email address
-   - Phone number
-   - City
-   - Country
-   - LinkedIn profile
-   - GitHub profile
-   - Portfolio or personal website
+4. Never change:
+   - employer names
+   - institution names
+   - qualification names
+   - job titles
+   - dates
+   - locations
+   - contact details
+   - certification names
+   - project names
 
-5. Include only the contact details that are provided.
+5. Never add unsupported:
+   - skills
+   - technologies
+   - responsibilities
+   - achievements
+   - statistics
+   - certifications
+   - employment
+   - education
+   - projects
+   - leadership experience
+   - industry experience
 
-6. Never invent, modify, or create placeholders for missing contact information.
+6. If the job advertisement mentions React, AWS, Next.js, TypeScript, leadership,
+   cloud deployment, testing, APIs, or any other requirement, include it only when it
+   is explicitly supported by the user's supplied information.
 
-7. If a field such as LinkedIn, GitHub, portfolio, phone number, or city is missing, simply omit it.
+7. Do not convert education subjects, coursework, or interests into professional work
+   experience.
 
-8. Prioritise the user's skills, experience, achievements, and education that are most relevant to the job.
+8. Do not convert general knowledge into claimed expertise.
 
-9. Do not invent, assume, exaggerate, or add information that was not provided.
+9. Do not write phrases such as:
+   - extensive experience
+   - proven track record
+   - expert in
+   - highly experienced
+   - successfully delivered
+   - demonstrated leadership
+   unless the supplied information directly supports the claim.
 
-10. Do not add fake:
-   - Employment history
-   - Qualifications
-   - Certifications
-   - Skills
-   - Achievements
-   - Statistics
-   - Responsibilities
-   - Personal details
-   - Dates
-   - Company names
+10. You may improve grammar, clarity, ordering, and professional wording, but must
+    preserve the original factual meaning.
 
-11. If information is missing, omit that information instead of creating placeholder or misleading content.
+11. When the supplied information is limited, produce a shorter CV. Never compensate
+    for missing information by inventing content.
 
-12. You may professionally rewrite and organise the user's information, but you must preserve its original meaning.
+12. Omit unsupported sections and fields instead of creating placeholders.
 
-13. Use strong professional wording and action verbs without making unsupported claims.
+13. Do not output placeholder text such as:
+    - [Role]
+    - [Company]
+    - [Insert details]
+    - Example
+    - TBD
+    - EDIT
 
-14. Make the CV:
-   - Professional
-   - Clear
-   - Concise
-   - ATS-friendly
-   - Easy to scan
-   - Relevant to the role
-   - Appropriate for the relevant country
-   - Suitable for PDF conversion
+CV CONTENT RULES:
 
-15. Use a clean one-column layout unless a different layout is clearly more appropriate.
+14. Identify the target job title from JOB INFORMATION.
 
-16. Avoid unnecessary graphics, photographs, icons, charts, progress bars, and decorative elements that may affect ATS readability.
+15. Identify the relevant country from JOB INFORMATION.
 
-17. Do not include sensitive or potentially discriminatory personal information unless it was explicitly provided and is normally expected in the relevant country.
+16. Prioritise only supplied skills, experience, and education that are relevant to
+    the target role.
 
-18. For contact information:
-   - Include the user's full name prominently at the top.
-   - Include the provided email address.
-   - Include the provided phone number.
-   - Include the provided city and country.
-   - Include LinkedIn, GitHub, and portfolio links only if provided.
-   - Do not include a full residential street address unless it is explicitly provided and appropriate for the target country's CV conventions.
+17. Use these sections only when supported:
+    - Name and Contact Details
+    - Professional Summary
+    - Core Skills
+    - Professional Experience
+    - Education
+    - Certifications
+    - Projects
+    - Additional Relevant Information
 
-19. Use standard CV sections where applicable:
-   - Name and Contact Details
-   - Professional Summary
-   - Core Skills
-   - Professional Experience
-   - Education
-   - Certifications
-   - Projects
-   - Additional Relevant Information
+18. Include only contact details explicitly provided by the user.
 
-20. Only include sections supported by the supplied user information.
+19. Experience must be ordered from most recent to oldest when usable dates are supplied.
 
-21. Experience must be ordered from most recent to oldest when dates are available.
+20. Use concise bullet points for supplied responsibilities and achievements.
 
-22. Use bullet points for responsibilities and achievements.
+21. The professional summary must:
+    - contain only supported facts
+    - avoid generic AI-style claims
+    - avoid first-person pronouns
+    - avoid mentioning missing skills
+    - avoid repeating the full skills section
 
-23. Do not use Markdown.
+22. Do not include an objective statement.
 
-24. The HTML must:
-   - Begin with <!DOCTYPE html>
-   - Include <html>, <head>, and <body>
-   - Use UTF-8 encoding
-   - Use CSS inside a <style> element or inline CSS
-   - Use only standard HTML and CSS
-   - Avoid JavaScript
-   - Avoid external CSS
-   - Avoid external fonts
-   - Avoid external images
-   - Avoid unsupported CSS features
-   - Use print-friendly dimensions and spacing
-   - Prevent headings from being separated from their content where possible
-   - Avoid splitting individual experience entries across PDF pages where possible
-   - Use readable font sizes
-   - Use professional colours with strong contrast
-   - Produce a polished A4-ready CV
+23. Do not add references, hobbies, photographs, age, gender, marital status,
+    nationality, or full residential address unless explicitly supplied and appropriate.
 
-25. Include these print-related CSS rules where appropriate:
-   - @page with A4 size
-   - Appropriate page margins
-   - print-color-adjust
-   - page-break-inside: avoid
-   - break-inside: avoid
+HTML RULES:
 
-26. Return only a JSON object matching the required schema.
+24. Return a complete HTML5 document.
 
-27. The "role" value must contain the target job title.
+25. The HTML must begin with <!DOCTYPE html> and contain:
+    - <html>
+    - <head>
+    - UTF-8 metadata
+    - <style>
+    - <body>
 
-28. The "country" value must contain the relevant country identified from the job advertisement.
+26. Use a clean, ATS-friendly, single-column layout.
 
-29. The "html_code" value must contain the complete CV HTML document.
+27. Use only:
+    - standard HTML
+    - internal CSS inside a <style> element
+    - system fonts such as Arial, Helvetica, or sans-serif
 
-30. Do not wrap the JSON or HTML in Markdown code fences.
+28. Do not use:
+    - JavaScript
+    - external CSS
+    - external fonts
+    - images
+    - icons
+    - tables for layout
+    - text boxes
+    - columns
+    - progress bars
+    - charts
+    - background panels
+    - decorative borders around the whole document
 
-31. Do not include explanations, notes, comments, recommendations, or any fields other than:
-   - role
-   - country
-   - html_code
+29. Use restrained formatting:
+    - body font between 10pt and 11pt
+    - name between 20pt and 24pt
+    - section headings between 12pt and 14pt
+    - normal font weight for body text
+    - no oversized headings
+    - no excessive bold text
+    - no large coloured blocks
+    - no grey contact-information boxes
 
-32. The generated HTML should be production quality.
+30. Use a professional white background and dark text.
 
-33. The document should look like it was designed by a professional CV writer rather than generated by AI.
+31. A single subtle accent colour may be used for section headings and thin dividers.
 
-34. Use excellent typography, spacing, alignment, and visual hierarchy while remaining ATS-friendly.
+32. Use A4-compatible CSS including:
+    - @page {{ size: A4; margin: 16mm 18mm; }}
+    - print-color-adjust: exact
+    - -webkit-print-color-adjust: exact
+    - break-inside: avoid where appropriate
+    - page-break-inside: avoid where appropriate
 
-35. Use subtle section dividers, appropriate whitespace, and consistent formatting to maximise readability.
+33. Avoid unnecessary fixed widths and fixed heights.
 
-36. Make the document visually appealing without being overly decorative.
+34. Do not use CSS that depends on browser-only effects.
 
-37. Ensure the layout remains professional when converted to PDF on A4 paper.
+35. Escape HTML-sensitive characters in supplied text.
 
-38. The HTML should be valid HTML5 and render correctly in modern browsers.
+36. Ensure all HTML tags are correctly closed.
 
-39. Escape any HTML-sensitive characters contained in user-provided data.
+37. The HTML must remain readable when opened in Microsoft Word or converted to PDF.
 
-40. Never output incomplete HTML. Every opening tag must have a matching closing tag.
+OUTPUT RULES:
 
-41. The HTML must be ready for direct PDF conversion without requiring further modification.
+38. Return exactly one JSON object with these fields:
+    - role
+    - country
+    - html_code
+
+39. Do not return Markdown.
+
+40. Do not wrap the response in code fences.
+
+41. Do not return explanations, notes, comments, or extra fields.
+
+42. The role field must contain the target job title taken from JOB INFORMATION.
+
+43. The country field must contain the job country taken from JOB INFORMATION.
+
+44. The html_code field must contain the complete HTML document.
+
+FINAL VERIFICATION:
+
+Before returning the output, inspect every sentence about the user.
+
+For every factual claim, ask:
+
+"Is this claim explicitly supported by USER INFORMATION, USER SKILLS,
+USER EXPERIENCE, or USER EDUCATION?"
+
+If the answer is no, remove or rewrite the claim.
+
+Also verify:
+- no employer name has been changed
+- no company from the job advertisement has been presented as the user's employer
+- no job requirement has been presented as an existing user skill without evidence
+- no unsupported technology has been added
+- no placeholder text remains
+- the JSON is valid
+- the HTML is complete
 """
+

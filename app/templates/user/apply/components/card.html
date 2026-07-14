@@ -1,12 +1,20 @@
-<div class="job-card">
-    <div class="card-left">
-        <p class="job-role">{{ job_role }}</p>
-        <p class="company-name">{{ company_name }}</p>
-        <p class="relavancy">{{ relevancy }}</p>
+{% macro card(job_entry_id, job_title, company_name, relevancy) %}
+    <div class="job-card"
+         id="x{{ job_entry_id }}"
+         hx-get="{{ url_for('apply_web.show', id=job_entry_id) }}"
+         hx-target=".right">
+        <div class="card-left">
+            <p class="job-role">{{ job_title }}</p>
+            <p class="company-name">{{ company_name }}</p>
+            <p class="relevancy">Relevancy {{ relevancy }}%</p>
+        </div>
+        <div class="card-right">
+            <button class="delete-btn">
+                <div class="icon"></div>
+            </button>
+        </div>
     </div>
-    <div class="card-right">
-        <button class="delete-btn">
-            <div class="icon"></div>
-        </button>
-    </div>
-</div>
+{% endmacro %}
+{% if api %}
+    {{ card(job_entry_id, job_title, company_name, relevancy) }}
+{% endif %}
