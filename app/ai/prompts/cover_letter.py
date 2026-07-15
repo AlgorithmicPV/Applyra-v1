@@ -82,6 +82,8 @@ RULES
 
 14. Produce clean, ATS-friendly HTML.
 
+15. Do not write inline JavaScript Code
+
 HTML REQUIREMENTS
 
 - Return a complete HTML5 document.
@@ -131,4 +133,3 @@ Before returning the response, verify:
 
 ✓ JSON is valid.
 """
-

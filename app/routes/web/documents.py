@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template, session
+from flask import Blueprint, request, render_template, session, abort
 from app.forms import fileUplaod
 from app.utilities.client_sessions import encrypt_value, decrypt_value, hash_key
 from flask_login import current_user, login_required
@@ -6,6 +6,8 @@ import mammoth
 import ast
 from io import BytesIO
 import base64
+from app.models import Document
+from app.extensions import db
 
 
 documents_web_bp = Blueprint("documents_web", __name__)
@@ -49,4 +51,26 @@ def document_editor():
             title="Document Editor",
             page="document-editor",
             doc=result,
+        )
+
+
+@documents_web_bp.route("/editor/<id>/", methods=["GET"])
+@login_required
+def editor(id):
+    stmt = db.select(Document).where(Document.doc_id == id)
+    doc = db.session.scalars(stmt).first()
+
+    if not doc:
+        abort(404)
+
+    content = doc.content
+
+    if request.headers.get("HX-Request") == "true":
+        return render_template("user/documents-pages/editor.html", doc=content)
+    else:
+        return render_template(
+            "user/base.html",
+            title="Document Editor",
+            page="document-editor",
+            doc=content,
         )

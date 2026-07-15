@@ -1,0 +1,15 @@
+<div class="body-cont" data-page="document-editor">
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/user/documents/editor.css') }}">
+    <div class="workspace" id="workspace">
+        <textarea id="editor"></textarea>
+        <button type="button" id="save">Save CV</button>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/tinymce@7/tinymce.min.js"></script>
+    <script>
+       // (() => {
+       //  })();
+        doc = {{ doc | tojson }} 
+    </script>
+    <script src="{{ url_for('static', filename='js/user/documents/editor-v3.js') }}"></script>
+</div>

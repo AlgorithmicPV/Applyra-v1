@@ -1,7 +1,7 @@
 import { Editor } from 'https://esm.sh/@tiptap/core'
 import StarterKit from 'https://esm.sh/@tiptap/starter-kit'
 import { Focus, Selection } from 'https://esm.sh/@tiptap/extensions'
-import { FontSize, TextStyle, FontFamily } from 'https://esm.sh/@tiptap/extension-text-style'
+import { FontSize, TextStyle, FontFamily, TextStyleKit } from 'https://esm.sh/@tiptap/extension-text-style'
 import { Markdown } from 'https://esm.sh/@tiptap/markdown'
 import Heading from 'https://esm.sh/@tiptap/extension-heading'
 import TextAlign from 'https://esm.sh/@tiptap/extension-text-align'
@@ -12,11 +12,12 @@ const editor = () => {
 
   if (!workspace) { return }
 
-  const raw = document.getElementById("initial-data").textContent;
+  const content = document.querySelector(".content").innerHTML;
 
-  const user = JSON.parse(raw);
+  // const user = JSON.parse(raw);
 
-  console.log(user);
+  // console.log(user);
+  console.log(content)
 
   const boldBtn = document.getElementById('bold-btn')
   const italicBtn = document.getElementById('italic-btn')
@@ -45,6 +46,7 @@ const editor = () => {
     element: workspace,
     extensions: [
       StarterKit,
+      TextStyleKit,
       FontSize,
       TextStyle,
       FontFamily,
@@ -67,7 +69,8 @@ const editor = () => {
     shouldRerenderOnTransaction: true,
     immediatelyRender: true,
   })
-
+  
+  // editor.commands.setContent(content)
 
   const docPage = document.querySelector('.tiptap')
 

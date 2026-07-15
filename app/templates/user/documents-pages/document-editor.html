@@ -58,8 +58,117 @@
         </button>
     </div>
     <hr>
-    <div class="workspace" id="workspace"></div>
-    <script id="initial-data" type="application/json">{{ doc | tojson }}</script>
-    <script type="module"
-            src="{{ url_for('static', filename='js/user/documents/editor-v2.js') }}"></script>
+    <div class="workspace" id="workspace">
+        <!-- <iframe id="doc"></iframe> -->
+        <textarea id="editor"></textarea>
+        <button type="button" id="save">Save CV</button>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/tinymce@7/tinymce.min.js"></script>
+    <script>
+    const completeCvHtml = {{ doc | tojson }};
+
+    function extractDocumentParts(html) {
+        const parser = new DOMParser();
+        const documentObject = parser.parseFromString(html, "text/html");
+
+        const styles = Array.from(
+            documentObject.querySelectorAll("style")
+        )
+        .map(style => style.textContent)
+        .join("\n");
+
+        return {
+            bodyHtml: documentObject.body.innerHTML,
+            css: styles
+        };
+    }
+
+    const cvDocument = extractDocumentParts(completeCvHtml);
+
+    tinymce.init({
+        selector: "#editor",
+
+        // TinyMCE Classic mode uses an iframe.
+        inline: false,
+
+        height: 900,
+        menubar: false,
+        resize: true,
+
+        plugins: [
+            "lists",
+            "link",
+            "table",
+            "code",
+            "fullscreen",
+            "searchreplace"
+        ],
+
+        toolbar:
+            "undo redo | blocks | bold italic underline | " +
+            "bullist numlist | alignleft aligncenter alignright | " +
+            "link table | code fullscreen",
+
+        content_style: `
+            ${cvDocument.css}
+
+            body {
+                width: 210mm;
+                min-height: 297mm;
+                margin: 0 auto;
+                padding: 16mm 18mm;
+                box-sizing: border-box;
+                background: white;
+            }
+        `,
+
+        setup(editor) {
+            editor.on("init", () => {
+                editor.setContent(cvDocument.bodyHtml);
+            });
+        }
+    });
+
+    document
+        .getElementById("save")
+        .addEventListener("click", () => {
+            const editor = tinymce.get("cv-editor");
+
+            if (!editor) {
+                console.error("CV editor is not initialized.");
+                return;
+            }
+
+            const editedBodyHtml = editor.getContent();
+
+            const finalHtml = `
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+                    <style>
+                        ${cvDocument.css}
+</style>
+                </head>
+                <body>
+                    ${editedBodyHtml}
+                </body>
+                </html>
+            `;
+
+            console.log(finalHtml);
+
+            // Send finalHtml to your Flask backend here.
+        });
+    </script>
+    <script>
+          // const contents = document.getElementById("initial-data").innerHTML;
+          //   console.log(contents)
+        // document.getElementById("doc").srcdoc = `{{ doc | safe }}`;
+        // document.getElementById("doc").contentDocument.designMode = "on";
+    </script>
+    {# <script>let content = `{{ doc | safe }}`</script> #}
+    <!--<script type="module" src="{{ url_for('static', filename='js/user/documents/editor-v2.js') }}"></script>-->
 </div>

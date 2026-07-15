@@ -234,8 +234,57 @@ def job_entry():
 
     return render_template(
         "user/apply/components/card.html",
+        job_entry_id=job_entry_id,
         job_title=job_entry_json["job_title"],
         company_name=job_entry_json["company_name"],
         relevancy=job_entry_json["relevancy"],
-        api=True,
     )
+
+
+@apply_api_bp.route("/show/<id>/", methods=["GET"])
+@login_required
+def show(id):
+    job_entry_stmt = db.select(JobEntry).where(JobEntry.job_entry_id == id)
+    job_entry = db.session.scalars(job_entry_stmt).first()
+
+    if job_entry is None:
+        return {"error": "The job you’re looking for could not be found"}
+
+    application_stmt = db.select(Application).where(Application.job_entry_id == id)
+    application = db.session.scalars(application_stmt).first()
+
+    cv_stmt = db.select(Document).where(
+        Document.doc_id == application.cv_document_id, Document.doc_type == "cv"
+    )
+    cv = db.session.scalars(cv_stmt).first()
+
+    cover_letter_stmt = db.select(Document).where(
+        Document.doc_id == application.cover_letter_document_id,
+        Document.doc_type == "coverLetter",
+    )
+    cover_letter = db.session.scalars(cover_letter_stmt).first()
+
+    detail = {
+        "job_entry_id": job_entry.job_entry_id,
+        "source_url": job_entry.source_url,
+        "job_title": job_entry.job_title,
+        "company_name": job_entry.company_name,
+        "country": job_entry.country_code,
+        "captured_at": job_entry.captured_at.strftime(
+            "%Y-%m-%d"
+        ),  # get only yyyy-mm-dd
+        "relevancy": job_entry.relevancy,
+        "matching_skills": job_entry.matching_skills,
+        "tips": job_entry.tips,
+        "job_description": job_entry.job_description,
+        "cv": cv.content,
+        "cv_id": cv.doc_id,
+        "cover_letter": cover_letter.content,
+        "cover_letter_id": cover_letter.doc_id,
+    }
+
+    # Prevent users from accessing the route by typing the URL directly.
+    if request.headers.get("HX-Request") == "true":
+        return render_template("user/apply/components/detail.html", detail=detail)
+    else:
+        abort(403)

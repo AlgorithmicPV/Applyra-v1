@@ -1,4 +1,10 @@
 <div class="detail">
+    {# Style the selected job entry card #}
+    <style>
+        #x{{ detail["job_entry_id"] }} {
+            background-color: #F3F4F1;
+        } 
+    </style>
     <title>{{ detail["job_title"] }}</title>
     <div class="header">
         <p class="job-title">{{ detail["job_title"] }}</p>
@@ -41,16 +47,24 @@
                 <div class="icon"></div>
             </div>
             <p>Your CV</p>
-            <button type="" class="view">View</button>
-            <button id="cv-btn" class="download" onclick="downloadCV()">Download</button>
+            <button class="view"
+                    hx-get="{{ url_for("documents_web.editor", id=detail['cv_id']) }}"
+                    hx-target=".page-body"
+                    hx-swag="innerHTML"
+                    hx-push-url="true">View</button>
+            <button class="download" onclick="downloadCV()">Download</button>
         </div>
         <div class="cover-letter">
             <div class="icon-wrapper">
                 <div class="icon"></div>
             </div>
             <p>Your Cover Letter</p>
-            <button type="" class="view">View</button>
-            <button type="" class="download" onclick="downloadCoverLetter()">Download</button>
+            <button class="view"
+                    hx-get="{{ url_for("documents_web.editor", id=detail['cover_letter_id']) }}"
+                    hx-target=".page-body"
+                    hx-swag="innerHTML"
+                    hx-push-url="true">View</button>
+            <button class="download" onclick="downloadCoverLetter()">Download</button>
         </div>
     </div>
     <div class="job-description">
@@ -61,12 +75,6 @@
             {% endfor %}
         </ul>
     </div>
-    <!--<div>
-        {{ detail["cv"] | safe }}
-        <br>
-        <br>
-        {{ detail["cover_letter"] | safe }}
-    </div>-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html-docx-js/0.3.1/html-docx.min.js"></script>
     <script>
       function downloadCV() {

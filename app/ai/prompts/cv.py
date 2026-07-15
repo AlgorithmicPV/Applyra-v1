@@ -217,6 +217,8 @@ OUTPUT RULES:
 
 44. The html_code field must contain the complete HTML document.
 
+45. Do not write inline JavaScript Code.
+
 FINAL VERIFICATION:
 
 Before returning the output, inspect every sentence about the user.
@@ -237,4 +239,3 @@ Also verify:
 - the JSON is valid
 - the HTML is complete
 """
-

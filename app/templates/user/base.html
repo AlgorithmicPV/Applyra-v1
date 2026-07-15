@@ -21,8 +21,7 @@
                      alt="apply-icon" />
             </button>
             <!--<button>
-                <img src="{{ url_for('static', filename='images/icons/track.svg') }}"
-                     alt="track-icon" />
+                <img src="{{ url_for('static', filename='images/icons/track.svg') }}" alt="track-icon" />
             </button>-->
             <button hx-get="{{ url_for("documents_web.doc_home") }}"
                     hx-target=".page-body"
@@ -57,7 +56,7 @@
                 {% elif
                     page == "document-editor" %}
                     {% include
-                    "user/documents-pages/document-editor.html" %}
+                    "user/documents-pages/editor.html" %}
                 {% elif
                     page == "doc-home" %}
                     {% set form = form %}
