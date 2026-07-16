@@ -1,3 +1,5 @@
+from datetime import date
+
 from flask import Blueprint, request, render_template, redirect, url_for, session
 from app.forms import fileUplaod
 import pypandoc
@@ -7,6 +9,7 @@ from flask_login import current_user, login_required
 import mammoth
 import io
 import uuid
+from app.extensions import db
 
 
 documents_api_bp = Blueprint("documents_api", __name__)
@@ -48,3 +51,29 @@ def doc_home():
     # Therefore, for now, Upload part will be stopped, i moved into other part, making the doc
 
     return redirect(url_for("documents_web.document_editor"))
+
+
+@documents_api_bp.route("/save/", methods=["POST"])
+@login_required
+def doc_save():
+
+    data = request.get_json()
+
+    if not data:
+        return {"error": "Missing JSON body"}
+
+    id = data.get("doc_id")
+    content = data.get("doc_content")
+
+    stmt = db.select(Document).where(Document.doc_id == id)
+    doc = db.session.scalars(stmt).first()
+
+    if not doc:
+        return {"error": "Your file id has changed"}
+
+    doc.content = content
+    doc.updated_at = date.today()
+
+    db.session.commit()
+
+    return {"success": "Your file is saved"}

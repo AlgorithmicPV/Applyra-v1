@@ -1,8 +1,61 @@
 .workspace {
   width: 100%;
-  height: calc(100vh - (var(--header-height) + var(--header-height)));
+  height: calc(100vh - (var(--header-height) + 16px));
+  /* main-content padding is 8px, and top + bottom in total is 16px */
 }
+
 
 .tox .tox-promotion-link {
   display: none;
+}
+
+
+.tox.tox-tinymce {
+  height: 100% !important;
+}
+
+
+.save-status,
+.error-status {
+  z-index: 1000;
+  font-family: "Inter";
+
+  border-radius: 8px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  top: 30px;
+  left: 50%;
+  position: absolute;
+
+  transform: translate(-50%, -20px) scale(0.96);
+  opacity: 0;
+  pointer-events: none;
+
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+
+  color: white;
+  margin: 0;
+  font-size: 14px;
+
+}
+
+.save-status {
+  background-color: rgb(52, 193, 93);
+}
+
+.error-status {
+  background-color: rgb(253, 48, 51);
+}
+
+.save-status.show .error-status.show {
+  opacity: 1;
+  transform: translateY(0);
 }

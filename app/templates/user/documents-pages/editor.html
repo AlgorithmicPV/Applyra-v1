@@ -1,15 +1,18 @@
 <div class="body-cont" data-page="document-editor">
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='css/user/documents/editor.css') }}">
+    <!--<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/user/documents/editor.css') }}">-->
     <div class="workspace" id="workspace">
         <textarea id="editor"></textarea>
-        <button type="button" id="save">Save CV</button>
     </div>
+    <div id="save-status" class="save-status">File saved</div>
+    <div id="document-error" class="error-status">Your document ID is not in our system.</div>
     <script src="https://cdn.jsdelivr.net/npm/tinymce@7/tinymce.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html-docx-js/0.3.1/html-docx.min.js"></script>
     <script>
-       // (() => {
-       //  })();
         doc = {{ doc | tojson }} 
+        doc_id = '{{ doc_id }}'
+        doc_title = '{{ role }}' 
+        BackendUrl = '{{ url_for('documents_api.doc_save') }}'
     </script>
     <script src="{{ url_for('static', filename='js/user/documents/editor-v3.js') }}"></script>
 </div>

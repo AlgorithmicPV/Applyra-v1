@@ -3,6 +3,8 @@
     <div class="main-content">
         <link rel="stylesheet"
               href="{{ url_for('static', filename='css/user/base.css') }}" />
+        <link rel="stylesheet"
+              href="{{ url_for('static', filename='css/user/documents/editor.css') }}">
         <div class="nav-bar">
             <div class="user-photo"></div>
             <button class="home-btn"
@@ -68,6 +70,7 @@
                 {% endif %}
             </div>
         </div>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     </div>
 {% endmacro %}
 {% if not request.headers.get("HX-Request") %}

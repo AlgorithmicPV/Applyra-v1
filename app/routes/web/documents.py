@@ -66,11 +66,15 @@ def editor(id):
     content = doc.content
 
     if request.headers.get("HX-Request") == "true":
-        return render_template("user/documents-pages/editor.html", doc=content)
+        return render_template(
+            "user/documents-pages/editor.html", doc=content, doc_id=id, role=doc.role
+        )
     else:
         return render_template(
             "user/base.html",
             title="Document Editor",
             page="document-editor",
             doc=content,
+            doc_id=id,
+            role=doc.role,
         )
