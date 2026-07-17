@@ -173,7 +173,7 @@
       const downloadLink = document.createElement("a");
 
       downloadLink.href = downloadURL;
-      downloadLink.download = `${doc_title} CV.doc`;
+      downloadLink.download = `${doc_title} ${doc_type}.doc`;
 
       downloadLink.click();
 

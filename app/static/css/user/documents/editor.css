@@ -55,7 +55,8 @@
   background-color: rgb(253, 48, 51);
 }
 
-.save-status.show .error-status.show {
+.save-status.show,
+.error-status.show {
   opacity: 1;
   transform: translateY(0);
 }

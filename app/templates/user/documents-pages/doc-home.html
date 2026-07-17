@@ -1,30 +1,59 @@
-<link rel="stylesheet" href="{{ url_for('static', filename='css/user/documents/doc-home.css') }}">
-<input type="text" name="" value="" placeholder="search">
-<div>
-  <button type="">
-    <span>New</span>
-  </button>
-  <form hx-post="{{ url_for('documents_api.doc_home') }}"
-      hx-target=".page-body"
-      hx-swap="innerHTML"
-      hx-encoding="multipart/form-data"
-      enctype="multipart/form-data"
-      hx-on="htmx:load: this.reset()"
-      id="upload-form"
-      hx-push-url="true">
-    {{ form.hidden_tag() }}
+{% import "user/documents-pages/row-card.html" as row %}
+<div class="page-cont doc-home">
+    <title>Files</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/user/documents/doc-home.css') }}">
+    <div class="top">
+        <input type="text" name="" value="" placeholder="search" class="search">
+        <div class="buttons">
+            <button class="all-btn">All</button>
+            <button class="cv-btn">My CVs</button>
+            <button class="cover-letter-btn">My Cover Letters</button>
+        </div>
+    </div>
+    <div class="document-list-wrapper">
+        <table class="list">
+            {% for doc in all_docs %}
+                {{ row.row(doc) }}
+            {% endfor %}
+        </table>
+    </div>
+    <script>
+        (() => {
+            const allBtn = document.querySelector(".all-btn");
+            const cvBtn = document.querySelector(".cv-btn");
+            const coverLetterBtn = document.querySelector(".cover-letter-btn");
 
-    {{ form.file(
-        id="file-input",
-        style="display:none",
-        onchange="document.getElementById('upload-form').requestSubmit()"
-    ) }}
+            const allRows = document.querySelectorAll(".row");
+            const cvRows = document.querySelectorAll(".row.cv");
+            const coverLetterRows = document.querySelectorAll(".row.cover-letter");
 
-    <button type="button"
-            onclick="document.getElementById('file-input').click()">
-      Upload
-    </button>
-  </form>
-  </div>
+            const buttons = [allBtn, cvBtn, coverLetterBtn];
+
+            function setActive(button) {
+                buttons.forEach(btn => btn.classList.remove("active"));
+                button.classList.add("active");
+            }
+
+            allBtn.onclick = () => {
+                allRows.forEach(row => row.classList.remove("hide"));
+                setActive(allBtn);
+            };
+
+            cvBtn.onclick = () => {
+                cvRows.forEach(row => row.classList.remove("hide"));
+                coverLetterRows.forEach(row => row.classList.add("hide"));
+                setActive(cvBtn);
+            };
+
+            coverLetterBtn.onclick = () => {
+                coverLetterRows.forEach(row => row.classList.remove("hide"));
+                cvRows.forEach(row => row.classList.add("hide"));
+                setActive(coverLetterBtn);
+            };
+
+            // Default selection
+            setActive(allBtn);
+        })();
+    </script>
 </div>
-

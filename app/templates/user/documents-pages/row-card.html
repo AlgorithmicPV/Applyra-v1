@@ -1,0 +1,36 @@
+{% macro row(doc) %}
+    <tr class="row {{ doc['doc_type'] }}"
+        hx-get="{{ url_for("documents_web.editor", id=doc['doc_id']) }}"
+        hx-target=".page-body"
+        hx-swag="innerHTML"
+        hx-push-url="true">
+        <td class="icon">
+            {% if doc["doc_type"] == "cv" %}
+                <img src="{{ url_for('static', filename='images/icons/doc/cv.svg') }}"
+                     alt="cv">
+            {% else %}
+                <img src="{{ url_for('static', filename='images/icons/doc/cover-letter.svg') }}"
+                     alt="cover-letter">
+            {% endif %}
+        </td>
+        <td class="detail">
+            <p class="document-name">
+                {{ doc["role"] }}
+                {% if doc["doc_type"] == "cv" %}
+                    cv.doc
+                {% else %}
+                    coverLetter.doc
+                {% endif %}
+            </p>
+            <p class="job-detail">{{ doc["role"] }} - {{ doc["company"] }}</p>
+        </td>
+        <td>Created on {{ doc["created_at"] }}</td>
+        <td>
+            {% if doc["updated_at"] != None %}
+                Latest Update on {{ doc["updated_at"] }}
+            {% else %}
+                Haven't updated
+            {% endif %}
+        </td>
+    </tr>
+{% endmacro %}
