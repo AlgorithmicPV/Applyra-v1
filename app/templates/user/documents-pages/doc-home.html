@@ -1,59 +1,57 @@
-{% import "user/documents-pages/row-card.html" as row %}
 <div class="page-cont doc-home">
     <title>Files</title>
     <link rel="stylesheet"
           href="{{ url_for('static', filename='css/user/documents/doc-home.css') }}">
     <div class="top">
-        <input type="text" name="" value="" placeholder="search" class="search">
+        <input type="search"
+               name="q"
+               placeholder="Search"
+               class="search"
+               hx-get="{{ url_for('documents_api.search') }}"
+               hx-trigger="input changed delay:300ms, search"
+               hx-vals="js:{doc_type: document.querySelector('.filter-btn.active').dataset.type}"
+               hx-target=".document-rows"
+               hx-swap="innerHTML">
         <div class="buttons">
-            <button class="all-btn">All</button>
-            <button class="cv-btn">My CVs</button>
-            <button class="cover-letter-btn">My Cover Letters</button>
+            <button class="filter-btn all-btn active"
+                    data-type="all"
+                    hx-get="{{ url_for('documents_api.search') }}"
+                    hx-vals='{"doc_type": "all"}'
+                    hx-include=".search"
+                    hx-target=".document-rows">All</button>
+            <button class="filter-btn cv-btn"
+                    data-type="cv"
+                    hx-get="{{ url_for('documents_api.search') }}"
+                    hx-vals='{"doc_type": "cv"}'
+                    hx-include=".search"
+                    hx-target=".document-rows">My CVs</button>
+            <button class="filter-btn cover-letter-btn"
+                    data-type="cover-letter"
+                    hx-get="{{ url_for('documents_api.search') }}"
+                    hx-vals='{"doc_type": "cover-letter"}'
+                    hx-include=".search"
+                    hx-target=".document-rows">My Cover Letters</button>
         </div>
     </div>
     <div class="document-list-wrapper">
         <table class="list">
-            {% for doc in all_docs %}
-                {{ row.row(doc) }}
-            {% endfor %}
+            <tbody class="document-rows">
+                {% include "user/documents-pages/document-rows.html" %}
+            </tbody>
         </table>
     </div>
     <script>
         (() => {
-            const allBtn = document.querySelector(".all-btn");
-            const cvBtn = document.querySelector(".cv-btn");
-            const coverLetterBtn = document.querySelector(".cover-letter-btn");
-
-            const allRows = document.querySelectorAll(".row");
-            const cvRows = document.querySelectorAll(".row.cv");
-            const coverLetterRows = document.querySelectorAll(".row.cover-letter");
-
-            const buttons = [allBtn, cvBtn, coverLetterBtn];
+            const buttons = document.querySelectorAll(".filter-btn");
 
             function setActive(button) {
                 buttons.forEach(btn => btn.classList.remove("active"));
                 button.classList.add("active");
             }
 
-            allBtn.onclick = () => {
-                allRows.forEach(row => row.classList.remove("hide"));
-                setActive(allBtn);
-            };
-
-            cvBtn.onclick = () => {
-                cvRows.forEach(row => row.classList.remove("hide"));
-                coverLetterRows.forEach(row => row.classList.add("hide"));
-                setActive(cvBtn);
-            };
-
-            coverLetterBtn.onclick = () => {
-                coverLetterRows.forEach(row => row.classList.remove("hide"));
-                cvRows.forEach(row => row.classList.add("hide"));
-                setActive(coverLetterBtn);
-            };
-
-            // Default selection
-            setActive(allBtn);
+            buttons.forEach(button => {
+                button.addEventListener("click", () => setActive(button));
+            });
         })();
     </script>
 </div>

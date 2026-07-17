@@ -1,0 +1,5 @@
+{% import "user/apply/components/card.html" as comp %}
+
+{% for job_entry in job_entries %}
+    {{ comp.card(job_entry.job_entry_id, job_entry.job_title, job_entry.company_name, job_entry.relevancy) }}
+{% endfor %}

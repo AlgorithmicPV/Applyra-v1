@@ -4,6 +4,7 @@ from flask_login import current_user, login_required
 dashboard_web_bp = Blueprint("dashboard_web", __name__)
 
 
+# thinking of removing dashbaord, there is not much to put in there
 @dashboard_web_bp.route("/dashboard", methods=["POST", "GET"])
 @login_required
 def dashboard():

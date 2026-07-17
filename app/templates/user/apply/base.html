@@ -19,7 +19,14 @@
                 </button>
             </form>
         </div>
-        <input type="search" name="" value="" placeholder="Search" class="search">
+        <input type="search"
+               name="q"
+               placeholder="Search"
+               class="search"
+               hx-get="{{ url_for('apply_api.search') }}"
+               hx-trigger="input changed delay:300ms, search"
+               hx-target=".cards"
+               hx-swap="innerHTML">
         <div class="cards">
             {% for j in job_entries %}
                 {{ comp.card(j["job_entry_id"], j["job_title"], j["company_name"], j["relevancy"]) }}

@@ -6,6 +6,7 @@ from flask_login import current_user, login_required
 import uuid
 from app.extensions import db
 from playwright.sync_api import sync_playwright
+from sqlalchemy import or_
 from app.forms import JobLinkForm
 from app.models import (
     UserSkill,
@@ -30,9 +31,94 @@ from app.ai.schemas.cover_letter import JSON_SCHEMA as conver_letter_schema
 apply_api_bp = Blueprint("apply_api", __name__)
 
 
+@apply_api_bp.route("/delete/<id>/", methods=["DELETE"])
+@login_required
+def delete_job_entry(id):
+    """Delete a job entry and its generated application documents."""
+
+    job_entry_stmt = db.select(JobEntry).where(
+        JobEntry.job_entry_id == id,
+        JobEntry.user_id == current_user.user_id,
+    )
+    job_entry = db.session.scalar(job_entry_stmt)
+
+    if job_entry is None:
+        return {"error": "The job you’re looking for could not be found"}, 404
+
+    application_stmt = db.select(Application).where(
+        Application.job_entry_id == id,
+        Application.user_id == current_user.user_id,
+    )
+    application = db.session.scalar(application_stmt)
+
+    if application is not None:
+        document_ids = [
+            application.cv_document_id,
+            application.cover_letter_document_id,
+        ]
+
+        db.session.delete(application)
+        db.session.flush()
+
+        documents_stmt = db.select(Document).where(
+            Document.doc_id.in_(document_ids),
+            Document.user_id == current_user.user_id,
+        )
+        documents = db.session.scalars(documents_stmt).all()
+        for document in documents:
+            db.session.delete(document)
+
+    db.session.delete(job_entry)
+    db.session.commit()
+
+    return "", 200
+
+
+@apply_api_bp.route("/search", methods=["GET"])
+@login_required
+def search():
+    """Return the current user's job entries matching a search query.
+
+    The query is matched case-insensitively against job titles and company
+    names. An empty query returns all job entries belonging to the user.
+
+    Returns:
+        A rendered collection of matching job-entry cards.
+    """
+
+    query = request.args.get("q", "").strip()
+
+    stmt = db.select(JobEntry).where(JobEntry.user_id == current_user.user_id)
+    if query:
+        search_term = f"%{query}%"
+        stmt = stmt.where(
+            or_(
+                JobEntry.job_title.ilike(search_term),
+                JobEntry.company_name.ilike(search_term),
+            )
+        )
+
+    job_entries = db.session.scalars(stmt).all()
+
+    return render_template(
+        "user/apply/components/cards.html", job_entries=job_entries
+    )
+
+
 @apply_api_bp.route("/job_entry", methods=["POST", "GET"])
 @login_required
 def job_entry():
+    """Create a tailored job application from a submitted job-posting URL.
+
+    Validates the current user's onboarding data and submitted URL, extracts
+    the job-posting content, and uses the AI service to analyse the role and
+    generate a CV and cover letter. The resulting job entry, documents, and
+    application are persisted in a single database transaction.
+
+    Returns:
+        A rendered application-card fragment on success, or a dictionary
+        containing validation warnings or errors on failure.
+    """
 
     form = JobLinkForm(request.form)
 
@@ -70,6 +156,7 @@ def job_entry():
     job = ""
 
     job_url = form.job_url.data
+    # Extract the visible job-posting text from the submitted page.
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         page = browser.new_page()
@@ -228,6 +315,7 @@ def job_entry():
 
     print("new_application is added to the db session")
 
+    # Persist the job entry, generated documents, and their relationship atomically.
     db.session.commit()
 
     print("commit to the db")
@@ -244,6 +332,19 @@ def job_entry():
 @apply_api_bp.route("/show/<id>/", methods=["GET"])
 @login_required
 def show(id):
+    """Render the details of a previously generated job application.
+
+    Retrieves the job entry, associated application, CV, and cover letter.
+    The detail fragment is returned only for an HTMX request.
+
+    Args:
+        id (str): The unique identifier of the job entry.
+
+    Returns:
+        A rendered application-detail fragment when the job exists and the
+        request originates from HTMX, or an error response otherwise.
+    """
+
     job_entry_stmt = db.select(JobEntry).where(JobEntry.job_entry_id == id)
     job_entry = db.session.scalars(job_entry_stmt).first()
 

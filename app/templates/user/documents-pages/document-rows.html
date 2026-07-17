@@ -1,0 +1,9 @@
+{% import "user/documents-pages/row-card.html" as row %}
+
+{% for doc in all_docs %}
+    {{ row.row(doc) }}
+{% else %}
+    <tr class="empty-row">
+        <td colspan="4">No documents found.</td>
+    </tr>
+{% endfor %}

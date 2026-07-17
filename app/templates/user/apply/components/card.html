@@ -9,7 +9,17 @@
             <p class="relevancy">Relevancy {{ relevancy }}%</p>
         </div>
         <div class="card-right">
-            <button class="delete-btn">
+            <button class="delete-btn"
+                    type="button"
+                    aria-label="Delete application"
+                    hx-delete="{{ url_for('apply_api.delete_job_entry', id=job_entry_id) }}"
+                    hx-target="closest .job-card"
+                    hx-swap="outerHTML"
+                    hx-confirm="Delete this application and its generated documents?"
+                    hx-disabled-elt="this"
+                    hx-on:click="event.stopPropagation()"
+                    hx-on::before-request="this.closest('.job-card').classList.add('deleting')"
+                    hx-on::after-request="if (!event.detail.successful) this.closest('.job-card').classList.remove('deleting')">
                 <div class="icon"></div>
             </button>
         </div>

@@ -17,6 +17,10 @@
   /* Standard */
 }
 
+.job-card.deleting {
+  display: none;
+}
+
 
 .job-card:hover {
   background-color: #F3F4F1;
