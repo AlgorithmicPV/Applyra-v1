@@ -23,8 +23,8 @@ password_hasher = PasswordHasher()
 login_manager = LoginManager()
 
 
-def get_totp():
-    return pyotp.TOTP(current_app.config["OTP_SECRET"])
+def get_totp(interval=30):
+    return pyotp.TOTP(current_app.config["OTP_SECRET"], interval=interval)
 
 
 def get_fernet():

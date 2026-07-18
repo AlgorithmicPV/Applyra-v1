@@ -74,6 +74,7 @@ def create_app(debug=False):
     from app.routes.api.documents import documents_api_bp
     from app.routes.api.onboarding import onboarding_api_bp
     from app.routes.api.apply import apply_api_bp
+    from app.routes.api.settings import settings_api_bp
 
     # register web blueprints
     from app.routes.web.landing import landing_web_bp
@@ -82,12 +83,14 @@ def create_app(debug=False):
     from app.routes.web.documents import documents_web_bp
     from app.routes.web.onboarding import onboarding_web_bp
     from app.routes.web.apply import apply_web_bp
+    from app.routes.web.settings import settings_web_bp
 
     # api
     app.register_blueprint(auth_api_bp, url_prefix="/api/auth")
     app.register_blueprint(documents_api_bp, url_prefix="/api/doc")
     app.register_blueprint(onboarding_api_bp, url_prefix="/api/onboarding")
     app.register_blueprint(apply_api_bp, url_prefix="/api/apply")
+    app.register_blueprint(settings_api_bp, url_prefix="/api/settings")
 
     # web
     app.register_blueprint(landing_web_bp, url_prefix="/")
@@ -96,5 +99,6 @@ def create_app(debug=False):
     app.register_blueprint(documents_web_bp)
     app.register_blueprint(onboarding_web_bp, url_prefix="/onboarding")
     app.register_blueprint(apply_web_bp)
+    app.register_blueprint(settings_web_bp)
 
     return app

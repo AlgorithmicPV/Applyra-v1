@@ -78,3 +78,33 @@ const handler = (evt) => {
  * exisiting EventListener */
 document.body.removeEventListener("htmx:beforeSwap", handler);
 document.body.addEventListener("htmx:beforeSwap", handler)
+
+
+const selectNavButton = (selectedButton) => {
+  document.querySelectorAll('.nav-page-btn').forEach((button) => {
+    const isSelected = button === selectedButton;
+    button.classList.toggle('active', isSelected);
+
+    if (isSelected) {
+      button.setAttribute('aria-current', 'page');
+    } else {
+      button.removeAttribute('aria-current');
+    }
+  });
+}
+
+const initialNavButton = document.querySelector('.nav-page-btn.active');
+if (initialNavButton) selectNavButton(initialNavButton);
+
+document.addEventListener('click', (event) => {
+  const navButton = event.target.closest('.nav-page-btn');
+  if (navButton) selectNavButton(navButton);
+});
+
+window.addEventListener('popstate', () => {
+  const navButton = Array.from(document.querySelectorAll('.nav-page-btn')).find(
+    (button) => window.location.pathname.startsWith(button.dataset.navPath)
+  );
+
+  if (navButton) selectNavButton(navButton);
+});

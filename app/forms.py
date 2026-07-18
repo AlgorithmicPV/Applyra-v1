@@ -19,6 +19,7 @@ from wtforms.validators import (
     Optional,
     Length,
     URL,
+    AnyOf,
 )
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms import SubmitField
@@ -26,6 +27,9 @@ from app.models import User
 from app.utilities.validations import email_validation, password_strength_checker
 import requests
 import phonenumbers
+from argon2.exceptions import VerifyMismatchError
+from flask_login import current_user
+from app.extensions import db, get_totp, password_hasher
 
 
 class SignUpForm(FlaskForm):
@@ -108,6 +112,10 @@ class TotpForm(FlaskForm):
             raise ValidationError("Code must contain only numbers.")
 
 
+class AuthResendCodeForm(FlaskForm):
+    pass
+
+
 class LoginForm(FlaskForm):
     email_address = EmailField(
         "Email Address",
@@ -140,6 +148,117 @@ class LoginForm(FlaskForm):
     def validate_email_address(self, field):
         if not email_validation(field.data, True):
             raise ValidationError("Not a valid email address")
+
+
+# Settings forms
+class SettingsCodeRequestForm(FlaskForm):
+    pass
+
+
+class SettingsTotpForm(TotpForm):
+    def validate_code(self, field):
+        super().validate_code(field)
+        if not get_totp(interval=600).verify(field.data):
+            raise ValidationError("The verification code is invalid or expired")
+
+
+class SettingsProfileForm(FlaskForm):
+    full_name = StringField(
+        "Full name",
+        filters=[lambda value: value.strip() if value else value],
+        validators=[
+            DataRequired("Full name is empty"),
+            Length(
+                min=3,
+                max=255,
+                message="Full name must be between 3 and 255 characters",
+            ),
+        ],
+    )
+    email = EmailField(
+        "Email address",
+        filters=[lambda value: value.strip().lower() if value else value],
+        validators=[
+            DataRequired("Email address is empty"),
+            Email("Enter a valid email address"),
+            Length(max=255, message="Email address cannot exceed 255 characters"),
+        ],
+    )
+    profile_image = FileField(
+        "Profile picture",
+        validators=[
+            Optional(),
+            FileAllowed(
+                ["png", "jpg", "jpeg", "gif", "webp"],
+                "Profile picture must be a PNG, JPG, GIF, or WebP image",
+            ),
+        ],
+    )
+
+    def validate_email(self, field):
+        if not email_validation(field.data, False):
+            raise ValidationError("Enter a valid email address")
+
+        existing_user = db.session.scalar(
+            db.select(User).where(
+                User.email == field.data,
+                User.user_id != current_user.user_id,
+            )
+        )
+        if existing_user:
+            raise ValidationError("That email address is already in use")
+
+
+class SettingsPasswordForm(FlaskForm):
+    current_password = PasswordField(
+        "Current password",
+        validators=[DataRequired("Current password is empty")],
+    )
+    new_password = PasswordField(
+        "New password",
+        validators=[
+            DataRequired("New password is empty"),
+            Length(
+                min=8,
+                max=64,
+                message="Password must be between 8 and 64 characters",
+            ),
+        ],
+    )
+    confirm_password = PasswordField(
+        "Confirm new password",
+        validators=[
+            DataRequired("Please confirm your new password"),
+            EqualTo("new_password", message="New passwords do not match"),
+        ],
+    )
+
+    def validate_current_password(self, field):
+        try:
+            password_hasher.verify(current_user.password_hash, field.data)
+        except (VerifyMismatchError, TypeError):
+            raise ValidationError("Current password is incorrect")
+
+    def validate_new_password(self, field):
+        strength = password_strength_checker(
+            field.data,
+            current_user.email,
+            current_user.full_name,
+        )
+        if strength is not True:
+            message = strength.get("warning") or "Please choose a stronger password"
+            raise ValidationError(message)
+
+
+class SettingsDeleteForm(FlaskForm):
+    confirmation = StringField(
+        "Type DELETE to confirm",
+        filters=[lambda value: value.strip() if value else value],
+        validators=[
+            DataRequired("Type DELETE to confirm account deletion"),
+            AnyOf(["DELETE"], message="Type DELETE to confirm account deletion"),
+        ],
+    )
 
 
 class fileUplaod(FlaskForm):

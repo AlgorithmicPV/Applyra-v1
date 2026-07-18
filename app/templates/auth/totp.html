@@ -1,12 +1,54 @@
-<h1>Authentication Verification</h1>
-<h3>Please enter the 6-digit code we sent to your email.</h3>
-<form hx-post="{{ url_for("auth_api.confirm_email") }}"
-      hx-target="#app"
-      hx-swap="innerHTML"
-      hx-on="htmx:load: this.reset()"
-      id="totp-form"
-      hx-push-url="true">
-  {{ form.hidden_tag() }}
-  {{ form.code(placeholder="XXXXXX") }}
-  <button type="submit">Confirm</button>
-</form>
+<div class="totp-page" id="page">
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/auth/totp.css') }}">
+    <div class="totp-glow"></div>
+    <main class="totp-card">
+        <img class="totp-logo"
+             src="{{ url_for('static', filename='images/logo.svg') }}"
+             alt="Applyra">
+        <p class="eyebrow">Secure verification</p>
+        <h1>Check your inbox</h1>
+        <p class="totp-copy">Enter the 6-digit code we sent to your email. The code is valid for 2 minutes.</p>
+        <form hx-post="{{ url_for("auth_api.confirm_email") }}"
+              hx-target="#app"
+              hx-swap="innerHTML"
+              id="totp-form"
+              hx-push-url="true">
+            {{ form.hidden_tag() }}
+            {{ form.code(placeholder="000000", aria_label="Six-digit verification code") }}
+            <button class="confirm-btn" type="submit">Verify email</button>
+        </form>
+        <div class="resend-row">
+            <span>Didn’t receive the code?</span>
+            <form hx-post="{{ url_for("auth_api.resend_code") }}"
+                  hx-swap="none"
+                  id="resend-code-form">
+                {{ resend_form.hidden_tag() }}
+                <button type="submit" id="resend-code-btn">Resend code</button>
+            </form>
+        </div>
+        <a class="back-link" href="{{ url_for("auth_web.sign_up") }}">&#8592; Back to sign up</a>
+    </main>
+</div>
+<script>
+  (() => {
+    const form = document.getElementById('resend-code-form');
+    const button = document.getElementById('resend-code-btn');
+    if (!form || !button) return;
+
+    form.addEventListener('htmx:afterRequest', (event) => {
+      if (!event.detail.successful) return;
+      let seconds = 30;
+      button.disabled = true;
+      button.textContent = `Resend in ${seconds}s`;
+      const countdown = window.setInterval(() => {
+        seconds -= 1;
+        button.textContent = seconds > 0 ? `Resend in ${seconds}s` : 'Resend code';
+        if (seconds <= 0) {
+          window.clearInterval(countdown);
+          button.disabled = false;
+        }
+      }, 1000);
+    });
+  })();
+</script>

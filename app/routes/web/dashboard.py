@@ -9,8 +9,8 @@ dashboard_web_bp = Blueprint("dashboard_web", __name__)
 @login_required
 def dashboard():
     print(current_user.user_id)
-    if session.get("first-access-to-dashboard-via-htmx"):
-        session["first-access-to-dashboard-via-htmx"] = False
+    if session.get("first-access-to-app-via-htmx"):
+        session["first-access-to-app-via-htmx"] = False
         return render_template("user/base.html", page="dashboard")
     if request.headers.get("HX-Request") == "true":
         return render_template("user/dashboard.html")

@@ -4,7 +4,7 @@ This module covers all the authentications in the system
 
 import uuid
 from flask import Blueprint, current_app, request, url_for, redirect, session, abort
-from app.forms import SignUpForm, TotpForm, LoginForm
+from app.forms import AuthResendCodeForm, SignUpForm, TotpForm, LoginForm
 from itsdangerous import SignatureExpired, BadSignature
 from app.extensions import mail, limiter, serializer, password_hasher, db, get_totp
 from app.models import User
@@ -12,6 +12,7 @@ from datetime import datetime
 from sqlalchemy import and_
 import time
 from app.utilities.client_sessions import encrypt_value, decrypt_value, hash_key
+from app.utilities.validations import email_confirm
 from argon2.exceptions import VerifyMismatchError
 from flask_login import UserMixin, login_user
 
@@ -21,6 +22,7 @@ auth_api_bp = Blueprint("auth_api", __name__)
 
 current_datetime = datetime.now()
 current_timestamp = current_datetime.timestamp()
+AUTH_TOTP_INTERVAL = 120
 
 
 @auth_api_bp.route("/sign-up", methods=["POST", "GET"])
@@ -91,14 +93,12 @@ def confirm_email():
     if not (session.get(hash_key("email-confirm-backend"))):
         abort(403)
 
-    del session[hash_key("email-confirm-backend")]
-
     form = TotpForm(request.form)
 
     if not (request.method == "POST" and form.validate()):
         return form.errors
 
-    if not get_totp().verify(form.code.data):
+    if not get_totp(interval=AUTH_TOTP_INTERVAL).verify(form.code.data):
         return {"error": "Token has expired"}
 
     unverified_user = db.session.execute(
@@ -109,14 +109,38 @@ def confirm_email():
             )
         )
     ).first()
-    if not unverified_user.User.email:
+    if not unverified_user:
         return {"error": "User is not existing"}
 
     unverified_user.User.is_verified = True
 
     db.session.commit()
+    session.pop(hash_key("email-confirm-backend"), None)
 
     return redirect(url_for("auth_web.login"))
+
+
+@auth_api_bp.post("/resend-code/")
+@limiter.limit("1 per 30 seconds; 5 per 10 minutes")
+def resend_code():
+    if not session.get(hash_key("email-confirm-backend")):
+        abort(403)
+
+    form = AuthResendCodeForm()
+    if not form.validate_on_submit():
+        return {"error": next(iter(form.errors.values()))[0]}, 400
+
+    encrypted_email = session.get(hash_key("user-email"))
+    if not encrypted_email:
+        abort(403)
+
+    result = email_confirm(
+        user_email=decrypt_value(encrypted_email),
+        interval=AUTH_TOTP_INTERVAL,
+    )
+    if isinstance(result, dict) and result.get("error"):
+        return result, 500
+    return {"success": "A new verification code has been sent"}
 
 
 # Change this to flask-login
@@ -153,6 +177,6 @@ def login():
         fresh=True,
     )
 
-    session["first-access-to-dashboard-via-htmx"] = True
+    session["first-access-to-app-via-htmx"] = True
 
-    return redirect(url_for("dashboard_web.dashboard"))
+    return redirect(url_for("apply_web.apply"))

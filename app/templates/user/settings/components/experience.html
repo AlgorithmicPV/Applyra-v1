@@ -1,0 +1,47 @@
+<div class="record-row" id="experience-{{ experience.experience_id }}">
+    <div>
+        <h3>{{ experience.job_title }}</h3>
+        <p>{{ experience.company }} · {{ experience.start_year.year }}–{% if experience.end_year %}{{ experience.end_year.year }}{% else %}Present{% endif %}</p>
+    </div>
+    <div class="record-actions">
+        <div class="settings-popup">
+            <button type="button" class="mini-btn" onclick="openSettingsForm(this)">Edit</button>
+            <form class="record-form"
+                  hx-post="{{ url_for('settings_api.experience_update', experience_id=experience.experience_id) }}"
+                  hx-target="#experience-{{ experience.experience_id }}"
+                  hx-swap="outerHTML">
+                {{ form.hidden_tag() }}
+                <div class="popup-heading">
+                    <h2>Edit work experience</h2>
+                    <button type="button" class="close-dialog" onclick="closeSettingsForm(this)">&times;</button>
+                </div>
+                <div class="field-row">
+                    <label>Job title{{ form.job_title(value=experience.job_title) }}</label>
+                    <label>Company{{ form.company(value=experience.company) }}</label>
+                </div>
+                <div class="field-row">
+                    <label>
+                        Employment type
+                        <select name="employment_type" class="settings-job-type">
+                            {% for value, name in form.employment_type.choices %}
+                                <option value="{{ value }}"{% if value == experience.employment_type %} selected{% endif %}>{{ name }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                    <label>Location{{ form.location(value=experience.location) }}</label>
+                </div>
+                <div class="field-row">
+                    <label>Start year{{ form.start_year(value=experience.start_year.year) }}</label>
+                    <label>End year{{ form.end_year(value=experience.end_year.year if experience.end_year else '') }}</label>
+                </div>
+                <label>Responsibilities<textarea name="responsibilities">{{ experience.responsibilities or '' }}</textarea></label>
+                <button class="primary-btn settings-action-btn" type="submit">Update</button>
+            </form>
+        </div>
+        <button class="mini-btn delete-item"
+                type="button"
+                hx-delete="{{ url_for('settings_api.experience_delete', experience_id=experience.experience_id) }}"
+                hx-target="#experience-{{ experience.experience_id }}"
+                hx-swap="delete">Delete</button>
+    </div>
+</div>

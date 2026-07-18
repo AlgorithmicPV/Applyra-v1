@@ -64,6 +64,20 @@ def apply():
         }
         job_entries_frontend.append(job_entry)
 
+    # HTMX requests normally return partial HTML.
+    # After a successful login, however, I need to return the full page instead.
+    # This session variable distinguishes the initial post-login request from
+    # subsequent HTMX requests, allowing the correct response to be returned.
+    if session.get("first-access-to-app-via-htmx"):
+        session["first-access-to-app-via-htmx"] = False
+        return render_template(
+            "user/base.html",
+            page="apply",
+            form=form,
+            message=message,
+            job_entries=job_entries_frontend,
+        )
+
     if request.headers.get("HX-Request") == "true":
         return render_template(
             "user/apply/base.html",

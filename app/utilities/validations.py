@@ -42,7 +42,7 @@ def password_strength_checker(password: str, email: str, full_name: str):
         return results["feedback"]
 
 
-def email_confirm(user_email: str):
+def email_confirm(user_email: str, interval=30):
     token = serializer.dumps(user_email, salt="email-confirm")
 
     msg = Message(
@@ -51,8 +51,8 @@ def email_confirm(user_email: str):
         recipients=[user_email],
     )
 
-    code = get_totp().now()
-    msg.body = f"Your code is {code}"
+    code = get_totp(interval=interval).now()
+    msg.body = f"Your verification code is {code}. It expires in {interval // 60} minutes."
 
     try:
         mail.send(msg)

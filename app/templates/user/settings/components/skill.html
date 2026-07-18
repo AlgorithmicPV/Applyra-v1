@@ -1,0 +1,8 @@
+<div class="skill-pill" id="skill-{{ user_skill.user_skill_id }}">
+    <span>{{ skill.skill_name }}</span>
+    <button class="mini-btn delete-item"
+            type="button"
+            hx-delete="{{ url_for('settings_api.skill_delete', user_skill_id=user_skill.user_skill_id) }}"
+            hx-target="#skill-{{ user_skill.user_skill_id }}"
+            hx-swap="delete">Delete</button>
+</div>

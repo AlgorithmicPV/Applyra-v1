@@ -1,0 +1,35 @@
+<div class="record-row" id="education-{{ education.education_id }}">
+    <div>
+        <h3>{{ education.qualification }}</h3>
+        <p>{{ education.institution }} · {{ education.start_year.year }}–{{ education.end_year.year }}</p>
+    </div>
+    <div class="record-actions">
+        <div class="settings-popup">
+            <button type="button" class="mini-btn" onclick="openSettingsForm(this)">Edit</button>
+            <form class="record-form"
+                  hx-post="{{ url_for('settings_api.education_update', education_id=education.education_id) }}"
+                  hx-target="#education-{{ education.education_id }}"
+                  hx-swap="outerHTML">
+                {{ form.hidden_tag() }}
+                <div class="popup-heading">
+                    <h2>Edit education</h2>
+                    <button type="button" class="close-dialog" onclick="closeSettingsForm(this)">&times;</button>
+                </div>
+                <label>Qualification{{ form.certificate(value=education.qualification) }}</label>
+                <label>Institution{{ form.institution(value=education.institution) }}</label>
+                <label>Location{{ form.location(value=education.location) }}</label>
+                <div class="field-row">
+                    <label>Start year{{ form.start_year(value=education.start_year.year) }}</label>
+                    <label>End year{{ form.end_year(value=education.end_year.year) }}</label>
+                </div>
+                <label>Description<textarea name="description">{{ education.notes or '' }}</textarea></label>
+                <button class="primary-btn settings-action-btn" type="submit">Update</button>
+            </form>
+        </div>
+        <button class="mini-btn delete-item"
+                type="button"
+                hx-delete="{{ url_for('settings_api.education_delete', education_id=education.education_id) }}"
+                hx-target="#education-{{ education.education_id }}"
+                hx-swap="delete">Delete</button>
+    </div>
+</div>

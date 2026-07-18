@@ -1,0 +1,162 @@
+<div class="settings-page" data-verified="true">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/user/settings.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.6.1/dist/css/tom-select.css">
+
+    <div class="settings-heading">
+        <div>
+            <p class="eyebrow">Your account</p>
+            <h1>Settings</h1>
+            <p>Manage your personal details, security, and account.</p>
+        </div>
+        <div class="security-state"><span></span> Verified</div>
+    </div>
+
+    <div class="settings-content">
+        <div class="settings-main">
+            <form class="settings-card"
+                  enctype="multipart/form-data"
+                  hx-encoding="multipart/form-data"
+                  hx-post="{{ url_for('settings_api.profile_update') }}"
+                  hx-swap="none">
+                {{ profile_form.hidden_tag() }}
+                <div class="card-heading">
+                    <div><h2>Personal details</h2><p>Keep your account information up to date.</p></div>
+                </div>
+                <div class="profile-row">
+                    <img src="{{ current_user.profile_image }}" alt="Profile picture">
+                    <div>
+                        <label class="upload-btn settings-action-btn" for="profile-image">Choose picture</label>
+                        {{ profile_form.profile_image(id="profile-image", accept="image/png,image/jpeg,image/gif,image/webp") }}
+                        <p>PNG, JPG, GIF or WebP. Maximum 5 MB.</p>
+                    </div>
+                </div>
+                <div class="field-row">
+                    <label>Full name{{ profile_form.full_name(value=current_user.full_name) }}</label>
+                    <label>Email address{{ profile_form.email(value=current_user.email) }}</label>
+                </div>
+                <div class="form-footer"><button class="primary-btn settings-action-btn" type="submit">Save changes</button></div>
+            </form>
+
+            <form class="settings-card"
+                  hx-post="{{ url_for('settings_api.password_update') }}"
+                  hx-swap="none">
+                {{ password_form.hidden_tag() }}
+                <div class="card-heading">
+                    <div><h2>Change password</h2><p>Use a strong password you do not use elsewhere.</p></div>
+                </div>
+                <label>Current password{{ password_form.current_password(autocomplete="current-password") }}</label>
+                <div class="field-row">
+                    <label>New password{{ password_form.new_password(autocomplete="new-password") }}</label>
+                    <label>Confirm new password{{ password_form.confirm_password(autocomplete="new-password") }}</label>
+                </div>
+                <div class="form-footer"><button class="primary-btn settings-action-btn" type="submit">Update password</button></div>
+            </form>
+
+            <div class="settings-card profile-section">
+                <div class="card-heading"><div><h2>Skills</h2><p>Add or remove your application skills.</p></div></div>
+                <form class="inline-add-form"
+                      hx-post="{{ url_for('settings_api.skill_add') }}"
+                      hx-target="#skill-list"
+                      hx-swap="beforeend">
+                    {{ skill_form.hidden_tag() }}
+                    {{ skill_form.skill_name(class="settings-skill-select", data_search_url=url_for('settings_api.search_skills'), placeholder="Search for a skill") }}
+                    <button class="primary-btn settings-action-btn" type="submit">Add skill</button>
+                </form>
+                <div class="skill-list" id="skill-list">
+                    {% for item in skills %}
+                        {% set user_skill = namespace(user_skill_id=item.user_skill_id) %}
+                        {% set skill = namespace(skill_id=item.skill_id, skill_name=item.skill_name) %}
+                        {% include "user/settings/components/skill.html" %}
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="settings-card profile-section">
+                <div class="card-heading">
+                    <div><h2>Education</h2><p>Manage your qualifications and certifications.</p></div>
+                    <div class="settings-popup">
+                        <button type="button" class="secondary-btn settings-action-btn" onclick="openSettingsForm(this)">Add education</button>
+                        <form class="record-form"
+                              hx-post="{{ url_for('settings_api.education_add') }}"
+                              hx-target="#education-list"
+                              hx-swap="afterbegin">
+                            {{ education_form.hidden_tag() }}
+                            <div class="popup-heading">
+                                <h2>Add education</h2>
+                                <button type="button" class="close-dialog" onclick="closeSettingsForm(this)">&times;</button>
+                            </div>
+                            <label>Qualification{{ education_form.certificate() }}</label>
+                            <label>Institution{{ education_form.institution() }}</label>
+                            <label>Location{{ education_form.location() }}</label>
+                            <div class="field-row">
+                                <label>Start year{{ education_form.start_year() }}</label>
+                                <label>End year{{ education_form.end_year() }}</label>
+                            </div>
+                            <label>Description{{ education_form.description() }}</label>
+                            <button class="primary-btn settings-action-btn" type="submit">Save education</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="record-list" id="education-list">
+                    {% for education in educations %}
+                        {% set form = education_form %}
+                        {% include "user/settings/components/education.html" %}
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="settings-card profile-section">
+                <div class="card-heading">
+                    <div><h2>Work experience</h2><p>Manage the roles that shape your professional profile.</p></div>
+                    <div class="settings-popup">
+                        <button type="button" class="secondary-btn settings-action-btn" onclick="openSettingsForm(this)">Add experience</button>
+                        <form class="record-form"
+                              hx-post="{{ url_for('settings_api.experience_add') }}"
+                              hx-target="#experience-list"
+                              hx-swap="afterbegin">
+                            {{ experience_form.hidden_tag() }}
+                            <div class="popup-heading">
+                                <h2>Add work experience</h2>
+                                <button type="button" class="close-dialog" onclick="closeSettingsForm(this)">&times;</button>
+                            </div>
+                            <div class="field-row">
+                                <label>Job title{{ experience_form.job_title() }}</label>
+                                <label>Company{{ experience_form.company() }}</label>
+                            </div>
+                            <div class="field-row">
+                                <label>Employment type{{ experience_form.employment_type(class="settings-job-type") }}</label>
+                                <label>Location{{ experience_form.location() }}</label>
+                            </div>
+                            <div class="field-row">
+                                <label>Start year{{ experience_form.start_year() }}</label>
+                                <label>End year{{ experience_form.end_year() }}</label>
+                            </div>
+                            <label>Responsibilities{{ experience_form.responsibilities() }}</label>
+                            <button class="primary-btn settings-action-btn" type="submit">Save experience</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="record-list" id="experience-list">
+                    {% for experience in experiences %}
+                        {% set form = experience_form %}
+                        {% include "user/settings/components/experience.html" %}
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="settings-card delete-section">
+                <form class="danger-card"
+                      hx-post="{{ url_for('settings_api.account_delete') }}"
+                      hx-swap="none">
+                    {{ delete_form.hidden_tag() }}
+                    <p class="eyebrow">Danger zone</p>
+                    <h2>Delete account</h2>
+                    <p>This permanently deletes your profile, documents, applications, and account data.</p>
+                    <label>Type <strong>DELETE</strong> to confirm{{ delete_form.confirmation(autocomplete="off", placeholder="DELETE") }}</label>
+                    <button class="danger-btn" type="submit">Delete my account</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -1,9 +1,9 @@
 :root {
   --nav-bar-img-size: 15px;
-  --nav-bar-padding: 10px;
-  --nav-bar-width: calc((var(--nav-bar-padding) * 2) + var(--nav-bar-btn-size));
+  --nav-bar-padding: 15px;
+  --nav-bar-width: calc(var(--nav-bar-padding) + var(--nav-bar-btn-size));
   --nav-bar-btn-padding: 5px;
-  --nav-bar-btn-size: calc(var(--nav-bar-padding) * 2 + var(--nav-bar-img-size));
+  --nav-bar-btn-size: calc(var(--nav-bar-padding) * 2 + var(--nav-bar-img-size) + 12px);
   --main-content-gap: 10px;
   --header-height: 50px;
   --header-padding: 15px;
@@ -20,6 +20,7 @@ body {
   background-image: linear-gradient(var(--angle), #0E1116, #2A2F3A);
   background-repeat: no-repeat;
   animation: spin 5s linear infinite;
+  overflow: hidden;
 }
 
 @keyframes spin {
@@ -46,13 +47,20 @@ body {
 }
 
 .user-photo {
-  height: 20px;
-  width: 20px;
+  height: 32px;
+  width: 32px;
   border-radius: 50%;
   background-color: #4CAF50;
   border-radius: 50%;
   margin-bottom: 10px;
   margin-top: 10px;
+}
+
+.user-photo img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 .nav-bar button {
@@ -62,13 +70,33 @@ body {
   padding: var(--nav-bar-btn-padding);
   height: var(--nav-bar-btn-size);
   width: var(--nav-bar-btn-size);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  gap: 5px;
 }
+
+.nav-bar button:hover,
+.nav-bar .nav-page-btn.active {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.nav-bar button p{
+  color: #FFFF;
+  margin: 0;
+  line-height: 1;
+  text-align: center;
+  font-size: 12px;
+}
+
 
 .nav-bar button img {
   height: var(--nav-bar-img-size);
 }
 
-.settings-btn {
+.logout-btn {
   margin-top: auto;
   margin-bottom: 15px;
 }
