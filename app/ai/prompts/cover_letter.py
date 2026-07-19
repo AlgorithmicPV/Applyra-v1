@@ -24,7 +24,7 @@ RULES
 
 1. The highest priority is factual accuracy.
 
-2. Only use information explicitly provided in:
+2. Only USE information explicitly provided in:
    - USER INFORMATION
    - USER SKILLS
    - USER EXPERIENCE

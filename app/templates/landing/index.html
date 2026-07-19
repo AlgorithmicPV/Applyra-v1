@@ -1,9 +1,119 @@
 {% extends "base.html" %}
+
 {% block content %}
-    <h1>Landing</h1>
-    <button hx-get="{{ url_for("auth_web.sign_up") }}"
-            hx-target="#app"
-            hx-swag="innerHTML"
-            hx-push-url="true">Sign up</button>
-    {# <a href="{{ url_for("auth_web.sign_up") }}">Sign Up</a> #}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+
+<div class="landing-page">
+    <header class="site-header">
+        <a class="brand" href="{{ url_for('landing_web.landing') }}" aria-label="Applyra home">
+            <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="logo">
+            <span>Applyra</span>
+        </a>
+        <nav class="site-nav" aria-label="Main navigation">
+            <a href="#how-it-works">How it works</a>
+            <a href="#what-you-get">What you get</a>
+        </nav>
+        <div class="header-actions">
+            <a class="login-link" href="{{ url_for('auth_web.login') }}">Log in</a>
+            <a class="button button-small" href="{{ url_for('auth_web.sign_up') }}">Get started</a>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero" aria-labelledby="hero-title">
+            <div class="hero-copy">
+                <h1 id="hero-title">Create a resume that fits the job.</h1>
+                <p class="hero-description">Applyra analyses the job description, highlights what matters, and helps you create a tailored resume and cover letter—ready for your next application.</p>
+                <div class="hero-actions">
+                    <a class="button" href="{{ url_for('auth_web.sign_up') }}">
+                        Create your resume
+                        <span aria-hidden="true">→</span>
+                    </a>
+                    <a class="text-link" href="#how-it-works">See how it works <span aria-hidden="true">↓</span></a>
+                </div>
+                <ul class="hero-points" aria-label="Applyra benefits">
+                    <li><span>✓</span> Simple guided process</li>
+                    <li><span>✓</span> Tailored to each role</li>
+                    <li><span>✓</span> Easy to edit</li>
+                </ul>
+            </div>
+            <div class="hero-visual" aria-hidden="true">
+                <div class="visual-glow"></div>
+                <div class="match-pill"><span>✓</span> Job matched</div>
+                <img src="{{ url_for('static', filename='images/landing/hero-section-img.svg') }}" alt="hero-image">
+                <div class="skills-card">
+                    <span class="skills-icon">✦</span>
+                    <div><strong>Key skills found</strong><small>Ready to add to your resume</small></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="how-it-works" id="how-it-works" aria-labelledby="how-title">
+            <div class="section-heading">
+                <p class="section-label">HOW IT WORKS</p>
+                <h2 id="how-title">From job post to application in three steps</h2>
+                <p>No complicated setup. Bring the role you want, and Applyra guides you through the rest.</p>
+            </div>
+            <div class="steps">
+                <article class="step-card">
+                    <span class="step-number">01</span>
+                    <div class="step-icon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8M9 3v3m6-3v3M6 6h12v15H6zM9 10h6m-6 4h6m-6 4h4"/></svg>
+                    </div>
+                    <h3>Add the job description</h3>
+                    <p>Paste the vacancy details so Applyra can understand the role, skills, and expectations.</p>
+                </article>
+                <article class="step-card">
+                    <span class="step-number">02</span>
+                    <div class="step-icon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m16 16 5 5M8 11l2 2 4-4"/></svg>
+                    </div>
+                    <h3>Review the analysis</h3>
+                    <p>See the important requirements and how your experience and skills line up with the job.</p>
+                </article>
+                <article class="step-card">
+                    <span class="step-number">03</span>
+                    <div class="step-icon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l4 4v14H7zM14 3v5h5M10 13h5m-5 4h5"/></svg>
+                    </div>
+                    <h3>Create and refine</h3>
+                    <p>Generate tailored documents, then edit the content until it sounds right and feels like you.</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="outcomes" id="what-you-get" aria-labelledby="outcomes-title">
+            <div class="outcomes-copy">
+                <p class="section-label">WHAT YOU GET</p>
+                <h2 id="outcomes-title">Everything you need for a focused application</h2>
+                <p>Spend less time wondering what to include and more time applying with confidence.</p>
+                <div class="outcome-list">
+                    <div><span>✓</span><p><strong>Job description insights</strong><small>Understand the core skills and requirements at a glance.</small></p></div>
+                    <div><span>✓</span><p><strong>A tailored resume</strong><small>Present your relevant experience clearly for each role.</small></p></div>
+                    <div><span>✓</span><p><strong>A matching cover letter</strong><small>Start with a personalised draft you can make your own.</small></p></div>
+                    <div><span>✓</span><p><strong>Your documents in one place</strong><small>Keep, revisit, and refine the applications you create.</small></p></div>
+                </div>
+            </div>
+            <img src="{{ url_for('static', filename='images/landing/outcomes-img.png') }}" alt="outcomes-image">    
+        </section>
+
+        <section class="final-cta">
+            <div>
+                <p class="section-label">READY WHEN YOU ARE</p>
+                <h2>Make your next application count.</h2>
+                <p>Add a job description and let Applyra help you take it from there.</p>
+            </div>
+            <a class="button button-light" href="{{ url_for('auth_web.sign_up') }}">Get started for free <span aria-hidden="true">→</span></a>
+        </section>
+    </main>
+
+    <footer>
+        <a class="brand" href="{{ url_for('landing_web.landing') }}">
+            <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="">
+            <span>Applyra</span>
+        </a>
+        <p>Smarter documents for stronger applications.</p>
+        <span>Developed by G. A. P. Vidunitha</span>
+    </footer>
+</div>
 {% endblock %}
