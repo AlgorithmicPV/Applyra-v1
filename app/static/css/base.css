@@ -11,3 +11,18 @@ body {
 #app {
   height: 100%;
 }
+
+input[type="search"]::-webkit-search-cancel-button {
+  /* Remove default styling */
+  -webkit-appearance: none;
+
+  /* Create a custom round button */
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  cursor: pointer;
+  background-image: url("../../static/images/icons/functional-icons/cross.svg");
+  background-size: 10px;
+  background-repeat: no-repeat;
+  background-position: center;
+}

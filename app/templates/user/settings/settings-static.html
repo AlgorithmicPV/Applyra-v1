@@ -1,5 +1,5 @@
 <div class="settings-page" data-verified="false">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/user/settings.css') }}">
+    <title>Settings</title>
     <div class="settings-heading">
         <div>
             <p class="eyebrow">Your account</p>
@@ -8,7 +8,6 @@
         </div>
         <div class="security-state"><span></span> Locked</div>
     </div>
-
     <div class="verification-card">
         <div class="verification-copy">
             <div>
@@ -17,7 +16,7 @@
             </div>
         </div>
         <div class="verification-actions">
-            <form hx-post="{{ url_for('settings_api.request_code') }}"
+            <form hx-post="{{ url_for("settings_api.request_code") }}"
                   hx-target="closest .settings-page"
                   hx-swap="outerHTML">
                 {{ code_form.hidden_tag() }}
@@ -25,7 +24,7 @@
             </form>
             {% if code_sent %}
                 <form class="code-entry"
-                      hx-post="{{ url_for('settings_api.verify_code') }}"
+                      hx-post="{{ url_for("settings_api.verify_code") }}"
                       hx-target="closest .settings-page"
                       hx-swap="outerHTML">
                     {{ pin_form.hidden_tag() }}
@@ -35,52 +34,83 @@
             {% endif %}
         </div>
     </div>
-
     <div class="settings-content locked">
         <div class="settings-main">
             <div class="settings-card">
                 <div class="card-heading">
-                    <div><h2>Personal details</h2><p>Your account information.</p></div>
+                    <div>
+                        <h2>Personal details</h2>
+                        <p>Your account information.</p>
+                    </div>
                 </div>
                 <div class="profile-row">
                     <img src="{{ current_user.profile_image }}" alt="Profile picture">
-                    <div><h3>{{ current_user.full_name }}</h3><p>{{ current_user.email }}</p></div>
+                    <div>
+                        <h3>{{ current_user.full_name }}</h3>
+                        <p>{{ current_user.email }}</p>
+                    </div>
                 </div>
             </div>
-
             <div class="settings-card">
                 <div class="card-heading">
-                    <div><h2>Change password</h2><p>Unlock settings to update your password.</p></div>
+                    <div>
+                        <h2>Change password</h2>
+                        <p>Unlock settings to update your password.</p>
+                    </div>
                 </div>
-                <label>Current password<input type="password" value="password" disabled></label>
+                <label>
+                    Current password
+                    <input type="password" value="password" disabled>
+                </label>
                 <div class="field-row">
-                    <label>New password<input type="password" disabled></label>
-                    <label>Confirm new password<input type="password" disabled></label>
+                    <label>
+                        New password
+                        <input type="password" disabled>
+                    </label>
+                    <label>
+                        Confirm new password
+                        <input type="password" disabled>
+                    </label>
                 </div>
             </div>
-
             <div class="settings-card profile-section">
-                <div class="card-heading"><div><h2>Skills</h2><p>Your application skills.</p></div></div>
+                <div class="card-heading">
+                    <div>
+                        <h2>Skills</h2>
+                        <p>Your application skills.</p>
+                    </div>
+                </div>
                 <div class="skill-list">
                     {% for skill in skills %}<div class="skill-pill"><span>{{ skill }}</span></div>{% endfor %}
                     {% if not skills %}<p>No skills added yet.</p>{% endif %}
                 </div>
             </div>
-
             <div class="settings-card profile-section">
-                <div class="card-heading"><div><h2>Education</h2><p>Your qualifications and certifications.</p></div></div>
+                <div class="card-heading">
+                    <div>
+                        <h2>Education</h2>
+                        <p>Your qualifications and certifications.</p>
+                    </div>
+                </div>
                 <div class="record-list">
                     {% for education in educations %}
                         <div class="record-row">
-                            <div><h3>{{ education.qualification }}</h3><p>{{ education.institution }} · {{ education.start_year.year }}–{{ education.end_year.year }}</p></div>
+                            <div>
+                                <h3>{{ education.qualification }}</h3>
+                                <p>{{ education.institution }} · {{ education.start_year.year }}–{{ education.end_year.year }}</p>
+                            </div>
                         </div>
                     {% endfor %}
                     {% if not educations %}<p>No education added yet.</p>{% endif %}
                 </div>
             </div>
-
             <div class="settings-card profile-section">
-                <div class="card-heading"><div><h2>Work experience</h2><p>Your professional experience.</p></div></div>
+                <div class="card-heading">
+                    <div>
+                        <h2>Work experience</h2>
+                        <p>Your professional experience.</p>
+                    </div>
+                </div>
                 <div class="record-list">
                     {% for experience in experiences %}
                         <div class="record-row">
@@ -90,7 +120,6 @@
                     {% if not experiences %}<p>No work experience added yet.</p>{% endif %}
                 </div>
             </div>
-
             <div class="settings-card delete-section">
                 <div class="danger-card">
                     <p class="eyebrow">Danger zone</p>

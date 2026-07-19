@@ -1,13 +1,11 @@
 <div class="page-cont doc-home">
-    <title>Files</title>
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='css/user/documents/doc-home.css') }}">
+    <title>All Documents</title>
     <div class="top">
         <input type="search"
                name="q"
                placeholder="Search"
                class="search"
-               hx-get="{{ url_for('documents_api.search') }}"
+               hx-get="{{ url_for("documents_api.search") }}"
                hx-trigger="input changed delay:300ms, search"
                hx-vals="js:{doc_type: document.querySelector('.filter-btn.active').dataset.type}"
                hx-target=".document-rows"
@@ -15,19 +13,19 @@
         <div class="buttons">
             <button class="filter-btn all-btn active"
                     data-type="all"
-                    hx-get="{{ url_for('documents_api.search') }}"
+                    hx-get="{{ url_for("documents_api.search") }}"
                     hx-vals='{"doc_type": "all"}'
                     hx-include=".search"
                     hx-target=".document-rows">All</button>
             <button class="filter-btn cv-btn"
                     data-type="cv"
-                    hx-get="{{ url_for('documents_api.search') }}"
+                    hx-get="{{ url_for("documents_api.search") }}"
                     hx-vals='{"doc_type": "cv"}'
                     hx-include=".search"
                     hx-target=".document-rows">My CVs</button>
             <button class="filter-btn cover-letter-btn"
                     data-type="cover-letter"
-                    hx-get="{{ url_for('documents_api.search') }}"
+                    hx-get="{{ url_for("documents_api.search") }}"
                     hx-vals='{"doc_type": "cover-letter"}'
                     hx-include=".search"
                     hx-target=".document-rows">My Cover Letters</button>

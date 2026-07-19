@@ -2,8 +2,25 @@
     <div class="main-content">
         <link rel="stylesheet"
               href="{{ url_for('static', filename='css/user/base.css') }}" />
+        {# To avoid FOUC (Flash of Unstyled Content), put all the stylings in the user/base.html #}
+        {# Documents CSS #}
+        <link rel="stylesheet"
+              href="{{ url_for('static', filename='css/user/documents/doc-home.css') }}">
         <link rel="stylesheet"
               href="{{ url_for('static', filename='css/user/documents/editor.css') }}">
+        {# Documents CSS end #}
+        {# Apply CSS #}
+        <link rel="stylesheet"
+              href="{{ url_for('static', filename='css/user/apply/base.css') }}">
+        <link rel="stylesheet"
+              href="{{ url_for('static', filename='css/user/apply/components/card.css') }}">
+        <link rel="stylesheet"
+              href="{{ url_for('static', filename='css/user/apply/components/detail.css') }}">
+        {# Apply CSS end #}
+        {# Settings CSS #}
+        <link rel="stylesheet"
+              href="{{ url_for('static', filename='css/user/settings.css') }}">
+        {# Settings CSS end #}
         <div class="nav-bar">
             <div class="user-photo">
                 <img id="nav-profile-image"

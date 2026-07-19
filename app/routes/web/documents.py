@@ -86,7 +86,7 @@ def doc_home():
         return render_template("user/documents-pages/doc-home.html", all_docs=all_docs)
     else:
         return render_template(
-            "user/base.html", title="Files", page="doc-home", all_docs=all_docs
+            "user/base.html", title="All Documents", page="doc-home", all_docs=all_docs
         )
 
 

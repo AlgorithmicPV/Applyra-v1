@@ -15,7 +15,6 @@
                     hx-delete="{{ url_for('apply_api.delete_job_entry', id=job_entry_id) }}"
                     hx-target="closest .job-card"
                     hx-swap="outerHTML"
-                    hx-confirm="Delete this application and its generated documents?"
                     hx-disabled-elt="this"
                     hx-on:click="event.stopPropagation()"
                     hx-on::before-request="this.closest('.job-card').classList.add('deleting')"

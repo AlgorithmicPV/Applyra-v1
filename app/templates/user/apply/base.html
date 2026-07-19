@@ -1,11 +1,6 @@
 {% import "user/apply/components/card.html" as comp %}
-<div class="body-cont">
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='css/user/apply/base.css') }}">
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='css/user/apply/components/card.css') }}">
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='css/user/apply/components/detail.css') }}">
+<div class="body-cont apply">
+    <title>Apply</title>
     <div class="left">
         <div class="top">
             <form hx-post="{{ url_for("apply_api.job_entry") }}"
@@ -23,7 +18,7 @@
                name="q"
                placeholder="Search"
                class="search"
-               hx-get="{{ url_for('apply_api.search') }}"
+               hx-get="{{ url_for("apply_api.search") }}"
                hx-trigger="input changed delay:300ms, search"
                hx-target=".cards"
                hx-swap="innerHTML">
@@ -43,7 +38,7 @@
             <div class="cont">
                 <img src="{{ url_for('static', filename='images/apply/base.png') }}"
                      alt="base image">
-                <p>Turn Any Job Description into a Winning Application.</p>
+                <p>Welcome. Turn Any Job Description into a Winning Application.</p>
             </div>
         </div>
     </div>

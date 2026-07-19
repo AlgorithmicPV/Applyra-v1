@@ -24,7 +24,8 @@
                         Employment type
                         <select name="employment_type" class="settings-job-type">
                             {% for value, name in form.employment_type.choices %}
-                                <option value="{{ value }}"{% if value == experience.employment_type %} selected{% endif %}>{{ name }}</option>
+                                <option value="{{ value }}"
+                                        {% if value == experience.employment_type %}selected{% endif %}>{{ name }}</option>
                             {% endfor %}
                         </select>
                     </label>
@@ -34,7 +35,9 @@
                     <label>Start year{{ form.start_year(value=experience.start_year.year) }}</label>
                     <label>End year{{ form.end_year(value=experience.end_year.year if experience.end_year else '') }}</label>
                 </div>
-                <label>Responsibilities<textarea name="responsibilities">{{ experience.responsibilities or '' }}</textarea></label>
+                <label>
+                    Responsibilities<textarea name="responsibilities">{{ experience.responsibilities or '' }}</textarea>
+                </label>
                 <button class="primary-btn settings-action-btn" type="submit">Update</button>
             </form>
         </div>

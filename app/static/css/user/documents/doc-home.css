@@ -14,208 +14,201 @@
   justify-content: flex-start;
 }
 
-
-/* Top search section */
-.top {
-  width: calc(100% - (var(--top-padding) * 2));
-  padding: 0 0 var(--top-padding) 0;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  background-color: #ffffff;
-  flex-shrink: 0;
-}
-
-/* Search input */
-.search {
-  width: 500px;
-  max-width: calc(100% - 30px);
-
-  padding: 10px;
-  margin: 15px;
-
-  align-self: flex-start;
-
-  background-color: transparent;
-  border: none;
-  outline: none;
-
-  font-family: "Inter", sans-serif;
-  font-size: small;
-}
-
-/* Document list container */
-.document-list-wrapper {
-  width: 100%;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  flex-shrink: 0;
-}
-
-/* Filter/action buttons */
-.buttons {
-  align-self: flex-start;
-
-  padding: 5px;
-  margin: 15px;
-
-  font-family: "Inter", sans-serif;
-}
-
-.buttons button {
-  padding: 6px 10px;
-
-  background-color: transparent;
-  border: none;
-
-  color: #7a8190;
-  font-family: "Inter", sans-serif;
-
-  cursor: pointer;
-}
-
-.buttons button:hover {
-  color: #0e1116;
-}
-
-/* Document table */
-.list {
-  width: 95%;
-  margin: 0 auto 15px;
-
-  border-collapse: separate;
-  border-spacing: 0 12px;
-
-  table-layout: fixed;
-}
-
-/* Document row */
-.list tbody tr {
-  background-color: var(--surface-color, #ffffff);
-
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-
-  cursor: pointer;
-  font-family: "Inter";
-  transition:
-    background-color 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.list tbody tr:hover {
-  background-color: var(--surface-hover, #f8f9fa);
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Table cells */
-.list td {
-  padding: 14px 18px;
-  vertical-align: middle;
-}
-
-/* Rounded row corners */
-.list td:first-child {
-  width: 60px;
-
-  text-align: center;
-
-  border-radius: 8px 0 0 8px;
-}
-
-.list td:last-child {
-  border-radius: 0 8px 8px 0;
-}
-
-/* Document details column */
-.list td:nth-child(2) {
-  width: 45%;
-}
-
-/* Created and updated date columns */
-.list td:nth-child(3),
-.list td:nth-child(4) {
-  color: #6b7280;
-  font-size: 0.9rem;
-
-  white-space: nowrap;
-}
-
-/* Document icon */
-.list img {
-  width: 32px;
-  height: 32px;
-
-  display: block;
-  margin: 0 auto;
-}
-
-/* Document title */
-.document-name {
-  margin: 0;
-
-  color: #0e1116;
-  font-weight: 600;
-}
-
-/* Role and company details */
-.job-detail {
-  margin: 4px 0 0;
-
-  color: #6b7280;
-  font-size: 0.9rem;
-}
-
-/* Responsive layout */
-@media (max-width: 768px) {
+.doc-home {
   .top {
-    width: 100%;
+    width: calc(100% - (var(--top-padding) * 2));
+    padding: 0 0 var(--top-padding) 0;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    background-color: #ffffff;
+    flex-shrink: 0;
   }
 
   .search {
-    width: calc(100% - 30px);
+    width: 500px;
+    max-width: calc(100% - 30px);
+
+    padding: 10px;
+    margin: 15px;
+
+    align-self: flex-start;
+
+    background-color: transparent;
+    border: none;
+    outline: none;
+
+    font-family: "Inter", sans-serif;
+    font-size: small;
+  }
+
+  .document-list-wrapper {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    flex-shrink: 0;
+  }
+
+  .buttons {
+    align-self: flex-start;
+
+    padding: 5px;
+    margin: 15px;
+
+    font-family: "Inter", sans-serif;
+  }
+
+  .buttons button {
+    padding: 6px 10px;
+
+    background-color: transparent;
+    border: none;
+
+    color: #7a8190;
+    font-family: "Inter", sans-serif;
+
+    cursor: pointer;
+  }
+
+  .buttons button:hover {
+    color: #0e1116;
   }
 
   .list {
-    width: calc(100% - 20px);
-    table-layout: auto;
+    width: 95%;
+    margin: 0 auto 15px;
+
+    border-collapse: separate;
+    border-spacing: 0 12px;
+
+    table-layout: fixed;
+  }
+
+  .list tbody tr {
+    background-color: var(--surface-color, #ffffff);
+
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+
+    cursor: pointer;
+    font-family: "Inter";
+    transition:
+      background-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .list tbody tr:hover {
+    background-color: var(--surface-hover, #f8f9fa);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
   }
 
   .list td {
-    padding: 12px 10px;
+    padding: 14px 18px;
+    vertical-align: middle;
   }
 
   .list td:first-child {
-    width: 40px;
+    width: 60px;
+
+    text-align: center;
+
+    border-radius: 8px 0 0 8px;
   }
 
+  .list td:last-child {
+    border-radius: 0 8px 8px 0;
+  }
+
+  /* Document details column */
+  .list td:nth-child(2) {
+    width: 45%;
+  }
+
+  /* Created and updated date columns */
   .list td:nth-child(3),
   .list td:nth-child(4) {
-    font-size: 0.8rem;
+    color: #6b7280;
+    font-size: 0.9rem;
+
+    white-space: nowrap;
   }
 
+  /* Document icon */
   .list img {
-    width: 26px;
-    height: 26px;
+    width: 32px;
+    height: 32px;
+
+    display: block;
+    margin: 0 auto;
   }
-}
+
+  /* Document title */
+  .document-name {
+    margin: 0;
+
+    color: #0e1116;
+    font-weight: 600;
+  }
+
+  /* Role and company details */
+  .job-detail {
+    margin: 4px 0 0;
+
+    color: #6b7280;
+    font-size: 0.9rem;
+  }
+
+  /* Responsive layout */
+  @media (max-width: 768px) {
+    .top {
+      width: 100%;
+    }
+
+    .search {
+      width: calc(100% - 30px);
+    }
+
+    .list {
+      width: calc(100% - 20px);
+      table-layout: auto;
+    }
+
+    .list td {
+      padding: 12px 10px;
+    }
+
+    .list td:first-child {
+      width: 40px;
+    }
+
+    .list td:nth-child(3),
+    .list td:nth-child(4) {
+      font-size: 0.8rem;
+    }
+
+    .list img {
+      width: 26px;
+      height: 26px;
+    }
+  }
 
 
-.active {
-  color: #0E1116 !important;
-}
+  .active {
+    color: #0E1116 !important;
+  }
 
 
-.row.cover-letter.hide {
-  display: none;
-}
+  .row.cover-letter.hide {
+    display: none;
+  }
 
 
-.row.cv.hide {
-  display: none;
+  .row.cv.hide {
+    display: none;
+  }
 }

@@ -1,7 +1,6 @@
 <div class="settings-page" data-verified="true">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/user/settings.css') }}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.6.1/dist/css/tom-select.css">
-
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/tom-select@2.6.1/dist/css/tom-select.css">
     <div class="settings-heading">
         <div>
             <p class="eyebrow">Your account</p>
@@ -10,17 +9,19 @@
         </div>
         <div class="security-state"><span></span> Verified</div>
     </div>
-
     <div class="settings-content">
         <div class="settings-main">
             <form class="settings-card"
                   enctype="multipart/form-data"
                   hx-encoding="multipart/form-data"
-                  hx-post="{{ url_for('settings_api.profile_update') }}"
+                  hx-post="{{ url_for("settings_api.profile_update") }}"
                   hx-swap="none">
                 {{ profile_form.hidden_tag() }}
                 <div class="card-heading">
-                    <div><h2>Personal details</h2><p>Keep your account information up to date.</p></div>
+                    <div>
+                        <h2>Personal details</h2>
+                        <p>Keep your account information up to date.</p>
+                    </div>
                 </div>
                 <div class="profile-row">
                     <img src="{{ current_user.profile_image }}" alt="Profile picture">
@@ -34,32 +35,42 @@
                     <label>Full name{{ profile_form.full_name(value=current_user.full_name) }}</label>
                     <label>Email address{{ profile_form.email(value=current_user.email) }}</label>
                 </div>
-                <div class="form-footer"><button class="primary-btn settings-action-btn" type="submit">Save changes</button></div>
+                <div class="form-footer">
+                    <button class="primary-btn settings-action-btn" type="submit">Save changes</button>
+                </div>
             </form>
-
             <form class="settings-card"
-                  hx-post="{{ url_for('settings_api.password_update') }}"
+                  hx-post="{{ url_for("settings_api.password_update") }}"
                   hx-swap="none">
                 {{ password_form.hidden_tag() }}
                 <div class="card-heading">
-                    <div><h2>Change password</h2><p>Use a strong password you do not use elsewhere.</p></div>
+                    <div>
+                        <h2>Change password</h2>
+                        <p>Use a strong password you do not use elsewhere.</p>
+                    </div>
                 </div>
                 <label>Current password{{ password_form.current_password(autocomplete="current-password") }}</label>
                 <div class="field-row">
                     <label>New password{{ password_form.new_password(autocomplete="new-password") }}</label>
                     <label>Confirm new password{{ password_form.confirm_password(autocomplete="new-password") }}</label>
                 </div>
-                <div class="form-footer"><button class="primary-btn settings-action-btn" type="submit">Update password</button></div>
+                <div class="form-footer">
+                    <button class="primary-btn settings-action-btn" type="submit">Update password</button>
+                </div>
             </form>
-
             <div class="settings-card profile-section">
-                <div class="card-heading"><div><h2>Skills</h2><p>Add or remove your application skills.</p></div></div>
+                <div class="card-heading">
+                    <div>
+                        <h2>Skills</h2>
+                        <p>Add or remove your application skills.</p>
+                    </div>
+                </div>
                 <form class="inline-add-form"
-                      hx-post="{{ url_for('settings_api.skill_add') }}"
+                      hx-post="{{ url_for("settings_api.skill_add") }}"
                       hx-target="#skill-list"
                       hx-swap="beforeend">
                     {{ skill_form.hidden_tag() }}
-                    {{ skill_form.skill_name(class="settings-skill-select", data_search_url=url_for('settings_api.search_skills'), placeholder="Search for a skill") }}
+                    {{ skill_form.skill_name(class="settings-skill-select", data_search_url=url_for('settings_api.search_skills') , placeholder="Search for a skill") }}
                     <button class="primary-btn settings-action-btn" type="submit">Add skill</button>
                 </form>
                 <div class="skill-list" id="skill-list">
@@ -70,14 +81,18 @@
                     {% endfor %}
                 </div>
             </div>
-
             <div class="settings-card profile-section">
                 <div class="card-heading">
-                    <div><h2>Education</h2><p>Manage your qualifications and certifications.</p></div>
+                    <div>
+                        <h2>Education</h2>
+                        <p>Manage your qualifications and certifications.</p>
+                    </div>
                     <div class="settings-popup">
-                        <button type="button" class="secondary-btn settings-action-btn" onclick="openSettingsForm(this)">Add education</button>
+                        <button type="button"
+                                class="secondary-btn settings-action-btn"
+                                onclick="openSettingsForm(this)">Add education</button>
                         <form class="record-form"
-                              hx-post="{{ url_for('settings_api.education_add') }}"
+                              hx-post="{{ url_for("settings_api.education_add") }}"
                               hx-target="#education-list"
                               hx-swap="afterbegin">
                             {{ education_form.hidden_tag() }}
@@ -104,14 +119,18 @@
                     {% endfor %}
                 </div>
             </div>
-
             <div class="settings-card profile-section">
                 <div class="card-heading">
-                    <div><h2>Work experience</h2><p>Manage the roles that shape your professional profile.</p></div>
+                    <div>
+                        <h2>Work experience</h2>
+                        <p>Manage the roles that shape your professional profile.</p>
+                    </div>
                     <div class="settings-popup">
-                        <button type="button" class="secondary-btn settings-action-btn" onclick="openSettingsForm(this)">Add experience</button>
+                        <button type="button"
+                                class="secondary-btn settings-action-btn"
+                                onclick="openSettingsForm(this)">Add experience</button>
                         <form class="record-form"
-                              hx-post="{{ url_for('settings_api.experience_add') }}"
+                              hx-post="{{ url_for("settings_api.experience_add") }}"
                               hx-target="#experience-list"
                               hx-swap="afterbegin">
                             {{ experience_form.hidden_tag() }}
@@ -143,10 +162,9 @@
                     {% endfor %}
                 </div>
             </div>
-
             <div class="settings-card delete-section">
                 <form class="danger-card"
-                      hx-post="{{ url_for('settings_api.account_delete') }}"
+                      hx-post="{{ url_for("settings_api.account_delete") }}"
                       hx-swap="none">
                     {{ delete_form.hidden_tag() }}
                     <p class="eyebrow">Danger zone</p>
@@ -158,5 +176,4 @@
             </div>
         </div>
     </div>
-
 </div>

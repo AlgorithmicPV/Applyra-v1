@@ -76,6 +76,7 @@ def apply():
             form=form,
             message=message,
             job_entries=job_entries_frontend,
+            title="Apply",
         )
 
     if request.headers.get("HX-Request") == "true":
@@ -92,4 +93,5 @@ def apply():
             form=form,
             message=message,
             job_entries=job_entries_frontend,
+            title="Apply",  # title of the page
         )
