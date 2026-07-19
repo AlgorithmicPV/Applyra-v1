@@ -3,6 +3,127 @@
   --top-padding: 15px;
 }
 
+@media (max-width: 560px) {
+  .doc-home {
+    box-sizing: border-box;
+    height: 100%;
+    min-height: 0;
+    overscroll-behavior: contain;
+  }
+
+  .doc-home {
+    .top {
+      box-sizing: border-box;
+      width: 100%;
+      padding-bottom: 8px;
+      border-bottom: 3px solid #F3F4F1;
+    }
+
+    .search {
+      box-sizing: border-box;
+      width: calc(100% - 24px);
+      max-width: none;
+      margin: 6px 12px;
+      padding: 10px 4px;
+      font-size: 16px;
+      border-bottom: 2px solid #F3F4F1;
+    }
+
+    .buttons {
+      display: flex;
+      box-sizing: border-box;
+      width: 100%;
+      margin: 0;
+      padding: 4px 8px;
+      gap: 4px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .buttons::-webkit-scrollbar {
+      display: none;
+    }
+
+    .buttons button {
+      flex: 0 0 auto;
+      padding: 8px 10px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+
+    .buttons button.active {
+      background-color: #F3F4F1;
+    }
+
+    .document-list-wrapper {
+      box-sizing: border-box;
+      padding: 0 10px 14px;
+    }
+
+    .list {
+      display: block;
+      width: 100%;
+      margin: 0;
+      border-spacing: 0 10px;
+    }
+
+    .list tbody {
+      display: block;
+    }
+
+    .list tbody tr {
+      display: grid;
+      grid-template-columns: 48px minmax(0, 1fr);
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    .list td {
+      box-sizing: border-box;
+      width: auto !important;
+      padding: 2px 6px;
+    }
+
+    .list td:first-child {
+      grid-row: 1 / 4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+
+    .list td:nth-child(2),
+    .list td:nth-child(3),
+    .list td:nth-child(4) {
+      grid-column: 2;
+      min-width: 0;
+    }
+
+    .list td:nth-child(3),
+    .list td:nth-child(4) {
+      font-size: 0.72rem;
+      white-space: normal;
+    }
+
+    .document-name,
+    .job-detail {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .empty-row {
+      display: block !important;
+      padding: 18px !important;
+      text-align: center;
+    }
+
+    .empty-row td {
+      display: block !important;
+    }
+  }
+}
+
 /* Main document page */
 .doc-home {
   height: calc(100vh - (var(--header-height) + 16px));
@@ -210,5 +331,59 @@
 
   .row.cv.hide {
     display: none;
+  }
+}
+
+/* Keep the card-style mobile table after the shared table rules. */
+@media (max-width: 560px) {
+  .doc-home {
+    height: 100%;
+
+    .top {
+      box-sizing: border-box;
+      width: 100%;
+      padding-bottom: 8px;
+    }
+
+    .search {
+      box-sizing: border-box;
+      width: calc(100% - 24px);
+      max-width: none;
+      margin: 6px 12px;
+      padding: 10px 4px;
+      font-size: 16px;
+    }
+
+    .buttons {
+      width: 100%;
+      margin: 0;
+      padding: 4px 8px;
+    }
+
+    .buttons button {
+      padding: 8px 10px;
+    }
+
+    .list {
+      display: block;
+      width: 100%;
+      margin: 0;
+      table-layout: auto;
+    }
+
+    .list td {
+      width: auto !important;
+      padding: 2px 6px;
+    }
+
+    .list td:first-child {
+      width: auto;
+      padding: 0;
+    }
+
+    .list td:nth-child(3),
+    .list td:nth-child(4) {
+      font-size: 0.72rem;
+    }
   }
 }

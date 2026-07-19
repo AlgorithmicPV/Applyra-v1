@@ -2,7 +2,8 @@
     <div class="job-card"
          id="x{{ job_entry_id }}"
          hx-get="{{ url_for('apply_api.show', id=job_entry_id) }}"
-         hx-target=".right">
+         hx-target=".right"
+         hx-on::after-request="if (event.detail.successful) openMobileJobDetail()">
         <div class="card-left">
             <p class="job-role">{{ job_title }}</p>
             <p class="company-name">{{ company_name }}</p>

@@ -1,4 +1,8 @@
 .apply {
+  .mobile-back-btn {
+    display: none;
+  }
+
   .detail {
     display: flex;
     flex-direction: column;
@@ -155,5 +159,77 @@
 
   .documents button:hover {
     background: #7C3AED;
+  }
+}
+
+@media (max-width: 560px) {
+  .apply {
+    .mobile-back-btn {
+      display: flex;
+      align-items: center;
+      align-self: flex-start;
+      gap: 7px;
+      min-height: 38px;
+      margin: -6px 0 0;
+      padding: 6px 10px 6px 6px;
+      border: none;
+      border-radius: 6px;
+      background-color: #F3F4F1;
+      color: #0E1116;
+      font-family: "Inter";
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .mobile-back-icon {
+      font-size: 1.25rem;
+      line-height: 1;
+    }
+
+    .detail {
+      box-sizing: border-box;
+      width: 100%;
+      padding: 18px 16px 28px;
+      gap: 24px;
+      align-items: stretch;
+      overscroll-behavior: contain;
+    }
+
+    .detail .header .job-title {
+      font-size: 1.25rem;
+    }
+
+    .detail .header .company-name,
+    .detail .header .country {
+      font-size: 0.95rem;
+    }
+
+    .detail .header .captured-at,
+    .skill-detail,
+    .documents,
+    .job-description {
+      width: 100%;
+      font-size: 0.9rem;
+    }
+
+    th,
+    td {
+      padding: 9px 8px;
+      font-size: 0.85rem;
+    }
+
+    th:first-child,
+    td:first-child {
+      padding-left: 12px;
+    }
+
+    .documents button {
+      padding: 9px 16px;
+    }
+
+    .job-description ul {
+      margin: 0;
+      padding-left: 22px;
+    }
   }
 }

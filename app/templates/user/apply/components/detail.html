@@ -1,4 +1,11 @@
 <div class="detail">
+    <button class="mobile-back-btn"
+            type="button"
+            onclick="closeMobileJobDetail()"
+            aria-label="Back to job applications">
+        <span class="mobile-back-icon" aria-hidden="true">&#8592;</span>
+        Applications
+    </button>
     {# Style the selected job entry card #}
     <style>
         #x{{ detail["job_entry_id"] }} {

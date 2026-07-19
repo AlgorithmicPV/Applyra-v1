@@ -92,3 +92,37 @@
     -webkit-mask-image: url("../../../../images/icons/functional-icons/delete.svg");
   }
 }
+
+@media (max-width: 560px) {
+  .apply {
+    .job-card {
+      box-sizing: border-box;
+      width: 100%;
+      padding: 11px 12px;
+    }
+
+    .job-card .job-role {
+      font-size: 0.9rem;
+    }
+
+    .job-card .company-name {
+      padding-bottom: 6px;
+    }
+
+    .card-left {
+      min-width: 0;
+    }
+
+    .card-left p {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .card-right .delete-btn {
+      margin-top: 8px;
+      min-width: 36px;
+      min-height: 36px;
+    }
+  }
+}

@@ -76,11 +76,21 @@ body {
   justify-content: center;
   border-radius: 5px;
   gap: 5px;
+  transition: background-color 0.2s ease, transform 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .nav-bar button:hover,
 .nav-bar .nav-page-btn.active {
   background-color: rgba(255, 255, 255, 0.08);
+}
+
+.nav-bar button:hover {
+  transform: translateY(-2px);
+}
+
+.nav-bar button:active {
+  transform: scale(0.95);
 }
 
 .nav-bar button p {
@@ -106,6 +116,24 @@ body {
   width: 100%;
   border-radius: 6px;
   overflow: hidden;
+}
+
+.page-body > .body-cont,
+.page-body > .page-cont,
+.page-body > .settings-page {
+  animation: page-flow-in 0.28s ease-out;
+}
+
+@keyframes page-flow-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .page-header {
@@ -148,27 +176,79 @@ body {
 
 @media (max-width: 560px) {
 
+  :root {
+    --mobile-nav-height: 58px;
+    --header-height: 44px;
+    --header-padding: 12px;
+  }
+
   body {
-    overflow: auto;
+    overflow: hidden;
   }
 
   .main-content {
     display: flex;
     flex-direction: column-reverse;
     gap: 0;
-    height: calc(100vh - 16px);
+    height: calc(100dvh - 16px);
+    min-height: 0;
   }
 
   .page {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    flex-direction: column;
     border-radius: 6px 6px 0 0;
+  }
+
+  .page-header {
+    box-sizing: border-box;
+    flex: 0 0 var(--header-height);
+  }
+
+  .page-body {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
   }
 
   .nav-bar {
     background-color: #FFFF;
     flex-direction: row;
-    height: max-content;
+    flex: 0 0 var(--mobile-nav-height);
+    height: var(--mobile-nav-height);
+    width: calc(100% - (2 * var(--nav-bar-padding)));
     border: none;
     border-radius: 0 0 6px 6px;
+    justify-content: space-evenly;
+    gap: 0;
+    align-items: center;
+    padding: var(--nav-bar-padding);
+  }
+
+  .user-photo {
+    display: none;
+  }
+
+  .nav-bar button {
+    flex: 1;
+    max-width: 50px;
+    border-radius: 0;
+    border-bottom: 5px solid transparent;
+  }
+
+  .nav-bar button:hover,
+  .nav-bar .nav-page-btn.active {
+    border-bottom: 5px solid #0E1116;
+  }
+
+  .nav-bar button:hover {
+    transform: none;
+  }
+
+  .nav-bar .nav-page-btn.active {
+    transform: translateY(-2px);
   }
 
   .nav-bar button img {
@@ -186,4 +266,20 @@ body {
     margin-bottom: 0;
   }
 
+  .user-photo {
+    width: 30px;
+    height: 30px;
+    margin: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-body > .body-cont,
+  .page-body > .page-cont {
+    animation: none;
+  }
+
+  .nav-bar button {
+    transition: none;
+  }
 }
