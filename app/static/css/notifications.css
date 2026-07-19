@@ -15,7 +15,9 @@
   opacity: 0;
   pointer-events: none;
 
-  transition: opacity 0.35s ease, transform 0.35s ease;
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
@@ -53,7 +55,7 @@
   color: white;
   margin: 0;
   font-size: 14px;
-  font-family: 'Inter';
+  font-family: "Inter";
 }
 
 .close-btn {

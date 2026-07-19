@@ -3,7 +3,9 @@
   --nav-bar-padding: 15px;
   --nav-bar-width: calc(var(--nav-bar-padding) + var(--nav-bar-btn-size));
   --nav-bar-btn-padding: 5px;
-  --nav-bar-btn-size: calc(var(--nav-bar-padding) * 2 + var(--nav-bar-img-size) + 12px);
+  --nav-bar-btn-size: calc(
+    var(--nav-bar-padding) * 2 + var(--nav-bar-img-size) + 12px
+  );
   --main-content-gap: 10px;
   --header-height: 50px;
   --header-padding: 15px;
@@ -17,7 +19,7 @@
 
 body {
   --angle: 0deg;
-  background-image: linear-gradient(var(--angle), #0E1116, #2A2F3A);
+  background-image: linear-gradient(var(--angle), #0e1116, #2a2f3a);
   background-repeat: no-repeat;
   animation: spin 5s linear infinite;
   overflow: hidden;
@@ -50,7 +52,7 @@ body {
   height: 32px;
   width: 32px;
   border-radius: 50%;
-  background-color: #4CAF50;
+  background-color: #4caf50;
   border-radius: 50%;
   margin-bottom: 10px;
   margin-top: 10px;
@@ -76,7 +78,9 @@ body {
   justify-content: center;
   border-radius: 5px;
   gap: 5px;
-  transition: background-color 0.2s ease, transform 0.2s ease,
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease,
     border-color 0.2s ease;
 }
 
@@ -94,13 +98,12 @@ body {
 }
 
 .nav-bar button p {
-  color: #FFFF;
+  color: #ffff;
   margin: 0;
   line-height: 1;
   text-align: center;
   font-size: 12px;
 }
-
 
 .nav-bar button img {
   height: var(--nav-bar-img-size);
@@ -149,7 +152,6 @@ body {
   height: 20px;
 }
 
-
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -159,12 +161,12 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #F3F4F1;
+  background: #f3f4f1;
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #E6E8E3;
+  background: #e6e8e3;
 }
 
 ::-webkit-scrollbar-button {
@@ -173,9 +175,7 @@ body {
   height: 0;
 }
 
-
 @media (max-width: 560px) {
-
   :root {
     --mobile-nav-height: 58px;
     --header-height: 44px;
@@ -214,7 +214,7 @@ body {
   }
 
   .nav-bar {
-    background-color: #FFFF;
+    background-color: #ffff;
     flex-direction: row;
     flex: 0 0 var(--mobile-nav-height);
     height: var(--mobile-nav-height);
@@ -240,7 +240,7 @@ body {
 
   .nav-bar button:hover,
   .nav-bar .nav-page-btn.active {
-    border-bottom: 5px solid #0E1116;
+    border-bottom: 5px solid #0e1116;
   }
 
   .nav-bar button:hover {

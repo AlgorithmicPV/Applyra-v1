@@ -3,8 +3,12 @@
 }
 
 .page {
-  font-family: 'Inter';
-  background: linear-gradient(180deg, rgba(250, 250, 248, 1) 65%, rgba(227, 229, 223, 1) 100%);
+  font-family: "Inter";
+  background: linear-gradient(
+    180deg,
+    rgba(250, 250, 248, 1) 65%,
+    rgba(227, 229, 223, 1) 100%
+  );
   height: 100%;
   height: 100vh;
   display: grid;
@@ -36,13 +40,12 @@ h1 {
 form {
   display: flex;
   flex-direction: column;
-
 }
 
 input {
   outline: none;
   border: none;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   padding: 15px;
   margin: 10px;
   border-radius: 10px;
@@ -50,20 +53,32 @@ input {
 }
 
 p {
-  color: #2A2F3A;
+  color: #2a2f3a;
   margin: 10px;
   width: 430px;
 }
 
 .sign-up-btn {
   border: none;
-  background: -webkit-linear-gradient(180deg, rgba(14, 17, 22, 1) 0%, rgba(41, 46, 57, 1) 100%);
-  background: -moz-linear-gradient(180deg, rgba(14, 17, 22, 1) 0%, rgba(41, 46, 57, 1) 100%);
-  background: linear-gradient(180deg, rgba(14, 17, 22, 1) 0%, rgba(41, 46, 57, 1) 100%);
+  background: -webkit-linear-gradient(
+    180deg,
+    rgba(14, 17, 22, 1) 0%,
+    rgba(41, 46, 57, 1) 100%
+  );
+  background: -moz-linear-gradient(
+    180deg,
+    rgba(14, 17, 22, 1) 0%,
+    rgba(41, 46, 57, 1) 100%
+  );
+  background: linear-gradient(
+    180deg,
+    rgba(14, 17, 22, 1) 0%,
+    rgba(41, 46, 57, 1) 100%
+  );
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#0E1116",
       endColorstr="#292E39",
       GradientType=0);
-  color: #FFFFFF;
+  color: #ffffff;
   padding: 10px;
   border-radius: 10px;
   cursor: pointer;
@@ -87,8 +102,6 @@ video {
 img {
   margin-bottom: 25px;
 }
-
-
 
 @media screen and (max-width: 1000px) {
   .right {

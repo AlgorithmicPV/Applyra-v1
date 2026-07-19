@@ -52,16 +52,13 @@
     /* main-content padding is 8px, and top + bottom in total is 16px */
   }
 
-
   .tox .tox-promotion-link {
     display: none;
   }
 
-
   .tox.tox-tinymce {
     height: 100% !important;
   }
-
 
   .save-status,
   .error-status {
@@ -82,7 +79,9 @@
     opacity: 0;
     pointer-events: none;
 
-    transition: opacity 0.35s ease, transform 0.35s ease;
+    transition:
+      opacity 0.35s ease,
+      transform 0.35s ease;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 
     transition:
@@ -92,7 +91,6 @@
     color: white;
     margin: 0;
     font-size: 14px;
-
   }
 
   .save-status {

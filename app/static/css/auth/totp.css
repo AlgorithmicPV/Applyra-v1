@@ -1,7 +1,11 @@
 .totp-page {
-  background: linear-gradient(180deg, rgba(250, 250, 248, 1) 65%, rgba(227, 229, 223, 1) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(250, 250, 248, 1) 65%,
+    rgba(227, 229, 223, 1) 100%
+  );
   display: flex;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   justify-content: center;
   min-height: 100vh;
   overflow: hidden;
@@ -10,12 +14,11 @@
   box-sizing: border-box;
 }
 
-
 .totp-card {
-  background: rgba(255, 255, 255, .94);
-  border: 1px solid rgba(216, 224, 219, .9);
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(216, 224, 219, 0.9);
   border-radius: 20px;
-  box-shadow: 0 24px 65px rgba(28, 48, 39, .12);
+  box-shadow: 0 24px 65px rgba(28, 48, 39, 0.12);
   box-sizing: border-box;
   max-width: 470px;
   padding: 38px;
@@ -35,7 +38,7 @@
   color: black;
   font-size: 11px;
   font-weight: 750;
-  letter-spacing: .13em;
+  letter-spacing: 0.13em;
   margin: 0 0 7px;
   text-transform: uppercase;
   width: auto;
@@ -44,7 +47,7 @@
 .totp-card h1 {
   color: #17201d;
   font-size: 30px;
-  letter-spacing: -.035em;
+  letter-spacing: -0.035em;
   margin: 0 0 10px;
 }
 
@@ -65,9 +68,11 @@
   border: 1px solid #d8dedb;
   border-radius: 10px;
   box-sizing: border-box;
-  color: #2A2F3A;
-  font: 650 21px 'Inter', sans-serif;
-  letter-spacing: .28em;
+  color: #2a2f3a;
+  font:
+    650 21px "Inter",
+    sans-serif;
+  letter-spacing: 0.28em;
   margin: 0 0 12px;
   outline: none;
   padding: 14px 12px 14px 18px;
@@ -76,18 +81,30 @@
 }
 
 .totp-card #code:focus {
-  border-color: #7C3AED;
+  border-color: #7c3aed;
 }
 
 .confirm-btn {
   border: none;
-  background: -webkit-linear-gradient(180deg, rgba(14, 17, 22, 1) 0%, rgba(41, 46, 57, 1) 100%);
-  background: -moz-linear-gradient(180deg, rgba(14, 17, 22, 1) 0%, rgba(41, 46, 57, 1) 100%);
-  background: linear-gradient(180deg, rgba(14, 17, 22, 1) 0%, rgba(41, 46, 57, 1) 100%);
+  background: -webkit-linear-gradient(
+    180deg,
+    rgba(14, 17, 22, 1) 0%,
+    rgba(41, 46, 57, 1) 100%
+  );
+  background: -moz-linear-gradient(
+    180deg,
+    rgba(14, 17, 22, 1) 0%,
+    rgba(41, 46, 57, 1) 100%
+  );
+  background: linear-gradient(
+    180deg,
+    rgba(14, 17, 22, 1) 0%,
+    rgba(41, 46, 57, 1) 100%
+  );
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#0E1116",
       endColorstr="#292E39",
       GradientType=0);
-  color: #FFFFFF;
+  color: #ffffff;
   padding: 10px;
   border-radius: 10px;
   cursor: pointer;
@@ -116,9 +133,11 @@
 #resend-code-btn {
   background: transparent;
   border: 0;
-  color: #7C3AED;
+  color: #7c3aed;
   cursor: pointer;
-  font: 700 13px Inter, sans-serif;
+  font:
+    700 13px Inter,
+    sans-serif;
   padding: 4px;
 }
 
@@ -136,7 +155,7 @@
 }
 
 .back-link:hover {
-  color: #2A2F3A;
+  color: #2a2f3a;
 }
 
 @media (max-width: 520px) {

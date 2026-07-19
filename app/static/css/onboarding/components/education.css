@@ -10,20 +10,17 @@
   border-bottom: 1px;
 }
 
-
 .name #certificate {
   font-size: large;
   font-weight: bold;
   margin-top: 18px;
 }
 
-
 .time input {
   width: 4ch;
   box-sizing: content-box;
   font-size: medium;
 }
-
 
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
@@ -32,23 +29,19 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
-
 /* Firefox */
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
 }
-
 
 .card #institution {
   font-size: medium;
   margin-top: 10px;
 }
 
-
 .card #location {
   font-size: medium;
 }
-
 
 .card #description {
   font-family: "Inter";
@@ -59,7 +52,6 @@ input[type=number] {
   margin-top: 15px;
   font-size: medium;
 }
-
 
 .card input:focus,
 .card textarea:focus {

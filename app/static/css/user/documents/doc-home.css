@@ -16,7 +16,7 @@
       box-sizing: border-box;
       width: 100%;
       padding-bottom: 8px;
-      border-bottom: 3px solid #F3F4F1;
+      border-bottom: 3px solid #f3f4f1;
     }
 
     .search {
@@ -26,7 +26,7 @@
       margin: 6px 12px;
       padding: 10px 4px;
       font-size: 16px;
-      border-bottom: 2px solid #F3F4F1;
+      border-bottom: 2px solid #f3f4f1;
     }
 
     .buttons {
@@ -52,7 +52,7 @@
     }
 
     .buttons button.active {
-      background-color: #F3F4F1;
+      background-color: #f3f4f1;
     }
 
     .document-list-wrapper {
@@ -226,6 +226,14 @@
   .list tbody tr:hover {
     background-color: #f8f9fa;
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    transition:
+      transform 0.1s ease,
+      box-shadow 0.1s ease;
+  }
+
+  .list tbody tr:active {
+    transform: scale(0.95) translateY(2px); /* Shrinks and pushes down */
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.15); /* Flattens shadow */
   }
 
   .list td {
@@ -318,16 +326,13 @@
     }
   }
 
-
   .active {
-    color: #0E1116 !important;
+    color: #0e1116 !important;
   }
-
 
   .row.cover-letter.hide {
     display: none;
   }
-
 
   .row.cv.hide {
     display: none;

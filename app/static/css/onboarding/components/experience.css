@@ -10,20 +10,17 @@
   border-bottom: 1px;
 }
 
-
 .name #certificate {
   font-size: large;
   font-weight: bold;
   margin-top: 18px;
 }
 
-
 .time input {
   width: 4ch;
   box-sizing: content-box;
   font-size: medium;
 }
-
 
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
@@ -32,23 +29,19 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
-
 /* Firefox */
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
 }
-
 
 .card #company {
   font-size: medium;
   margin-top: 10px;
 }
 
-
 .card #location {
   font-size: medium;
 }
-
 
 .card #responsibilities {
   font-family: "Inter";
@@ -60,22 +53,18 @@ input[type=number] {
   font-size: medium;
 }
 
-
 .card input:focus,
 .card textarea:focus {
   border-bottom: 1px solid gray;
 }
 
-
-.card .ts-control>* {
+.card .ts-control > * {
   font-size: medium;
 }
-
 
 .card .ts-control {
   padding-left: 2px !important;
 }
-
 
 .card #job_title {
   margin-bottom: 0px;

@@ -1,19 +1,29 @@
 body {
-  background: #FAFAF8;
-  background: -webkit-linear-gradient(180deg, rgba(250, 250, 248, 1) 80%, rgba(227, 229, 223, 1) 100%);
-  background: -moz-linear-gradient(180deg, rgba(250, 250, 248, 1) 80%, rgba(227, 229, 223, 1) 100%);
-  background: linear-gradient(180deg, rgba(250, 250, 248, 1) 80%, rgba(227, 229, 223, 1) 100%);
+  background: #fafaf8;
+  background: -webkit-linear-gradient(
+    180deg,
+    rgba(250, 250, 248, 1) 80%,
+    rgba(227, 229, 223, 1) 100%
+  );
+  background: -moz-linear-gradient(
+    180deg,
+    rgba(250, 250, 248, 1) 80%,
+    rgba(227, 229, 223, 1) 100%
+  );
+  background: linear-gradient(
+    180deg,
+    rgba(250, 250, 248, 1) 80%,
+    rgba(227, 229, 223, 1) 100%
+  );
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#FAFAF8", endColorstr="#E3E5DF", GradientType=0);
 }
 
-
 .main-content {
   height: 100%;
-  font-family: 'Inter';
+  font-family: "Inter";
   display: flex;
   flex-direction: column;
 }
-
 
 .nav-bar {
   margin-top: auto;
@@ -24,7 +34,6 @@ body {
   justify-content: right;
   gap: 15px;
 }
-
 
 .nav-btn {
   border: none;

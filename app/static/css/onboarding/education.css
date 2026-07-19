@@ -4,18 +4,17 @@
   gap: 15px;
 }
 
-
-.education-form>input,
-.education-form>textarea,
-.time-period>input {
+.education-form > input,
+.education-form > textarea,
+.time-period > input {
   background-color: white;
   border: none;
   padding: 10px;
   border-radius: 5px;
-  font-family: 'Inter';
+  font-family: "Inter";
 }
 
-.education-form>textarea {
+.education-form > textarea {
   resize: vertical;
   max-height: 100px;
   min-height: max-content;

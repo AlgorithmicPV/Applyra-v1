@@ -6,12 +6,10 @@
   height: 100%;
 }
 
-
 .heading {
   font-size: xx-large;
   margin: 0;
 }
-
 
 .p {
   font-size: large;
@@ -20,16 +18,27 @@
   text-wrap: wrap;
 }
 
-
 .page-cont button {
   padding: 10px 20px 10px 20px;
   border-radius: 10px;
   border: none;
   cursor: pointer;
-  background: #0E1116;
-  background: -webkit-linear-gradient(180deg, rgba(14, 17, 22, 1) 0%, rgba(41, 46, 57, 1) 100%);
-  background: -moz-linear-gradient(180deg, rgba(14, 17, 22, 1) 0%, rgba(41, 46, 57, 1) 100%);
-  background: linear-gradient(180deg, rgba(14, 17, 22, 1) 0%, rgba(41, 46, 57, 1) 100%);
+  background: #0e1116;
+  background: -webkit-linear-gradient(
+    180deg,
+    rgba(14, 17, 22, 1) 0%,
+    rgba(41, 46, 57, 1) 100%
+  );
+  background: -moz-linear-gradient(
+    180deg,
+    rgba(14, 17, 22, 1) 0%,
+    rgba(41, 46, 57, 1) 100%
+  );
+  background: linear-gradient(
+    180deg,
+    rgba(14, 17, 22, 1) 0%,
+    rgba(41, 46, 57, 1) 100%
+  );
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#0E1116", endColorstr="#292E39", GradientType=0);
-  color: #FFFFFF;
+  color: #ffffff;
 }

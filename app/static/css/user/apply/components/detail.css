@@ -11,11 +11,10 @@
     height: 100%;
     max-width: 100%;
     padding: 0px 10% 10px 10%;
-    color: #0E1116;
+    color: #0e1116;
     gap: 30px;
     align-items: center;
   }
-
 
   .detail .header {
     display: flex;
@@ -24,11 +23,9 @@
     width: 100%;
   }
 
-
   .detail .header p {
     margin: 0;
   }
-
 
   .detail .header .job-title {
     font-weight: bolder;
@@ -36,18 +33,15 @@
     margin-bottom: 5px;
   }
 
-
   .detail .header .company-name,
   .detail .header .country {
     font-size: large;
     font-weight: bold;
   }
 
-
   .detail .header .captured-at {
     font-size: medium;
   }
-
 
   .detail .header .relevancy {
     background-color: rgba(255, 214, 0, 0.2);
@@ -58,12 +52,10 @@
     margin-top: 15px;
   }
 
-
   .heading {
     font-weight: bold;
     margin: 0;
   }
-
 
   .skill-detail,
   .documents,
@@ -76,65 +68,54 @@
     gap: 15px;
   }
 
-
   th {
-    background-color: #F3F4F1;
+    background-color: #f3f4f1;
     padding: 10px;
     text-align: left;
     font-weight: normal;
     font-size: medium;
   }
 
-
   th:first-child {
     border-top-left-radius: 10px;
     padding-left: 30px;
   }
 
-
   th:last-child {
     border-top-right-radius: 10px;
   }
-
 
   td {
     padding: 10px 5px 10px 5px;
   }
 
-
   td:first-child {
     padding-left: 30px;
   }
 
-
   td:last-child {
     text-align: center;
   }
-
 
   td img {
     height: 25px;
     width: auto;
   }
 
-
   .tips {
     background-color: rgba(65, 94, 139, 0.2);
     padding: 10px;
-    color: #415E8B;
+    color: #415e8b;
     border-radius: 5px;
   }
-
 
   .tips p {
     margin: 0;
   }
 
-
   .tips .h {
     font-size: smaller;
   }
-
 
   .job-description ul {
     gap: 10px;
@@ -142,23 +123,34 @@
     flex-direction: column;
   }
 
-
   .documents button {
     padding: 10px 30px 10px 30px;
     border-radius: 10px;
     border: none;
     cursor: pointer;
-    background: #0E1116;
-    background: -webkit-linear-gradient(180deg, rgba(14, 17, 22, 1) 0%, rgba(41, 46, 57, 1) 100%);
-    background: -moz-linear-gradient(180deg, rgba(14, 17, 22, 1) 0%, rgba(41, 46, 57, 1) 100%);
-    background: linear-gradient(180deg, rgba(14, 17, 22, 1) 0%, rgba(41, 46, 57, 1) 100%);
+    background: #0e1116;
+    background: -webkit-linear-gradient(
+      180deg,
+      rgba(14, 17, 22, 1) 0%,
+      rgba(41, 46, 57, 1) 100%
+    );
+    background: -moz-linear-gradient(
+      180deg,
+      rgba(14, 17, 22, 1) 0%,
+      rgba(41, 46, 57, 1) 100%
+    );
+    background: linear-gradient(
+      180deg,
+      rgba(14, 17, 22, 1) 0%,
+      rgba(41, 46, 57, 1) 100%
+    );
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#0E1116", endColorstr="#292E39", GradientType=0);
-    color: #FFFFFF;
+    color: #ffffff;
     width: max-content;
   }
 
   .documents button:hover {
-    background: #7C3AED;
+    background: #7c3aed;
   }
 }
 
@@ -174,8 +166,8 @@
       padding: 6px 10px 6px 6px;
       border: none;
       border-radius: 6px;
-      background-color: #F3F4F1;
-      color: #0E1116;
+      background-color: #f3f4f1;
+      color: #0e1116;
       font-family: "Inter";
       font-weight: 600;
       cursor: pointer;
