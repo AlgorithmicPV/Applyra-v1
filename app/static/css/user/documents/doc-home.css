@@ -91,7 +91,7 @@
   }
 
   .list tbody tr {
-    background-color: var(--surface-color, #ffffff);
+    background-color: #ffffff;
 
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 
@@ -103,7 +103,7 @@
   }
 
   .list tbody tr:hover {
-    background-color: var(--surface-hover, #f8f9fa);
+    background-color: #f8f9fa;
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
   }
 

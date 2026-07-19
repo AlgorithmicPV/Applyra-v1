@@ -16,7 +16,18 @@
     /* Internet Explorer/Edge */
     user-select: none;
     /* Standard */
+    background-color: var(--surface-color, #ffffff);
+
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+
+    cursor: pointer;
+    font-family: "Inter";
+    transition:
+      background-color 0.2s ease,
+      box-shadow 0.2s ease;
+
   }
+
 
   .job-card.deleting {
     display: none;
@@ -24,7 +35,9 @@
 
 
   .job-card:hover {
-    background-color: #F3F4F1;
+    background-color: #f8f9fa;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+
   }
 
 

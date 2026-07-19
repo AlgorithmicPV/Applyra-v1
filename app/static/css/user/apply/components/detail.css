@@ -152,4 +152,8 @@
     color: #FFFFFF;
     width: max-content;
   }
+
+  .documents button:hover {
+    background: #7C3AED;
+  }
 }

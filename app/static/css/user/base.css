@@ -83,7 +83,7 @@ body {
   background-color: rgba(255, 255, 255, 0.08);
 }
 
-.nav-bar button p{
+.nav-bar button p {
   color: #FFFF;
   margin: 0;
   line-height: 1;
@@ -143,4 +143,47 @@ body {
   display: none;
   width: 0;
   height: 0;
+}
+
+
+@media (max-width: 560px) {
+
+  body {
+    overflow: auto;
+  }
+
+  .main-content {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 0;
+    height: calc(100vh - 16px);
+  }
+
+  .page {
+    border-radius: 6px 6px 0 0;
+  }
+
+  .nav-bar {
+    background-color: #FFFF;
+    flex-direction: row;
+    height: max-content;
+    border: none;
+    border-radius: 0 0 6px 6px;
+  }
+
+  .nav-bar button img {
+    filter: invert(1);
+    height: 20px;
+    width: auto;
+  }
+
+  .nav-bar button p {
+    display: none;
+  }
+
+  .logout-btn {
+    margin-top: initial;
+    margin-bottom: 0;
+  }
+
 }
