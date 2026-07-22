@@ -1,16 +1,9 @@
 from datetime import date, datetime
 
-from flask import Blueprint, request, render_template, redirect, url_for, session
-from app.forms import fileUplaod
-import pypandoc
-from app.utilities.client_sessions import encrypt_value, decrypt_value, hash_key
+from flask import Blueprint, request, render_template
 from app.models import Application, Document, JobEntry
 from flask_login import current_user, login_required
-import mammoth
-import io
-import uuid
 from app.extensions import db
-
 
 documents_api_bp = Blueprint("documents_api", __name__)
 

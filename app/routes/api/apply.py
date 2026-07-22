@@ -1,12 +1,14 @@
+"""
+This module covers all the backend for apply pages
+"""
+
 from datetime import date
-from ollama import chat
-from pydantic import BaseModel, Field
-from flask import Blueprint, render_template, request
-from flask_login import current_user, login_required
 import uuid
-from app.extensions import db
+from flask import Blueprint, render_template, request, abort
+from flask_login import current_user, login_required
 from playwright.sync_api import sync_playwright
 from sqlalchemy import or_
+from app.extensions import db
 from app.forms import JobLinkForm
 from app.models import (
     UserSkill,
@@ -27,11 +29,10 @@ from app.ai.schemas.cv import JSON_SCHEMA as cv_schema
 from app.ai.prompts.cover_letter import PROMPT as cover_letter_prompt
 from app.ai.schemas.cover_letter import JSON_SCHEMA as conver_letter_schema
 
-
 apply_api_bp = Blueprint("apply_api", __name__)
 
 
-@apply_api_bp.route("/delete/<id>/", methods=["DELETE"])
+@apply_api_bp.delete("/delete/<id>/")
 @login_required
 def delete_job_entry(id):
     """Delete a job entry and its generated application documents."""
@@ -43,7 +44,7 @@ def delete_job_entry(id):
     job_entry = db.session.scalar(job_entry_stmt)
 
     if job_entry is None:
-        return {"error": "The job you’re looking for could not be found"}, 404
+        return {"error": "The job you’re looking for could not be found"}
 
     application_stmt = db.select(Application).where(
         Application.job_entry_id == id,
@@ -74,7 +75,7 @@ def delete_job_entry(id):
     return "", 200
 
 
-@apply_api_bp.route("/search", methods=["GET"])
+@apply_api_bp.get("/search")
 @login_required
 def search():
     """Return the current user's job entries matching a search query.
@@ -101,11 +102,12 @@ def search():
     job_entries = db.session.scalars(stmt).all()
 
     return render_template(
-        "user/apply/components/cards.html", job_entries=job_entries
-    )
+        "user/apply/components/cards.html",
+        job_entries=job_entries
+        )
 
 
-@apply_api_bp.route("/job_entry", methods=["POST", "GET"])
+@apply_api_bp.post("/job_entry")
 @login_required
 def job_entry():
     """Create a tailored job application from a submitted job-posting URL.
@@ -122,7 +124,9 @@ def job_entry():
 
     form = JobLinkForm(request.form)
 
-    stmt_skill = db.select(UserSkill).where(UserSkill.user_id == current_user.user_id)
+    stmt_skill = db.select(UserSkill).where(
+        UserSkill.user_id == current_user.user_id
+        )
     stmt_experience = db.select(WorkExperience).where(
         WorkExperience.user_id == current_user.user_id
     )
@@ -150,12 +154,16 @@ def job_entry():
     ):
         return {"warning": "You have to complete the onboarding"}
 
-    if not (request.method == "POST" and form.validate()):
+    if not form.validate():
         return form.errors
 
     job = ""
 
     job_url = form.job_url.data
+
+    if job_url is None:
+        return {"error": "Please paste the Job Link."}
+
     # Extract the visible job-posting text from the submitted page.
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
@@ -220,6 +228,9 @@ def job_entry():
         analyse_schema,
     )
 
+    # To prevent from links that are not relevant for job advertising
+    # Go to, app/ai/prompts and app/ai/schemas
+    # to understant the JSON structure of the AI output
     if not job_entry_json["is_valid"]:
         return {"error": job_entry_json["invalid_reason"]}
 
@@ -315,7 +326,8 @@ def job_entry():
 
     print("new_application is added to the db session")
 
-    # Persist the job entry, generated documents, and their relationship atomically.
+    # Persist the job entry, generated documents,
+    # and their relationship atomically.
     db.session.commit()
 
     print("commit to the db")
@@ -329,7 +341,7 @@ def job_entry():
     )
 
 
-@apply_api_bp.route("/show/<id>/", methods=["GET"])
+@apply_api_bp.get("/show/<id>/")
 @login_required
 def show(id):
     """Render the details of a previously generated job application.
@@ -348,14 +360,18 @@ def show(id):
     job_entry_stmt = db.select(JobEntry).where(JobEntry.job_entry_id == id)
     job_entry = db.session.scalars(job_entry_stmt).first()
 
+    # Verify the job_entry_id, because the user can change it from the frontend
     if job_entry is None:
         return {"error": "The job you’re looking for could not be found"}
 
-    application_stmt = db.select(Application).where(Application.job_entry_id == id)
+    application_stmt = db.select(Application).where(
+        Application.job_entry_id == id
+        )
     application = db.session.scalars(application_stmt).first()
 
     cv_stmt = db.select(Document).where(
-        Document.doc_id == application.cv_document_id, Document.doc_type == "cv"
+        Document.doc_id == application.cv_document_id,
+        Document.doc_type == "cv"
     )
     cv = db.session.scalars(cv_stmt).first()
 
@@ -385,7 +401,13 @@ def show(id):
     }
 
     # Prevent users from accessing the route by typing the URL directly.
+    # Because I update the same templates/user/apply/base.html page via HTMX,
+    # so if a user direcly acceses to this route, the browser does not
+    # render the full html version (navigation panel + detail.html)
     if request.headers.get("HX-Request") == "true":
-        return render_template("user/apply/components/detail.html", detail=detail)
+        return render_template(
+            "user/apply/components/detail.html",
+            detail=detail
+            )
     else:
         abort(403)

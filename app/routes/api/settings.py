@@ -2,7 +2,15 @@ import base64
 import uuid
 from datetime import date
 
-from flask import Blueprint, jsonify, make_response, render_template, request, session, url_for
+from flask import (
+    Blueprint,
+    jsonify,
+    make_response,
+    render_template,
+    request,
+    session,
+    url_for,
+)
 from flask_login import current_user, login_required, logout_user
 from sqlalchemy.exc import IntegrityError
 
@@ -30,7 +38,6 @@ from app.models import (
 )
 from app.utilities.validations import email_confirm
 
-
 settings_api_bp = Blueprint("settings_api", __name__)
 
 
@@ -50,9 +57,7 @@ def request_code():
         db.select(Education).where(Education.user_id == current_user.user_id)
     ).all()
     experiences = db.session.scalars(
-        db.select(WorkExperience).where(
-            WorkExperience.user_id == current_user.user_id
-        )
+        db.select(WorkExperience).where(WorkExperience.user_id == current_user.user_id)
     ).all()
     user_skills = db.session.scalars(
         db.select(UserSkill).where(UserSkill.user_id == current_user.user_id)
@@ -96,9 +101,7 @@ def verify_code():
         db.select(Education).where(Education.user_id == current_user.user_id)
     ).all()
     experiences = db.session.scalars(
-        db.select(WorkExperience).where(
-            WorkExperience.user_id == current_user.user_id
-        )
+        db.select(WorkExperience).where(WorkExperience.user_id == current_user.user_id)
     ).all()
     user_skills = db.session.scalars(
         db.select(UserSkill).where(UserSkill.user_id == current_user.user_id)
@@ -108,11 +111,13 @@ def verify_code():
     for user_skill in user_skills:
         skill = db.session.get(Skill, user_skill.skill_id)
         if skill:
-            skills.append({
-                "user_skill_id": user_skill.user_skill_id,
-                "skill_id": skill.skill_id,
-                "skill_name": skill.skill_name,
-            })
+            skills.append(
+                {
+                    "user_skill_id": user_skill.user_skill_id,
+                    "skill_id": skill.skill_id,
+                    "skill_name": skill.skill_name,
+                }
+            )
 
     return render_template(
         "user/settings/settings-editable/settings-edit.html",
@@ -476,9 +481,7 @@ def account_delete():
     db.session.query(JobEntry).filter(JobEntry.user_id == user_id).delete()
     db.session.query(Education).filter(Education.user_id == user_id).delete()
     db.session.query(UserSkill).filter(UserSkill.user_id == user_id).delete()
-    db.session.query(WorkExperience).filter(
-        WorkExperience.user_id == user_id
-    ).delete()
+    db.session.query(WorkExperience).filter(WorkExperience.user_id == user_id).delete()
     db.session.query(UserPersonal).filter(UserPersonal.user_id == user_id).delete()
     db.session.query(User).filter(User.user_id == user_id).delete()
     db.session.commit()

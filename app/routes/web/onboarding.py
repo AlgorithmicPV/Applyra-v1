@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template, session
+from flask import Blueprint, request, render_template
 from flask_login import current_user, login_required
 from app.forms import EducationForm, SkillForm, ExperienceForm, UserInfoForm
 from app.models import Education, Skill, UserSkill, WorkExperience

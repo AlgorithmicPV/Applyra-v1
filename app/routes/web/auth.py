@@ -1,15 +1,10 @@
 from flask import (
     Blueprint,
-    request,
     render_template,
-    redirect,
-    url_for,
-    current_app,
     session,
     abort,
 )
 from app.forms import AuthResendCodeForm, SignUpForm, TotpForm, LoginForm
-from app.extensions import get_fernet
 from app.utilities.client_sessions import encrypt_value, decrypt_value, hash_key
 from app.utilities.validations import email_confirm
 
@@ -32,8 +27,6 @@ def login():
 @auth_web_bp.route("/email-validation")
 def totp():
 
-    # if not session.get(hash_key("email-confirm")):
-    #    abort(403)
     # This session varaible is sent via backend, it has to be verify
     # Otherwise, users can get into this page, via url
     # Now, If they do, they get 403

@@ -1,17 +1,14 @@
-from flask import Blueprint, request, render_template, session, abort
+from flask import Blueprint, request, render_template, session
 from flask_login import current_user, login_required
-from app.forms import JobLinkForm
+from app.forms import JobLinkForm, JobForm
 from app.models import (
-    Document,
     UserPersonal,
     UserSkill,
     Education,
     WorkExperience,
     JobEntry,
-    Application,
 )
 from app.extensions import db
-
 
 apply_web_bp = Blueprint("apply_web", __name__)
 
@@ -20,6 +17,7 @@ apply_web_bp = Blueprint("apply_web", __name__)
 @login_required
 def apply():
     form = JobLinkForm()
+    form = JobForm()
 
     stmt_skill = (
         db.select(UserSkill).where(UserSkill.user_id == current_user.user_id).exists()

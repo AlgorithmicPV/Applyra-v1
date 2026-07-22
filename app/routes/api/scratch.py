@@ -1,5 +1,4 @@
 from ollama import chat
-from pydantic import BaseModel, Field
 
 print("-----")
 

@@ -9,7 +9,6 @@ from app.models import Education, Skill, UserSkill, WorkExperience, UserPersonal
 from app.extensions import db
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import Null, delete
-from sqlalchemy.inspection import inspect
 
 onboarding_api_bp = Blueprint("onboarding_api", __name__)
 
@@ -87,7 +86,7 @@ def education_collect():
     try:
         db.session.add(new_qualification)
         db.session.commit()
-    except IntegrityError as e:
+    except IntegrityError:
         db.session.rollback()
         return {"error": "The data you're trying to add already exists"}
 
@@ -134,7 +133,7 @@ def education_update(id):
         education.end_year = date(end_year, 12, 31)
         education.notes = notes
         db.session.commit()
-    except IntegrityError as e:
+    except IntegrityError:
         db.session.rollback()
         return {"error": "The data you're trying to add already exists"}
 
@@ -199,7 +198,7 @@ def skill_collect():
     try:
         db.session.add(new_skill)
         db.session.commit()
-    except IntegrityError as e:
+    except IntegrityError:
         db.session.rollback()
         return {"error": "The data you're trying to add already exists"}
 
@@ -234,7 +233,7 @@ def skill_update(id):
     try:
         user_skill.skill_id = update_skill_id
         db.session.commit()
-    except IntegrityError as e:
+    except IntegrityError:
         db.session.rollback()
         return {"error": "The data you're trying to add already exists"}
 
@@ -306,7 +305,7 @@ def work_experience_collect():
     try:
         db.session.add(new_work_experience)
         db.session.commit()
-    except IntegrityError as e:
+    except IntegrityError:
         db.session.rollback()
         return {"error": "The data you're trying to add already exists"}
 
@@ -364,7 +363,7 @@ def work_experience_update(id):
         experience.end_year = date_version_end_year
         experience.responsibilities = responsibilities
         db.session.commit()
-    except IntegrityError as e:
+    except IntegrityError:
         db.session.rollback()
         return {"error": "The data you're trying to add already exists"}
 

@@ -3,29 +3,26 @@ This module covers all the authentications in the system
 """
 
 import uuid
-from flask import Blueprint, current_app, request, url_for, redirect, session, abort
-from app.forms import AuthResendCodeForm, SignUpForm, TotpForm, LoginForm
-from itsdangerous import SignatureExpired, BadSignature
-from app.extensions import mail, limiter, serializer, password_hasher, db, get_totp
-from app.models import User
 from datetime import datetime
+from flask import Blueprint, request, url_for, redirect, session, abort
 from sqlalchemy import and_
-import time
+from argon2.exceptions import VerifyMismatchError
+from flask_login import login_user
+from app.forms import AuthResendCodeForm, SignUpForm, TotpForm, LoginForm
+from app.extensions import limiter, password_hasher, db, get_totp
+from app.models import User
 from app.utilities.client_sessions import encrypt_value, decrypt_value, hash_key
 from app.utilities.validations import email_confirm
-from argon2.exceptions import VerifyMismatchError
-from flask_login import UserMixin, login_user
-
 
 auth_api_bp = Blueprint("auth_api", __name__)
 
 
 current_datetime = datetime.now()
 current_timestamp = current_datetime.timestamp()
-AUTH_TOTP_INTERVAL = 120
+AUTH_TOTP_INTERVAL = 120  # 2 minutes
 
 
-@auth_api_bp.route("/sign-up", methods=["POST", "GET"])
+@auth_api_bp.post("/sign-up")
 @limiter.limit("1 per 3 seconds; 5 per minute; 20 per hour")
 def sign_up():
     """Save new users to the system
@@ -36,7 +33,7 @@ def sign_up():
 
     form = SignUpForm(request.form)
 
-    if not (request.method == "POST" and form.validate()):
+    if not form.validate():
         print("not pass")
         return form.errors
 
@@ -67,7 +64,8 @@ def sign_up():
             return {"error": "User email is existing"}
         # If the email is in the database, and not verified,
         # it will update only, the full name, password, auth_provider
-        # also makes the google_id None, because, if the email is loggined though gmail
+        # also makes the google_id None, because,
+        # if the email is loggined though gmail
         # but haven't verified, we need to update that
         email_exist.User.full_name = form.full_name.data
         email_exist.User.password_hasher = password_hasher.hash(form.password.data)
@@ -87,10 +85,10 @@ def sign_up():
     return redirect(url_for("auth_web.totp"))
 
 
-@auth_api_bp.route("/confirm/", methods=["GET", "POST"])
+@auth_api_bp.post("/confirm/")
 def confirm_email():
 
-    if not (session.get(hash_key("email-confirm-backend"))):
+    if not session.get(hash_key("email-confirm-backend")):
         abort(403)
 
     form = TotpForm(request.form)
@@ -105,7 +103,7 @@ def confirm_email():
         db.select(User).where(
             and_(
                 User.email == decrypt_value(session.get(hash_key("user-email"))),
-                User.is_verified != True,
+                User.is_verified is not True,
             )
         )
     ).first()
@@ -143,24 +141,22 @@ def resend_code():
     return {"success": "A new verification code has been sent"}
 
 
-# Change this to flask-login
-@auth_api_bp.route("/login/", methods=["GET", "POST"])
+@auth_api_bp.post("/login/")
 def login():
 
     form = LoginForm(request.form)
 
-    if not (request.method == "POST" and form.validate()):
-        print("not pass")
+    if not form.validate():
         return form.errors
 
     email_exist = db.session.execute(
-        db.select(User).where(and_(User.email == form.email_address.data))
+        db.select(User).where(and_(User.email == form.email_address.data.strip()))
     ).first()
 
-    if not (email_exist.User.email):
+    if not email_exist:
         return {"error": "User email does not exist"}
 
-    if not (email_exist.User.is_verified):
+    if not email_exist.User.is_verified:
         return {"error": "User email is not verified"}
 
     try:

@@ -1,15 +1,8 @@
 from datetime import datetime
-from flask import Blueprint, request, render_template, session, abort
-from app.forms import fileUplaod
-from app.utilities.client_sessions import encrypt_value, decrypt_value, hash_key
+from flask import Blueprint, request, render_template, abort
 from flask_login import current_user, login_required
-import mammoth
-import ast
-from io import BytesIO
-import base64
 from app.models import Document, Application, JobEntry
 from app.extensions import db
-
 
 documents_web_bp = Blueprint("documents_web", __name__)
 
@@ -65,9 +58,9 @@ def doc_home():
         d = {
             "doc_id": doc.doc_id,
             "created_at": doc.created_at.strftime("%Y-%m-%d"),
-            "updated_at": doc.updated_at.strftime("%Y-%m-%d")
-            if doc.updated_at
-            else None,
+            "updated_at": (
+                doc.updated_at.strftime("%Y-%m-%d") if doc.updated_at else None
+            ),
             "doc_type": doc_type,
             "role": doc.role,
             "company": company,

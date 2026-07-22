@@ -5,7 +5,6 @@ from app.extensions import db
 from app.forms import SettingsCodeRequestForm, SettingsTotpForm
 from app.models import Education, Skill, UserSkill, WorkExperience
 
-
 settings_web_bp = Blueprint("settings_web", __name__)
 
 
@@ -39,9 +38,7 @@ def settings():
     ).all()
 
     experiences = db.session.scalars(
-        db.select(WorkExperience).where(
-            WorkExperience.user_id == current_user.user_id
-        )
+        db.select(WorkExperience).where(WorkExperience.user_id == current_user.user_id)
     ).all()
 
     user_skills = db.session.scalars(

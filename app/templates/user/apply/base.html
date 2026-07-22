@@ -1,31 +1,41 @@
 {% import "user/apply/components/card.html" as comp %}
 <div class="body-cont apply">
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.6.1/dist/css/tom-select.css"
+          rel="stylesheet">
     <title>Apply</title>
     <div class="left">
         <div class="top">
-            <form hx-post="{{ url_for("apply_api.job_entry") }}"
-                  hx-on::after-request="this.reset()"
-                  hx-swap="beforeend"
-                  hx-target=".cards">
+            <!--<form hx-post="{{ url_for("apply_api.job_entry") }}" hx-on::after-request="this.reset()" hx-swap="beforeend" hx-target=".cards">
+                {#{{ form.hidden_tag() }
+                {{ form.job_url(placeholder="Paste Your Job Link") }}#}
+            </form>-->
+            <button class="add" onclick="showJobForm()">
+                <div class="icon"></div>
+            </button>
+            <form class="job-analyse-form">
                 {{ form.hidden_tag() }}
-                {{ form.job_url(placeholder="Paste Your Job Link") }}
-                <button class="add" type="submit">
-                    <div class="icon"></div>
-                </button>
+                {{ form.source_url(placeholder=form.source_url.label.text) }}
+                {{ form.job_title(placeholder=form.job_title.label.text) }}
+                {{ form.company_name(placeholder=form.company_name.label.text) }}
+                {{ form.country_code(placeholder=form.country_code.label.text) }}
+                {{ form.job_description(placeholder=form.job_description.label.text) }}
+                <button type="submit" class="start-btn">Start</button>
             </form>
         </div>
-        <input type="search"
-               name="q"
-               placeholder="Search"
-               class="search"
-               hx-get="{{ url_for("apply_api.search") }}"
-               hx-trigger="input changed delay:300ms, search"
-               hx-target=".cards"
-               hx-swap="innerHTML">
-        <div class="cards">
-            {% for j in job_entries %}
-                {{ comp.card(j["job_entry_id"], j["job_title"], j["company_name"], j["relevancy"]) }}
-            {% endfor %}
+        <div class="top-body">
+            <input type="search"
+                   name="q"
+                   placeholder="Search"
+                   class="search"
+                   hx-get="{{ url_for("apply_api.search") }}"
+                   hx-trigger="input changed delay:300ms, search"
+                   hx-target=".cards"
+                   hx-swap="innerHTML">
+            <div class="cards">
+                {% for j in job_entries %}
+                    {{ comp.card(j["job_entry_id"], j["job_title"], j["company_name"], j["relevancy"]) }}
+                {% endfor %}
+            </div>
         </div>
     </div>
     <div class="right">
@@ -43,12 +53,25 @@
         </div>
     </div>
     <script>
+      new TomSelect('#country_code', {
+        maxItems: 1,
+        create: false,
+        placeholder: "Country Name",
+        allowEmptyOption: true
+      })
+    </script>
+    <script>
         function openMobileJobDetail() {
             document.querySelector(".body-cont.apply")?.classList.add("mobile-detail-open");
         }
 
         function closeMobileJobDetail() {
             document.querySelector(".body-cont.apply")?.classList.remove("mobile-detail-open");
+        }
+
+        function showJobForm() {
+            document.querySelector(".top-body")?.classList.add("hide")
+            document.querySelector(".job-analyse-form")?.classList.add("show")
         }
     </script>
 </div>

@@ -12,7 +12,6 @@ from flask import current_app
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives.ciphers.aead import AESSIV
 
-
 db = SQLAlchemy()
 socketio = SocketIO()
 mail = Mail()

@@ -132,4 +132,3 @@ JSON_SCHEMA = {
         "additionalProperties": False,
     },
 }
-
