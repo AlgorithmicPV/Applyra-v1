@@ -12,19 +12,19 @@ auth_web_bp = Blueprint("auth_web", __name__)
 AUTH_TOTP_INTERVAL = 120
 
 
-@auth_web_bp.route("/sign-up", methods=["POST", "GET"])
+@auth_web_bp.route("/sign-up/", methods=["POST", "GET"])
 def sign_up():
     form = SignUpForm()
     return render_template("auth/base.html", form=form, title="Sign Up", page="sign-up")
 
 
-@auth_web_bp.route("/login")
+@auth_web_bp.route("/login/")
 def login():
     form = LoginForm()
     return render_template("auth/base.html", form=form, title="Login", page="login")
 
 
-@auth_web_bp.route("/email-validation")
+@auth_web_bp.route("/email-validation/")
 def totp():
 
     # This session varaible is sent via backend, it has to be verify

@@ -1,4 +1,4 @@
-<div class="page" id="page">
+<div class="page auth" id="page">
     <link rel="stylesheet"
           href="{{ url_for('static', filename='css/auth/common.css') }}">
     <title>Login</title>
@@ -14,7 +14,7 @@
             {{ form.hidden_tag() }}
             {{ form.email_address(placeholder="Email Address") }}
             {{ form.password(placeholder="Password") }}
-            <button class="sign-up-btn" type="submit">Login</button>
+            <button class="auth-btn" type="submit">Login</button>
         </form>
     </div>
     <div class="right">

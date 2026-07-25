@@ -1,6 +1,6 @@
-<div class="page" id="page">
+<div class="page auth" id="page">
     <link rel="stylesheet"
-        href="{{ url_for('static', filename='css/auth/common.css') }}">
+          href="{{ url_for('static', filename='css/auth/common.css') }}">
     <title>Sign Up</title>
     <div class="left">
         <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="logo">
@@ -16,19 +16,16 @@
             {{ form.email_address(placeholder="Email Address") }}
             {{ form.password(placeholder="Password") }}
             {{ form.confirm_password(placeholder="Confirm Password") }}
-            <p>By continuing, you agree to our Terms and Privacy Policy</p>
-            <button class="sign-up-btn" type="submit">Sign Up</button>
+            <!--<p>By continuing, you agree to our Terms and Privacy Policy</p>-->
+            <button class="auth-btn" type="submit">Sign Up</button>
         </form>
-        <!--<button hx-get="{{ url_for("auth_web.login") }}"
-            hx-target="#app"
-            hx-swag="innerHTML"
-    hx-push-url="true">Login</button> -->
+        <!--<button hx-get="{{ url_for("auth_web.login") }}" hx-target="#app" hx-swag="innerHTML" hx-push-url="true">Login</button> -->
     </div>
     <div class="right">
-        <video  muted autoplay loop playsinline>
-        <source src="../../static/videos/loop.mp4" type="video/mp4">
-        <!-- from pixabay, https://pixabay.com/videos/line-geometric-twinkle-neon-glow-144259/-->
-        </video>      
+        <video muted autoplay loop playsinline>
+            <source src="../../static/videos/loop.mp4" type="video/mp4">
+            <!-- from pixabay, https://pixabay.com/videos/line-geometric-twinkle-neon-glow-144259/-->
+        </video>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js"
             integrity="sha512-TZlMGFY9xKj38t/5m2FzJ+RM/aD5alMHDe26p0mYUMoCF5G7ibfHUQILq0qQPV3wlsnCwL+TPRNK4vIWGLOkUQ=="

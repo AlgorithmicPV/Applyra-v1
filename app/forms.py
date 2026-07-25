@@ -52,10 +52,10 @@ class SignUpForm(FlaskForm):
             Email("Not a valid email address"),
             DataRequired("Full Name is empty"),
             validators.Length(
-                min=3, message="Full name must be at least 3 characters long"
+                min=3, message="Email must be at least 3 characters long"
             ),
             validators.Length(
-                max=255, message="Full name must no more than 255 characters long"
+                max=255, message="Email must no more than 255 characters long"
             ),
         ],
     )
@@ -78,7 +78,13 @@ class SignUpForm(FlaskForm):
         if not email_validation(field.data, True):
             raise ValidationError("Not a valid email address")
 
+        if not field.data.isascii():
+            raise ValidationError("Email must not have unicode characters")
+
     def validate_password(self, field):
+        if not field.data.isascii():
+            raise ValidationError("Password must not have unicode characters")
+
         if not (
             password_strength_checker(
                 field.data, self.full_name.data, self.email_address.data
@@ -120,15 +126,15 @@ class LoginForm(FlaskForm):
     email_address = EmailField(
         "Email Address",
         validators=[
+            validators.Length(
+                min=3, message="Email must be at least 3 characters long"
+            ),
+            validators.Length(
+                max=255, message="Email must no more than 255 characters long"
+            ),
             DataRequired("Email Address is empty"),
             Email("Not a valid email address"),
             DataRequired("Full Name is empty"),
-            validators.Length(
-                min=3, message="Full name must be at least 3 characters long"
-            ),
-            validators.Length(
-                max=255, message="Full name must no more than 255 characters long"
-            ),
         ],
     )
 
@@ -148,6 +154,13 @@ class LoginForm(FlaskForm):
     def validate_email_address(self, field):
         if not email_validation(field.data, True):
             raise ValidationError("Not a valid email address")
+
+        if not field.data.isascii():
+            raise ValidationError("Email must not have unicode characters")
+
+    def validate_password(self, field):
+        if not field.data.isascii():
+            raise ValidationError("Password must not have unicode characters")
 
 
 # Settings forms
