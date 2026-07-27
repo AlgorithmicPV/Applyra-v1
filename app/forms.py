@@ -50,13 +50,13 @@ class SignUpForm(FlaskForm):
         validators=[
             DataRequired("Email Address is empty"),
             Email("Not a valid email address"),
-            DataRequired("Full Name is empty"),
             validators.Length(
                 min=3, message="Email must be at least 3 characters long"
             ),
             validators.Length(
                 max=255, message="Email must no more than 255 characters long"
             ),
+            DataRequired("Full Name is empty"),
         ],
     )
     password = PasswordField(
@@ -72,7 +72,18 @@ class SignUpForm(FlaskForm):
             ),
         ],
     )
-    confirm_password = PasswordField("Confirm Password", validators=[DataRequired()])
+    confirm_password = PasswordField(
+        "Confirm Password",
+        validators=[
+            DataRequired("Confirm Password is empty"),
+            validators.Length(
+                min=8, message="Password must be at least 8 characters long"
+            ),
+            validators.Length(
+                max=64, message="Password must no more than 64 characters long"
+            ),
+        ],
+    )
 
     def validate_email_address(self, field):
         if not email_validation(field.data, True):

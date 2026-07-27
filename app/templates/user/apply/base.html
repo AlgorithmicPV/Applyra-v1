@@ -9,10 +9,14 @@
                 {#{{ form.hidden_tag() }
                 {{ form.job_url(placeholder="Paste Your Job Link") }}#}
             </form>-->
-            <button class="add" onclick="showJobForm()">
+            <button class="add" onclick="toggleJobForm()">
                 <div class="icon"></div>
             </button>
-            <form class="job-analyse-form">
+            <form class="job-analyse-form"
+                  hx-post="{{ url_for("apply_api.job_entry") }}"
+                  hx-on::after-request="this.reset()"
+                  hx-swap="beforeend"
+                  hx-target=".cards">
                 {{ form.hidden_tag() }}
                 {{ form.source_url(placeholder=form.source_url.label.text) }}
                 {{ form.job_title(placeholder=form.job_title.label.text) }}
@@ -68,10 +72,26 @@
         function closeMobileJobDetail() {
             document.querySelector(".body-cont.apply")?.classList.remove("mobile-detail-open");
         }
+        
+        let jobFormShow = false
 
-        function showJobForm() {
-            document.querySelector(".top-body")?.classList.add("hide")
-            document.querySelector(".job-analyse-form")?.classList.add("show")
+        function toggleJobForm() {
+            if (jobFormShow) {
+                document.querySelector(".add.close")?.classList.remove("close")
+                document.querySelector(".job-analyse-form.show")?.classList.remove("show")
+                document.querySelector(".top-body.hide")?.classList.remove("hide")
+                jobFormShow = false 
+            } else {
+                document.querySelector(".top-body")?.classList.add("hide")
+                document.querySelector(".add")?.classList.add("close")
+                // Delay 0.1s; make the UI smooth
+                setTimeout(() => {
+                    document.querySelector(".job-analyse-form")?.classList.add("show")
+                }, 100)
+                jobFormShow = true 
+            }
         }
+
+ e   
     </script>
 </div>

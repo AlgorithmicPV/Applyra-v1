@@ -9,7 +9,7 @@ from flask_login import current_user, login_required
 from playwright.sync_api import sync_playwright
 from sqlalchemy import or_
 from app.extensions import db
-from app.forms import JobLinkForm
+from app.forms import JobForm
 from app.models import (
     UserSkill,
     Education,
@@ -101,10 +101,7 @@ def search():
 
     job_entries = db.session.scalars(stmt).all()
 
-    return render_template(
-        "user/apply/components/cards.html",
-        job_entries=job_entries
-        )
+    return render_template("user/apply/components/cards.html", job_entries=job_entries)
 
 
 @apply_api_bp.post("/job_entry")
@@ -122,11 +119,9 @@ def job_entry():
         containing validation warnings or errors on failure.
     """
 
-    form = JobLinkForm(request.form)
+    form = JobForm(request.form)
 
-    stmt_skill = db.select(UserSkill).where(
-        UserSkill.user_id == current_user.user_id
-        )
+    stmt_skill = db.select(UserSkill).where(UserSkill.user_id == current_user.user_id)
     stmt_experience = db.select(WorkExperience).where(
         WorkExperience.user_id == current_user.user_id
     )
@@ -157,21 +152,13 @@ def job_entry():
     if not form.validate():
         return form.errors
 
-    job = ""
-
-    job_url = form.job_url.data
-
-    if job_url is None:
-        return {"error": "Please paste the Job Link."}
-
-    # Extract the visible job-posting text from the submitted page.
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
-        page = browser.new_page()
-        page.goto(job_url)
-        text = page.locator("body").inner_text()
-        job = text
-        browser.close()
+    job = {
+        "job-url": form.source_url.data,
+        "job-title": form.job_title.data,
+        "company-name": form.company_name.data,
+        "country-code": form.country_code.data,
+        "job-description": form.job_description.data,
+    }
 
     # Collect all users info
     user_info = {
@@ -220,7 +207,7 @@ def job_entry():
     job_entry_json = ai_service(
         analyse_prompt.format(
             job=job,
-            job_url=form.job_url.data,
+            job_url=form.source_url.data,
             skills_list=skills_list,
             work_experiences_list=work_experiences_list,
             education_list=education_list,
@@ -267,7 +254,7 @@ def job_entry():
     new_job_entry = JobEntry(
         job_entry_id=job_entry_id,
         user_id=current_user.user_id,
-        source_url=job_url,
+        source_url=form.source_url.data,
         platform=job_entry_json["source_platform"],
         job_title=job_entry_json["job_title"],
         company_name=job_entry_json["company_name"],
@@ -364,14 +351,11 @@ def show(id):
     if job_entry is None:
         return {"error": "The job you’re looking for could not be found"}
 
-    application_stmt = db.select(Application).where(
-        Application.job_entry_id == id
-        )
+    application_stmt = db.select(Application).where(Application.job_entry_id == id)
     application = db.session.scalars(application_stmt).first()
 
     cv_stmt = db.select(Document).where(
-        Document.doc_id == application.cv_document_id,
-        Document.doc_type == "cv"
+        Document.doc_id == application.cv_document_id, Document.doc_type == "cv"
     )
     cv = db.session.scalars(cv_stmt).first()
 
@@ -405,9 +389,6 @@ def show(id):
     # so if a user direcly acceses to this route, the browser does not
     # render the full html version (navigation panel + detail.html)
     if request.headers.get("HX-Request") == "true":
-        return render_template(
-            "user/apply/components/detail.html",
-            detail=detail
-            )
+        return render_template("user/apply/components/detail.html", detail=detail)
     else:
         abort(403)

@@ -121,6 +121,7 @@
     input,
     .auth-btn {
       width: calc(100% - (20px + 30px));
+      /* Remove the margin, and the padding from the width, to avoid overflow */
     }
   }
 }
