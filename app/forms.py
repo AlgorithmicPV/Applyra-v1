@@ -1,3 +1,4 @@
+import re
 from flask_wtf import FlaskForm, RecaptchaField
 from wtforms import (
     StringField,
@@ -36,7 +37,7 @@ class SignUpForm(FlaskForm):
     full_name = StringField(
         "Full Name",
         validators=[
-            DataRequired("Full Name is empty"),
+            DataRequired("Full name is empty"),
             validators.Length(
                 min=3, message="Full name must be at least 3 characters long"
             ),
@@ -49,14 +50,13 @@ class SignUpForm(FlaskForm):
         "Email Address",
         validators=[
             DataRequired("Email Address is empty"),
-            Email("Not a valid email address"),
             validators.Length(
                 min=3, message="Email must be at least 3 characters long"
             ),
             validators.Length(
                 max=255, message="Email must no more than 255 characters long"
             ),
-            DataRequired("Full Name is empty"),
+            Email("Not a valid email address"),
         ],
     )
     password = PasswordField(
@@ -85,9 +85,25 @@ class SignUpForm(FlaskForm):
         ],
     )
 
+    def validate_full_name(self, field):
+        if field.data.isspace() == True:
+            raise ValidationError("Full name is empty")
+
+        if bool(re.search(r"\d", field.data)):
+            raise ValidationError("Full name can not have numbers in it")
+
+        if not field.data.isascii():
+            raise ValidationError("Full name must not have unicode characters")
+
     def validate_email_address(self, field):
         if not email_validation(field.data, True):
             raise ValidationError("Not a valid email address")
+
+        if not field.data.isascii():
+            raise ValidationError("Email must not have unicode characters")
+
+        if field.data.isspace() == True:
+            raise ValidationError("Email Address is empty")
 
         if not field.data.isascii():
             raise ValidationError("Email must not have unicode characters")
@@ -162,12 +178,22 @@ class LoginForm(FlaskForm):
         ],
     )
 
+    def validate_full_name(self, field):
+        if field.data.isspace() == True:
+            raise ValidationError("Full name is empty")
+
+        if bool(re.search(r"\d", field.data)):
+            raise ValidationError("Full name can not have numbers in it")
+
     def validate_email_address(self, field):
         if not email_validation(field.data, True):
             raise ValidationError("Not a valid email address")
 
         if not field.data.isascii():
             raise ValidationError("Email must not have unicode characters")
+
+        if field.data.isspace() == True:
+            raise ValidationError("Email Address is empty")
 
     def validate_password(self, field):
         if not field.data.isascii():

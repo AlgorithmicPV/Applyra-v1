@@ -34,11 +34,15 @@ def sign_up():
     form = SignUpForm(request.form)
 
     if not form.validate():
-        print("not pass")
         return form.errors
 
+    # Trim spaces and convert all letters to lowercase (only email_address)
+    email_address = form.email_address.data.strip().lower()
+    print(email_address)
+    full_name = form.full_name.data.strip()
+
     email_exist = db.session.execute(
-        db.select(User).where(and_(User.email == form.email_address.data))
+        db.select(User).where(and_(User.email == email_address))
     ).first()
 
     if email_exist is None:
@@ -46,8 +50,8 @@ def sign_up():
         user_id = str(uuid.uuid4())
         new_user = User(
             user_id=user_id,
-            email=form.email_address.data,
-            full_name=form.full_name.data,
+            email=email_address,
+            full_name=full_name,
             password_hash=password_hasher.hash(form.password.data),
             auth_provider="manual",
             profile_image="https://placehold.co/300x300",
@@ -67,7 +71,7 @@ def sign_up():
         # also makes the google_id None, because,
         # if the email is loggined though gmail
         # but haven't verified, we need to update that
-        email_exist.User.full_name = form.full_name.data
+        email_exist.User.full_name = full_name
         email_exist.User.password_hasher = password_hasher.hash(form.password.data)
         email_exist.User.auth_provider = "manual"
         email_exist.User.profile_image = "https://placehold.co/300x300"
@@ -77,12 +81,14 @@ def sign_up():
 
     db.session.commit()
 
-    user_email = form.email_address.data
+    user_email = email_address
 
     session[hash_key("user-email")] = encrypt_value(user_email)
     session[hash_key("email-confirm")] = encrypt_value("1")
 
-    return redirect(url_for("auth_web.totp"))
+    return {"success": "Saved"}
+    # Later remove the upper part, and uncomment the down part
+    # return redirect(url_for("auth_web.totp"))
 
 
 @auth_api_bp.post("/confirm/")
@@ -150,7 +156,9 @@ def login():
         return form.errors
 
     email_exist = db.session.execute(
-        db.select(User).where(and_(User.email == form.email_address.data.strip()))
+        db.select(User).where(
+            and_(User.email == form.email_address.data.strip().lower())
+        )
     ).first()
 
     if not email_exist:

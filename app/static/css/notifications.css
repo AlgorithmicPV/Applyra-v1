@@ -52,7 +52,7 @@
 .error-notification p,
 .success-notification p,
 .warning-notification p {
-  color: white;
+  color: white !important;
   margin: 0;
   font-size: 14px;
   font-family: "Inter";
