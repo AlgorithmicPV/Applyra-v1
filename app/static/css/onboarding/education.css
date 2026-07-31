@@ -1,21 +1,23 @@
-.education-form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
+.cont.education-onboarding {
+  .education-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
 
-.education-form > input,
-.education-form > textarea,
-.time-period > input {
-  background-color: white;
-  border: none;
-  padding: 10px;
-  border-radius: 5px;
-  font-family: "Inter";
-}
+  .education-form>input,
+  .education-form>textarea,
+  .time-period>input {
+    background-color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    font-family: "Inter";
+  }
 
-.education-form > textarea {
-  resize: vertical;
-  max-height: 100px;
-  min-height: max-content;
+  .education-form>textarea {
+    resize: vertical;
+    max-height: 100px;
+    min-height: max-content;
+  }
 }

@@ -1,13 +1,15 @@
-.skill-form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
+.cont.skill-onboarding {
+  .skill-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
 
-.ts-control {
-  background-color: white !important;
-  border: none !important;
-  padding: 10px;
-  border-radius: 5px;
-  font-family: "Inter";
+  .ts-control {
+    background-color: white !important;
+    border: none !important;
+    padding: 10px;
+    border-radius: 5px;
+    font-family: "Inter";
+  }
 }

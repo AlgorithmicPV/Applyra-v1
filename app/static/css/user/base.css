@@ -3,9 +3,7 @@
   --nav-bar-padding: 15px;
   --nav-bar-width: calc(var(--nav-bar-padding) + var(--nav-bar-btn-size));
   --nav-bar-btn-padding: 5px;
-  --nav-bar-btn-size: calc(
-    var(--nav-bar-padding) * 2 + var(--nav-bar-img-size) + 12px
-  );
+  --nav-bar-btn-size: calc(var(--nav-bar-padding) * 2 + var(--nav-bar-img-size) + 12px);
   --main-content-gap: 10px;
   --header-height: 50px;
   --header-padding: 15px;
@@ -121,9 +119,9 @@ body {
   overflow: hidden;
 }
 
-.page-body > .body-cont,
-.page-body > .page-cont,
-.page-body > .settings-page {
+.page-body>.body-cont,
+.page-body>.page-cont,
+.page-body>.settings-page {
   animation: page-flow-in 0.28s ease-out;
 }
 
@@ -150,29 +148,6 @@ body {
 
 .app-icon {
   height: 20px;
-}
-
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #f3f4f1;
-  border-radius: 999px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #e6e8e3;
-}
-
-::-webkit-scrollbar-button {
-  display: none;
-  width: 0;
-  height: 0;
 }
 
 @media (max-width: 560px) {
@@ -274,8 +249,9 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .page-body > .body-cont,
-  .page-body > .page-cont {
+
+  .page-body>.body-cont,
+  .page-body>.page-cont {
     animation: none;
   }
 

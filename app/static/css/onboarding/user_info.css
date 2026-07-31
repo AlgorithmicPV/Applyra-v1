@@ -1,35 +1,37 @@
-.user-form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
+.cont.user-info-onboarding {
+  .user-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
 
-.user-form > input {
-  background-color: white;
-  border: none;
-  padding: 10px;
-  border-radius: 5px;
-  font-family: "Inter";
-}
+  .user-form>input {
+    background-color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    font-family: "Inter";
+  }
 
-.iti {
-  width: 100%;
-}
+  .iti {
+    width: 100%;
+  }
 
-#_phone {
-  width: 100%;
-  background-color: white;
-  border: none;
-  padding: 10px;
-  border-radius: 5px;
-  font-family: "Inter";
-}
+  #_phone {
+    width: 100%;
+    background-color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    font-family: "Inter";
+  }
 
-#country-listbox li {
-  margin: 10px;
-  padding: 5px;
-}
+  #country-listbox li {
+    margin: 10px;
+    padding: 5px;
+  }
 
-.iti__selected-flag {
-  background-color: white !important;
+  .iti__selected-flag {
+    background-color: white !important;
+  }
 }
