@@ -78,10 +78,13 @@
                 <span>◎</span>
                 Experience
             </button>
-            <button class="skip-btn" type="">Skip Now</button>
+            <button class="skip-btn"
+                    onclick="window.location.href='{{ url_for("apply_web.apply") }}'">Skip Now</button>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/tom-select@2.6.1/dist/js/tom-select.complete.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/16.0.4/js/intlTelInput.min.js"></script>
+        {# Title tag does not work on either base.html or home.html #}
+        <script>document.title = "Onboarding";</script>
     </div>
 {% endmacro %}
 {% if not request.headers.get("HX-Request") %}

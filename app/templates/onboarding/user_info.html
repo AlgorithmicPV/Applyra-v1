@@ -1,4 +1,5 @@
 <div class="cont user-info-onboarding">
+    <title>{{ title }}</title>
     <div class="left-side">
         <p class="heading">Add your personal information</p>
         <p class="p">We'll use this information to personalise your CV and cover letters, making it easy for employers to contact you.</p>
@@ -32,5 +33,14 @@
       fancy_phone_field.addEventListener('blur', function() {
           wtf_phone_field.value = fancy_phone_iti.getNumber();
       });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.6.1/dist/js/tom-select.complete.min.js"></script>
+    <script>
+      new TomSelect('#country', {
+        maxItems: 1,
+        create: false,
+        placeholder: "Enter your Country name",
+        allowEmptyOption: true
+      })
     </script>
 </div>

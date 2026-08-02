@@ -34,4 +34,13 @@
   .iti__selected-flag {
     background-color: white !important;
   }
+
+  .ts-control {
+    background-color: white !important;
+    border: none !important;
+    padding: 10px;
+    border-radius: 5px;
+    font-family: "Inter";
+  }
+
 }

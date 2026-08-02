@@ -27,9 +27,6 @@
                      src="{{ current_user.profile_image }}"
                      alt="{{ current_user.full_name }}" />
             </div>
-            <!--<button class="home-btn" hx-get="{{ url_for("dashboard_web.dashboard") }}" hx-target=".page-body" hx-swag="innerHTML" hx-push-url="true">
-                <img src="{{ url_for('static', filename='images/icons/home.svg') }}" alt="home-icon" />
-            </button>-->
             <button class="nav-page-btn{% if page == 'apply' %} active{% endif %}"
                     data-nav-path="/apply/"
                     hx-get="{{ url_for("apply_web.apply") }}"
@@ -40,9 +37,6 @@
                      alt="apply-icon" />
                 <p>Apply</p>
             </button>
-            <!--<button>
-                <img src="{{ url_for('static', filename='images/icons/track.svg') }}" alt="track-icon" />
-            </button>-->
             <button class="nav-page-btn{% if page in ['doc-home', 'document-editor'] %} active{% endif %}"
                     data-nav-path="/files/"
                     hx-get="{{ url_for("documents_web.doc_home") }}"
@@ -53,16 +47,6 @@
                      alt="doc-icon" />
                 <p>Docs</p>
             </button>
-            <!--<button>
-                <img src="{{ url_for('static', filename='images/icons/rules.svg') }}" alt="rules-icon" />
-            </button>
-            <button>
-                <img src="{{ url_for('static', filename='images/icons/practice.svg') }}" alt="practice-icon" />
-                <p>Interview</p>
-            </button>
-            <button>
-                <img src="{{ url_for('static', filename='images/icons/insights.svg') }}" alt="insights-icon" />
-            </button>-->
             <button class="nav-page-btn settings-btn{% if page == 'settings' %} active{% endif %}"
                     data-nav-path="/settings/"
                     hx-get="{{ url_for("settings_web.settings") }}"
@@ -92,11 +76,11 @@
                 {% elif
                     page == "document-editor" %}
                     {% include
-                    "user/documents-pages/editor.html" %}
+                        "user/documents-pages/editor.html" %}
                 {% elif
                     page == "doc-home" %}
                     {% include
-                    "user/documents-pages/doc-home.html" %}
+                        "user/documents-pages/doc-home.html" %}
                 {% elif
                     page == "apply"%}
                     {% include "user/apply/base.html" %}
@@ -110,7 +94,7 @@
 {% endmacro %}
 {% if not request.headers.get("HX-Request") %}
     {% extends
-    "base.html" %}
+        "base.html" %}
     {% block content %}{{ user_base() }}{% endblock %}
 {% else %}
     {{ user_base() }}

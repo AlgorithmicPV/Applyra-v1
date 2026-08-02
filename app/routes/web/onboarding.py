@@ -19,9 +19,15 @@ def home():
 def user():
     form = UserInfoForm()
     if request.headers.get("HX-Request") == "true":
-        return render_template("onboarding/user_info.html", form=form)
+        return render_template(
+            "onboarding/user_info.html",
+            form=form,
+            title="Your info",
+        )
     else:
-        return render_template("onboarding/base.html", page="user_info", form=form)
+        return render_template(
+            "onboarding/base.html", page="user_info", form=form, title="Your info"
+        )
 
 
 @onboarding_web_bp.route("/education/", methods=["POST", "GET"])
@@ -53,6 +59,7 @@ def education():
             "onboarding/education.html",
             form=form,
             qualifications=qualifications_frontend,
+            title="Your Education Background",
         )
     else:
         return render_template(
@@ -60,6 +67,7 @@ def education():
             page="education",
             form=form,
             qualifications=qualifications_frontend,
+            title="Your Education Background",
         )
 
 
@@ -92,6 +100,7 @@ def experience():
             "onboarding/experience.html",
             form=form,
             experiences=work_experiences_frontend,
+            title="Your work experiences",
         )
     else:
         return render_template(
@@ -99,6 +108,7 @@ def experience():
             page="experience",
             form=form,
             experiences=work_experiences_frontend,
+            title="Your work experiences",
         )
 
 
@@ -127,8 +137,17 @@ def skills():
             skills.append(s)
 
     if request.headers.get("HX-Request") == "true":
-        return render_template("onboarding/skills.html", form=form, skills=skills)
+        return render_template(
+            "onboarding/skills.html",
+            form=form,
+            skills=skills,
+            title="Your Skills",
+        )
     else:
         return render_template(
-            "onboarding/base.html", page="skills", form=form, skills=skills
+            "onboarding/base.html",
+            page="skills",
+            form=form,
+            skills=skills,
+            title="Your Skills",
         )
