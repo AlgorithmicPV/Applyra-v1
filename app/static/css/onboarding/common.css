@@ -52,3 +52,21 @@
   color: #ffffff;
   width: max-content;
 }
+
+.submit:hover,
+.done:hover {
+  background: #7c3aed;
+}
+
+@media (max-width: 560px) {
+  .cont {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .heading,
+  .p {
+    text-align: center;
+  }
+}

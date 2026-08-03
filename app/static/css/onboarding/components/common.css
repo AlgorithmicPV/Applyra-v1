@@ -31,6 +31,12 @@
   cursor: pointer;
 }
 
+.delete-btn:hover .icon,
+.edit-btn:hover .icon,
+.cancel-btn:hover .icon {
+  background-color: black;
+}
+
 .delete-btn .icon {
   mask-image: url("../../../images/icons/functional-icons/delete.svg");
   -webkit-mask-image: url("../../../images/icons/functional-icons/delete.svg");
@@ -60,6 +66,7 @@
   flex-direction: column;
   width: 100%;
   display: none;
+  gap: 10px;
 }
 
 .cancel-btn {
