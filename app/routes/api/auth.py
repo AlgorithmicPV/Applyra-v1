@@ -7,10 +7,10 @@ from datetime import datetime
 from flask import Blueprint, request, url_for, redirect, session, abort
 from sqlalchemy import and_
 from argon2.exceptions import VerifyMismatchError
-from flask_login import login_user
+from flask_login import login_user, current_user
 from app.forms import AuthResendCodeForm, SignUpForm, TotpForm, LoginForm
 from app.extensions import limiter, password_hasher, db, get_totp
-from app.models import User
+from app.models import User, UserSkill, WorkExperience, Education, UserPersonal
 from app.utilities.client_sessions import encrypt_value, decrypt_value, hash_key
 from app.utilities.validations import email_confirm
 
@@ -22,7 +22,7 @@ current_timestamp = current_datetime.timestamp()
 AUTH_TOTP_INTERVAL = 120  # 2 minutes
 
 
-@auth_api_bp.post("/sign-up")
+@auth_api_bp.post("/sign-up/")
 @limiter.limit("1 per 3 seconds; 5 per minute; 20 per hour")
 def sign_up():
     """Save new users to the system
@@ -57,7 +57,6 @@ def sign_up():
             profile_image="https://placehold.co/300x300",
             theme_preference="dark",
             join_date=current_datetime,
-            onbaording_completed=False,
             is_verified=False,
         )
 
@@ -86,9 +85,7 @@ def sign_up():
     session[hash_key("user-email")] = encrypt_value(user_email)
     session[hash_key("email-confirm")] = encrypt_value("1")
 
-    return {"success": "Saved"}
-    # Later remove the upper part, and uncomment the down part
-    # return redirect(url_for("auth_web.totp"))
+    return redirect(url_for("auth_web.totp"))
 
 
 @auth_api_bp.post("/confirm/")
@@ -182,5 +179,48 @@ def login():
     )
 
     session["first-access-to-app-via-htmx"] = True
+
+    # Check whether, the user has completed the onboarding,
+    # if yes, user will be redirected to the app,
+    # if no, user will be redirected to the onboarding page
+    stmt_skill = (
+        db.select(UserSkill).where(UserSkill.user_id == current_user.user_id).exists()
+    )
+    stmt_experience = (
+        db.select(WorkExperience)
+        .where(WorkExperience.user_id == current_user.user_id)
+        .exists()
+    )
+    stmt_education = (
+        db.select(Education).where(Education.user_id == current_user.user_id).exists()
+    )
+    stmt_user_profile = (
+        db.select(UserPersonal)
+        .where(UserPersonal.user_id == current_user.user_id)
+        .exists()
+    )
+
+    # Before redirecting to the login page,
+    # check whether the user has completed the onboarding process.
+
+    # Scalar gives a boolean output, True, or False
+    # Pages are organized in the same order as the website structure.
+    # The route function names are used as the page names.
+    # This helps avoid writing repetitive code.
+    onboarding_status = {
+        "user": db.session.scalar(db.select(stmt_user_profile)),
+        "education": db.session.scalar(db.select(stmt_education)),
+        "skills": db.session.scalar(db.select(stmt_education)),
+        "experience": db.session.scalar(db.select(stmt_experience)),
+    }
+
+    # If all are False, it will redirect to onboarding home page
+    # False + False + False + False = 0, because False is 0
+    if sum(list(onboarding_status.values())) == 0:
+        return redirect(url_for("onboarding_web.home"))
+
+    for page, status in onboarding_status.items():
+        if status == False:
+            return redirect(url_for(f"onboarding_web.{page}"))
 
     return redirect(url_for("apply_web.apply"))
