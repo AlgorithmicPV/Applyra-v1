@@ -13,7 +13,6 @@ class User(UserMixin, db.Model):
     profile_image = db.Column(db.TEXT, nullable=False)
     theme_preference = db.Column(db.VARCHAR(45), nullable=False)
     join_date = db.Column(db.TIMESTAMP, nullable=False)
-    onbaording_completed = db.Column(db.BOOLEAN, nullable=False)
     is_verified = db.Column(db.BOOLEAN)
 
     documents = db.relationship("Document", backref="user")
