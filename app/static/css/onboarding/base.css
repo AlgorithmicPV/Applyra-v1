@@ -12,48 +12,50 @@ body {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#FAFAF8", endColorstr="#E3E5DF", GradientType=0);
 }
 
-.main-content {
+.main-content.onboarding {
   height: 100%;
   font-family: "Inter";
   display: flex;
   flex-direction: column;
 }
 
-.nav-bar {
-  margin-top: auto;
-  /* Pushes nav-bar to the bottom */
-  padding-bottom: 15px;
-  display: flex;
-  flex-direction: row;
-  justify-content: right;
-  gap: 15px;
-}
+.main-content.onboarding {
+  .nav-bar {
+    margin-top: auto;
+    /* Pushes nav-bar to the bottom */
+    padding-bottom: 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: right;
+    gap: 15px;
+  }
 
-.nav-btn,
-.skip-btn {
-  border: none;
-  background-color: transparent;
-  color: rgba(42, 47, 58, 0.8);
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 5px;
-}
+  .nav-btn,
+  .skip-btn {
+    border: none;
+    background-color: transparent;
+    color: rgba(42, 47, 58, 0.8);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+  }
 
-.nav-btn:hover,
-.skip-btn:hover {
-  color: #0E1116;
-}
+  .nav-btn:hover,
+  .skip-btn:hover {
+    color: #0E1116;
+  }
 
-.nav-btn span {
-  font-size: x-large;
-  aspect-ratio: 1 / 1;
-}
+  .nav-btn span {
+    font-size: x-large;
+    aspect-ratio: 1 / 1;
+  }
 
-.skip-btn {
-  position: absolute;
-  top: 0;
-  right: 0;
-  margin: 15px;
+  .skip-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 15px;
+  }
 }
