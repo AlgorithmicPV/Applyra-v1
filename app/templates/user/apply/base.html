@@ -5,26 +5,24 @@
     <title>Apply</title>
     <div class="left">
         <div class="top">
-            <!--<form hx-post="{{ url_for("apply_api.job_entry") }}" hx-on::after-request="this.reset()" hx-swap="beforeend" hx-target=".cards">
-                {#{{ form.hidden_tag() }
-                {{ form.job_url(placeholder="Paste Your Job Link") }}#}
-            </form>-->
-            <button class="add" onclick="toggleJobForm()">
-                <div class="icon"></div>
-            </button>
-            <form class="job-analyse-form"
-                  hx-post="{{ url_for("apply_api.job_entry") }}"
-                  hx-on::after-request="this.reset()"
-                  hx-swap="beforeend"
-                  hx-target=".cards">
-                {{ form.hidden_tag() }}
-                {{ form.source_url(placeholder=form.source_url.label.text) }}
-                {{ form.job_title(placeholder=form.job_title.label.text) }}
-                {{ form.company_name(placeholder=form.company_name.label.text) }}
-                {{ form.country_code(placeholder=form.country_code.label.text) }}
-                {{ form.job_description(placeholder=form.job_description.label.text) }}
-                <button type="submit" class="start-btn">Start</button>
-            </form>
+            {% if not message %}
+                <button class="add" onclick="toggleJobForm()">
+                    <div class="icon"></div>
+                </button>
+                <form class="job-analyse-form"
+                      hx-post="{{ url_for("apply_api.job_entry") }}"
+                      hx-on::after-request="this.reset()"
+                      hx-swap="beforeend"
+                      hx-target=".cards">
+                    {{ form.hidden_tag() }}
+                    {{ form.source_url(placeholder=form.source_url.label.text) }}
+                    {{ form.job_title(placeholder=form.job_title.label.text) }}
+                    {{ form.company_name(placeholder=form.company_name.label.text) }}
+                    {{ form.country_code(placeholder=form.country_code.label.text) }}
+                    {{ form.job_description(placeholder=form.job_description.label.text) }}
+                    <button type="submit" class="start-btn">Start</button>
+                </form>
+            {% endif %}
         </div>
         <div class="top-body">
             <input type="search"
