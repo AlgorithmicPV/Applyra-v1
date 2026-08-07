@@ -48,11 +48,9 @@ The purpose of this project is to develop a web-based job application platform t
 
 ## Demo
 
-```
-![Application Demo](docs/demo.gif)
-
-[▶ Watch the demo video](docs/demo.mp4)
-```
+<p align="center">
+  <img src="docs/demo.gif" alt="Applyra Demo" width="900">
+</p>
 
 ---
 
