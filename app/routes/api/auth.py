@@ -1,17 +1,21 @@
-"""
-This module covers all the authentications in the system
-"""
+"""This module handles all authentication routes in the system."""
 
 import uuid
 from datetime import datetime
-from flask import Blueprint, request, url_for, redirect, session, abort
-from sqlalchemy import and_
+
 from argon2.exceptions import VerifyMismatchError
-from flask_login import login_user, current_user
-from app.forms import AuthResendCodeForm, SignUpForm, TotpForm, LoginForm
-from app.extensions import limiter, password_hasher, db, get_totp
-from app.models import User, UserSkill, WorkExperience, Education, UserPersonal
-from app.utilities.client_sessions import encrypt_value, decrypt_value, hash_key
+from flask import Blueprint, abort, redirect, request, session, url_for
+from flask_login import current_user, login_user
+from sqlalchemy import and_
+
+from app.extensions import db, get_totp, limiter, password_hasher
+from app.forms import AuthResendCodeForm, LoginForm, SignUpForm, TotpForm
+from app.models import Education, User, UserPersonal, UserSkill, WorkExperience
+from app.utilities.client_sessions import (
+    decrypt_value,
+    encrypt_value,
+    hash_key,
+)
 from app.utilities.validations import email_confirm
 
 auth_api_bp = Blueprint("auth_api", __name__)
@@ -25,10 +29,10 @@ AUTH_TOTP_INTERVAL = 120  # 2 minutes
 @auth_api_bp.post("/sign-up/")
 @limiter.limit("1 per 3 seconds; 5 per minute; 20 per hour")
 def sign_up():
-    """Save new users to the system
+    """Save a new user to the system.
 
     Returns:
-        _type_: _description_
+        A redirect when successful, or a dictionary containing errors.
     """
 
     form = SignUpForm(request.form)
@@ -36,7 +40,7 @@ def sign_up():
     if not form.validate():
         return form.errors
 
-    # Trim spaces and convert all letters to lowercase (only email_address)
+    # Remove spaces and convert only the email address to lowercase.
     email_address = form.email_address.data.strip().lower()
     print(email_address)
     full_name = form.full_name.data.strip()
@@ -46,7 +50,7 @@ def sign_up():
     ).first()
 
     if email_exist is None:
-        # Add a brand new user
+        # Add a brand-new user.
         user_id = str(uuid.uuid4())
         new_user = User(
             user_id=user_id,
@@ -65,13 +69,13 @@ def sign_up():
     else:
         if email_exist.User.is_verified and email_exist.User.email:
             return {"error": "User email is existing"}
-        # If the email is in the database, and not verified,
-        # it will update only, the full name, password, auth_provider
-        # also makes the google_id None, because,
-        # if the email is loggined though gmail
-        # but haven't verified, we need to update that
+        # If the email exists but is not verified, update the user's details.
+        # Also remove the Google ID if they previously used Gmail without
+        # completing verification.
         email_exist.User.full_name = full_name
-        email_exist.User.password_hasher = password_hasher.hash(form.password.data)
+        email_exist.User.password_hasher = password_hasher.hash(
+            form.password.data
+        )
         email_exist.User.auth_provider = "manual"
         email_exist.User.profile_image = "https://placehold.co/300x300"
         email_exist.User.theme_preference = "dark"
@@ -90,6 +94,11 @@ def sign_up():
 
 @auth_api_bp.post("/confirm/")
 def confirm_email():
+    """Confirm the user's email using the submitted verification code.
+
+    Returns:
+        A redirect when successful, or a dictionary containing errors.
+    """
 
     if not session.get(hash_key("email-confirm-backend")):
         abort(403)
@@ -105,7 +114,8 @@ def confirm_email():
     unverified_user = db.session.execute(
         db.select(User).where(
             and_(
-                User.email == decrypt_value(session.get(hash_key("user-email"))),
+                User.email
+                == decrypt_value(session.get(hash_key("user-email"))),
                 User.is_verified is not True,
             )
         )
@@ -124,6 +134,12 @@ def confirm_email():
 @auth_api_bp.post("/resend-code/")
 @limiter.limit("1 per 30 seconds; 5 per 10 minutes")
 def resend_code():
+    """Send a new verification code to the user's email.
+
+    Returns:
+        A success message, or a dictionary containing errors.
+    """
+
     if not session.get(hash_key("email-confirm-backend")):
         abort(403)
 
@@ -146,6 +162,11 @@ def resend_code():
 
 @auth_api_bp.post("/login/")
 def login():
+    """Log in the user and redirect them to the correct page.
+
+    Returns:
+        A redirect when successful, or a dictionary containing errors.
+    """
 
     form = LoginForm(request.form)
 
@@ -165,7 +186,9 @@ def login():
         return {"error": "User email is not verified"}
 
     try:
-        password_hasher.verify(email_exist.User.password_hash, form.password.data)
+        password_hasher.verify(
+            email_exist.User.password_hash, form.password.data
+        )
     except VerifyMismatchError:
         return {"error": "Login is failed"}
 
@@ -180,11 +203,12 @@ def login():
 
     session["first-access-to-app-via-htmx"] = True
 
-    # Check whether, the user has completed the onboarding,
-    # if yes, user will be redirected to the app,
-    # if no, user will be redirected to the onboarding page
+    # Check whether the user completed onboarding. If yes, redirect them to
+    # the app. If not, redirect them to the onboarding page.
     stmt_skill = (
-        db.select(UserSkill).where(UserSkill.user_id == current_user.user_id).exists()
+        db.select(UserSkill)
+        .where(UserSkill.user_id == current_user.user_id)
+        .exists()
     )
     stmt_experience = (
         db.select(WorkExperience)
@@ -192,7 +216,9 @@ def login():
         .exists()
     )
     stmt_education = (
-        db.select(Education).where(Education.user_id == current_user.user_id).exists()
+        db.select(Education)
+        .where(Education.user_id == current_user.user_id)
+        .exists()
     )
     stmt_user_profile = (
         db.select(UserPersonal)
@@ -200,10 +226,7 @@ def login():
         .exists()
     )
 
-    # Before redirecting to the login page,
-    # check whether the user has completed the onboarding process.
-
-    # Scalar gives a boolean output, True, or False
+    # Scalar gives a Boolean output: True or False.
     # Pages are organized in the same order as the website structure.
     # The route function names are used as the page names.
     # This helps avoid writing repetitive code.
@@ -214,8 +237,8 @@ def login():
         "experience": db.session.scalar(db.select(stmt_experience)),
     }
 
-    # If all are False, it will redirect to onboarding home page
-    # False + False + False + False = 0, because False is 0
+    # If all values are False, redirect to the onboarding home page.
+    # False + False + False + False = 0 because False is 0.
     if sum(list(onboarding_status.values())) == 0:
         return redirect(url_for("onboarding_web.home"))
 

@@ -1,8 +1,11 @@
-import openai
-from openai import OpenAI
-import os
-from dotenv import load_dotenv
+"""This module sends AI requests and returns structured JSON responses."""
+
 import json
+import os
+
+import openai
+from dotenv import load_dotenv
+from openai import OpenAI
 
 load_dotenv()
 
@@ -16,18 +19,33 @@ client = OpenAI(
 
 
 def ai_service(content, json_schema):
+    """Send content to the AI service and return structured data.
+
+    Args:
+        content: The prompt content sent to the AI model.
+        json_schema: The schema used to format the AI response.
+
+    Returns:
+        The AI response converted from JSON into a Python dictionary.
+
+    Raises:
+        openai.APIError: If a handled OpenAI API error occurs.
+    """
+
     try:
         response = client.chat.completions.create(
             model=model,
             messages=[{"role": "user", "content": content}],
-            response_format={"type": "json_schema", "json_schema": json_schema},
+            response_format={
+                "type": "json_schema",
+                "json_schema": json_schema,
+            },
         )
-        return json.loads(
-            response.choices[0].message.content
-        )  # Covert the JSON string to a python dictionary
+        # Convert the JSON string to a Python dictionary.
+        return json.loads(response.choices[0].message.content)
 
     except openai.APIConnectionError:
-        # Occurs when the client cannot connect to the server (e.g., network down)
+        # The client could not connect, for example, if the network is down.
         print("Failed to connect to OpenAI API")
         raise
 
@@ -37,7 +55,7 @@ def ai_service(content, json_schema):
         raise
 
     except openai.LengthFinishReasonError:
-        # Occurs when the response was truncated because it ran out of max_tokens
+        # The response was cut off because it reached the token limit.
         print("OpenAI response truncated due to token limit")
         raise
 

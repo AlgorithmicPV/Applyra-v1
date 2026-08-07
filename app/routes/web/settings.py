@@ -1,4 +1,13 @@
-from flask import Blueprint, render_template, request, redirect, session, url_for
+"""This module handles the frontend routes for the settings pages."""
+
+from flask import (
+    Blueprint,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
 from flask_login import current_user, login_required, logout_user
 
 from app.extensions import db
@@ -10,6 +19,12 @@ settings_web_bp = Blueprint("settings_web", __name__)
 
 @settings_web_bp.before_app_request
 def remove_settings_verification():
+    """Remove settings verification when the user leaves settings.
+
+    Returns:
+        None after checking the current request.
+    """
+
     # Keep verification while the user is using settings.
     if request.blueprint == "settings_web":
         return
@@ -27,6 +42,12 @@ def remove_settings_verification():
 @settings_web_bp.route("/settings/")
 @login_required
 def settings():
+    """Display the settings page for the current user.
+
+    Returns:
+        The full settings page or partial HTML for an HTMX request.
+    """
+
     # Opening settings again always starts with PIN verification.
     session.pop("settings-verified-user", None)
 
@@ -38,7 +59,9 @@ def settings():
     ).all()
 
     experiences = db.session.scalars(
-        db.select(WorkExperience).where(WorkExperience.user_id == current_user.user_id)
+        db.select(WorkExperience).where(
+            WorkExperience.user_id == current_user.user_id
+        )
     ).all()
 
     user_skills = db.session.scalars(
@@ -76,5 +99,11 @@ def settings():
 @settings_web_bp.route("/logout/")
 @login_required
 def logout():
+    """Log out the current user and redirect them to the login page.
+
+    Returns:
+        A redirect to the login page.
+    """
+
     logout_user()
     return redirect(url_for("auth_web.login"))

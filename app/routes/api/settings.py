@@ -1,3 +1,5 @@
+"""This module handles the backend routes for the settings pages."""
+
 import base64
 import uuid
 from datetime import date
@@ -44,6 +46,12 @@ settings_api_bp = Blueprint("settings_api", __name__)
 @settings_api_bp.post("/request-code/")
 @login_required
 def request_code():
+    """Send a verification code before allowing settings changes.
+
+    Returns:
+        The settings HTML, or a dictionary containing an error.
+    """
+
     form = SettingsCodeRequestForm()
     if not form.validate_on_submit():
         for errors in form.errors.values():
@@ -57,7 +65,9 @@ def request_code():
         db.select(Education).where(Education.user_id == current_user.user_id)
     ).all()
     experiences = db.session.scalars(
-        db.select(WorkExperience).where(WorkExperience.user_id == current_user.user_id)
+        db.select(WorkExperience).where(
+            WorkExperience.user_id == current_user.user_id
+        )
     ).all()
     user_skills = db.session.scalars(
         db.select(UserSkill).where(UserSkill.user_id == current_user.user_id)
@@ -83,6 +93,12 @@ def request_code():
 @settings_api_bp.post("/verify-code/")
 @login_required
 def verify_code():
+    """Verify the code and display the editable settings page.
+
+    Returns:
+        The editable settings HTML, or a dictionary containing an error.
+    """
+
     form = SettingsTotpForm()
     if not form.validate_on_submit():
         for errors in form.errors.values():
@@ -101,7 +117,9 @@ def verify_code():
         db.select(Education).where(Education.user_id == current_user.user_id)
     ).all()
     experiences = db.session.scalars(
-        db.select(WorkExperience).where(WorkExperience.user_id == current_user.user_id)
+        db.select(WorkExperience).where(
+            WorkExperience.user_id == current_user.user_id
+        )
     ).all()
     user_skills = db.session.scalars(
         db.select(UserSkill).where(UserSkill.user_id == current_user.user_id)
@@ -136,6 +154,12 @@ def verify_code():
 @settings_api_bp.get("/skill/search/")
 @login_required
 def search_skills():
+    """Search for skills using the given search text.
+
+    Returns:
+        A JSON list containing the matching skills.
+    """
+
     if session.get("settings-verified-user") != current_user.user_id:
         return {"error": "Please verify your PIN again"}
 
@@ -156,6 +180,12 @@ def search_skills():
 @settings_api_bp.post("/profile/update/")
 @login_required
 def profile_update():
+    """Update the current user's profile details.
+
+    Returns:
+        A success message, or a dictionary containing an error.
+    """
+
     if session.get("settings-verified-user") != current_user.user_id:
         return {"error": "Please verify your PIN again"}
 
@@ -172,7 +202,9 @@ def profile_update():
 
         encoded_image = base64.b64encode(image_data).decode("utf-8")
         image_type = image.mimetype or "image/png"
-        current_user.profile_image = "data:" + image_type + ";base64," + encoded_image
+        current_user.profile_image = (
+            "data:" + image_type + ";base64," + encoded_image
+        )
 
     current_user.full_name = form.full_name.data
     current_user.email = form.email.data
@@ -189,10 +221,19 @@ def profile_update():
 @settings_api_bp.post("/password/update/")
 @login_required
 def password_update():
+    """Update the current user's password.
+
+    Returns:
+        A success message, or a dictionary containing an error.
+    """
+
     if session.get("settings-verified-user") != current_user.user_id:
         return {"error": "Please verify your PIN again"}
 
-    if current_user.auth_provider != "manual" or not current_user.password_hash:
+    if (
+        current_user.auth_provider != "manual"
+        or not current_user.password_hash
+    ):
         return {"error": "Password changes are not available for this account"}
 
     form = SettingsPasswordForm()
@@ -208,6 +249,12 @@ def password_update():
 @settings_api_bp.post("/skill/add/")
 @login_required
 def skill_add():
+    """Add a new skill to the current user's profile.
+
+    Returns:
+        The new skill HTML, or a dictionary containing an error.
+    """
+
     if session.get("settings-verified-user") != current_user.user_id:
         return {"error": "Please verify your PIN again"}
 
@@ -243,6 +290,15 @@ def skill_add():
 @settings_api_bp.delete("/skill/delete/<user_skill_id>/")
 @login_required
 def skill_delete(user_skill_id):
+    """Delete a skill from the current user's profile.
+
+    Args:
+        user_skill_id: The ID of the user's skill record.
+
+    Returns:
+        An empty response when successful, or a dictionary containing an error.
+    """
+
     if session.get("settings-verified-user") != current_user.user_id:
         return {"error": "Please verify your PIN again"}
 
@@ -263,6 +319,12 @@ def skill_delete(user_skill_id):
 @settings_api_bp.post("/education/add/")
 @login_required
 def education_add():
+    """Add a new education record to the current user's profile.
+
+    Returns:
+        The new education HTML, or a dictionary containing an error.
+    """
+
     if session.get("settings-verified-user") != current_user.user_id:
         return {"error": "Please verify your PIN again"}
 
@@ -301,6 +363,15 @@ def education_add():
 @settings_api_bp.post("/education/update/<education_id>/")
 @login_required
 def education_update(education_id):
+    """Update an education record in the current user's profile.
+
+    Args:
+        education_id: The ID of the education record.
+
+    Returns:
+        The updated education HTML, or a dictionary containing an error.
+    """
+
     if session.get("settings-verified-user") != current_user.user_id:
         return {"error": "Please verify your PIN again"}
 
@@ -343,6 +414,15 @@ def education_update(education_id):
 @settings_api_bp.delete("/education/delete/<education_id>/")
 @login_required
 def education_delete(education_id):
+    """Delete an education record from the current user's profile.
+
+    Args:
+        education_id: The ID of the education record.
+
+    Returns:
+        An empty response when successful, or a dictionary containing an error.
+    """
+
     if session.get("settings-verified-user") != current_user.user_id:
         return {"error": "Please verify your PIN again"}
 
@@ -363,6 +443,12 @@ def education_delete(education_id):
 @settings_api_bp.post("/experience/add/")
 @login_required
 def experience_add():
+    """Add a new work experience to the current user's profile.
+
+    Returns:
+        The new experience HTML, or a dictionary containing an error.
+    """
+
     if session.get("settings-verified-user") != current_user.user_id:
         return {"error": "Please verify your PIN again"}
 
@@ -402,6 +488,15 @@ def experience_add():
 @settings_api_bp.post("/experience/update/<experience_id>/")
 @login_required
 def experience_update(experience_id):
+    """Update a work experience in the current user's profile.
+
+    Args:
+        experience_id: The ID of the work experience record.
+
+    Returns:
+        The updated experience HTML, or a dictionary containing an error.
+    """
+
     if session.get("settings-verified-user") != current_user.user_id:
         return {"error": "Please verify your PIN again"}
 
@@ -445,6 +540,15 @@ def experience_update(experience_id):
 @settings_api_bp.delete("/experience/delete/<experience_id>/")
 @login_required
 def experience_delete(experience_id):
+    """Delete a work experience from the current user's profile.
+
+    Args:
+        experience_id: The ID of the work experience record.
+
+    Returns:
+        An empty response when successful, or a dictionary containing an error.
+    """
+
     if session.get("settings-verified-user") != current_user.user_id:
         return {"error": "Please verify your PIN again"}
 
@@ -465,6 +569,12 @@ def experience_delete(experience_id):
 @settings_api_bp.post("/account/delete/")
 @login_required
 def account_delete():
+    """Delete the current user's account and related information.
+
+    Returns:
+        A response that redirects the user to the login page.
+    """
+
     if session.get("settings-verified-user") != current_user.user_id:
         return {"error": "Please verify your PIN again"}
 
@@ -476,13 +586,19 @@ def account_delete():
     user_id = current_user.user_id
 
     # Delete child records first because they belong to the user account.
-    db.session.query(Application).filter(Application.user_id == user_id).delete()
+    db.session.query(Application).filter(
+        Application.user_id == user_id
+    ).delete()
     db.session.query(Document).filter(Document.user_id == user_id).delete()
     db.session.query(JobEntry).filter(JobEntry.user_id == user_id).delete()
     db.session.query(Education).filter(Education.user_id == user_id).delete()
     db.session.query(UserSkill).filter(UserSkill.user_id == user_id).delete()
-    db.session.query(WorkExperience).filter(WorkExperience.user_id == user_id).delete()
-    db.session.query(UserPersonal).filter(UserPersonal.user_id == user_id).delete()
+    db.session.query(WorkExperience).filter(
+        WorkExperience.user_id == user_id
+    ).delete()
+    db.session.query(UserPersonal).filter(
+        UserPersonal.user_id == user_id
+    ).delete()
     db.session.query(User).filter(User.user_id == user_id).delete()
     db.session.commit()
 

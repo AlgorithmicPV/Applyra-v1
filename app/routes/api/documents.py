@@ -1,9 +1,12 @@
+"""This module handles the backend routes for the documents pages."""
+
 from datetime import date, datetime
 
-from flask import Blueprint, request, render_template
-from app.models import Application, Document, JobEntry
+from flask import Blueprint, render_template, request
 from flask_login import current_user, login_required
+
 from app.extensions import db
+from app.models import Application, Document, JobEntry
 
 documents_api_bp = Blueprint("documents_api", __name__)
 
@@ -11,7 +14,11 @@ documents_api_bp = Blueprint("documents_api", __name__)
 @documents_api_bp.route("/search/", methods=["GET"])
 @login_required
 def search():
-    """Return documents matching the current search and type filters."""
+    """Return documents matching the current search and type filters.
+
+    Returns:
+        The document rows HTML containing the matching documents.
+    """
 
     query = request.args.get("q", "").strip().lower()
     doc_type = request.args.get("doc_type", "all")
@@ -51,7 +58,11 @@ def search():
 
         role = document.role or ""
         company = job_entry.company_name or ""
-        if query and query not in role.lower() and query not in company.lower():
+        if (
+            query
+            and query not in role.lower()
+            and query not in company.lower()
+        ):
             continue
 
         searched_documents.append(
@@ -84,6 +95,11 @@ def search():
 @documents_api_bp.route("/save/", methods=["POST"])
 @login_required
 def doc_save():
+    """Save the updated content of a document.
+
+    Returns:
+        A success message, or a dictionary containing an error.
+    """
 
     data = request.get_json()
 

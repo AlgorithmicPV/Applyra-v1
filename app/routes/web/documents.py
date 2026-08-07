@@ -1,8 +1,12 @@
+"""This module handles the frontend routes for the documents pages."""
+
 from datetime import datetime
-from flask import Blueprint, request, render_template, abort
+
+from flask import Blueprint, abort, render_template, request
 from flask_login import current_user, login_required
-from app.models import Document, Application, JobEntry
+
 from app.extensions import db
+from app.models import Application, Document, JobEntry
 
 documents_web_bp = Blueprint("documents_web", __name__)
 
@@ -10,6 +14,11 @@ documents_web_bp = Blueprint("documents_web", __name__)
 @documents_web_bp.route("/files/", methods=["POST", "GET"])
 @login_required
 def doc_home():
+    """Display all documents belonging to the current user.
+
+    Returns:
+        The full documents page or partial HTML for an HTMX request.
+    """
 
     stmt = db.select(Document).where(Document.user_id == current_user.user_id)
     documents = db.session.execute(stmt).scalars().all()
@@ -24,9 +33,8 @@ def doc_home():
             job_stmt = db.select(Application).where(
                 Application.cv_document_id == doc.doc_id
             )
-            application = (
-                db.session.execute(job_stmt).scalars().first()
-            )  # Curent Status: Relationship between job_entry and document is one to one
+            # Currently, each job entry has one application document.
+            application = db.session.execute(job_stmt).scalars().first()
 
             job_entry_id = application.job_entry_id
 
@@ -42,9 +50,8 @@ def doc_home():
             job_stmt = db.select(Application).where(
                 Application.cover_letter_document_id == doc.doc_id
             )
-            application = (
-                db.session.execute(job_stmt).scalars().first()
-            )  # Curent Status: Relationship between job_entry and document is one to one
+            # Currently, each job entry has one application document.
+            application = db.session.execute(job_stmt).scalars().first()
 
             job_entry_id = application.job_entry_id
 
@@ -76,16 +83,30 @@ def doc_home():
         )
 
     if request.headers.get("HX-Request") == "true":
-        return render_template("user/documents-pages/doc-home.html", all_docs=all_docs)
+        return render_template(
+            "user/documents-pages/doc-home.html", all_docs=all_docs
+        )
     else:
         return render_template(
-            "user/base.html", title="All Documents", page="doc-home", all_docs=all_docs
+            "user/base.html",
+            title="All Documents",
+            page="doc-home",
+            all_docs=all_docs,
         )
 
 
 @documents_web_bp.route("/editor/<id>/", methods=["GET"])
 @login_required
 def editor(id):
+    """Display the editor for a selected document.
+
+    Args:
+        id: The ID of the document.
+
+    Returns:
+        The full editor page or partial HTML for an HTMX request.
+    """
+
     stmt = db.select(Document).where(Document.doc_id == id)
     doc = db.session.scalars(stmt).first()
 

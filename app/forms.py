@@ -1,39 +1,46 @@
+"""This module contains the forms and validation used by the application."""
+
 import re
-from flask_wtf import FlaskForm, RecaptchaField
+
+import phonenumbers
+import requests
+from argon2.exceptions import VerifyMismatchError
+from flask_login import current_user
+from flask_wtf import FlaskForm
+from flask_wtf.file import FileAllowed, FileField, FileRequired
 from wtforms import (
-    StringField,
-    PasswordField,
     EmailField,
-    validators,
-    ValidationError,
     IntegerField,
-    TextAreaField,
+    PasswordField,
     SelectField,
+    StringField,
+    TextAreaField,
     URLField,
-    DateField,
+    ValidationError,
+    validators,
 )
 from wtforms.validators import (
+    AnyOf,
     DataRequired,
     Email,
     EqualTo,
+    Length,
     NumberRange,
     Optional,
-    Length,
     URL,
-    AnyOf,
 )
-from flask_wtf.file import FileField, FileAllowed, FileRequired
-from wtforms import SubmitField
-from app.models import User
-from app.utilities.validations import email_validation, password_strength_checker
-import requests
-import phonenumbers
-from argon2.exceptions import VerifyMismatchError
-from flask_login import current_user
+
 from app.extensions import db, get_totp, password_hasher
+from app.models import User
+from app.utilities.validations import (
+    email_validation,
+    password_strength_checker,
+)
 
 
 class SignUpForm(FlaskForm):
+    """Collect and validate the information needed to create an account."""
+
     full_name = StringField(
         "Full Name",
         validators=[
@@ -42,7 +49,8 @@ class SignUpForm(FlaskForm):
                 min=3, message="Full name must be at least 3 characters long"
             ),
             validators.Length(
-                max=255, message="Full name must no more than 255 characters long"
+                max=255,
+                message="Full name must no more than 255 characters long",
             ),
         ],
     )
@@ -86,7 +94,16 @@ class SignUpForm(FlaskForm):
     )
 
     def validate_full_name(self, field):
-        if field.data.isspace() == True:
+        """Check that the full name contains valid characters.
+
+        Args:
+            field: The full-name form field.
+
+        Raises:
+            ValidationError: If the full name is not valid.
+        """
+
+        if field.data.isspace():
             raise ValidationError("Full name is empty")
 
         if bool(re.search(r"\d", field.data)):
@@ -96,19 +113,37 @@ class SignUpForm(FlaskForm):
             raise ValidationError("Full name must not have unicode characters")
 
     def validate_email_address(self, field):
+        """Check that the email address is valid.
+
+        Args:
+            field: The email-address form field.
+
+        Raises:
+            ValidationError: If the email address is not valid.
+        """
+
         if not email_validation(field.data, True):
             raise ValidationError("Not a valid email address")
 
         if not field.data.isascii():
             raise ValidationError("Email must not have unicode characters")
 
-        if field.data.isspace() == True:
+        if field.data.isspace():
             raise ValidationError("Email Address is empty")
 
         if not field.data.isascii():
             raise ValidationError("Email must not have unicode characters")
 
     def validate_password(self, field):
+        """Check that the password uses valid characters and is strong.
+
+        Args:
+            field: The password form field.
+
+        Raises:
+            ValidationError: If the password is not valid.
+        """
+
         if not field.data.isascii():
             raise ValidationError("Password must not have unicode characters")
 
@@ -124,6 +159,8 @@ class SignUpForm(FlaskForm):
 
 
 class TotpForm(FlaskForm):
+    """Collect and validate a verification code."""
+
     code = StringField(
         "Verification Code",
         validators=[
@@ -141,15 +178,28 @@ class TotpForm(FlaskForm):
     )
 
     def validate_code(self, field):
+        """Check that the verification code contains only numbers.
+
+        Args:
+            field: The verification-code form field.
+
+        Raises:
+            ValidationError: If the code contains other characters.
+        """
+
         if not field.data.isdigit():
             raise ValidationError("Code must contain only numbers.")
 
 
 class AuthResendCodeForm(FlaskForm):
+    """Provide CSRF validation when requesting another code."""
+
     pass
 
 
 class LoginForm(FlaskForm):
+    """Collect and validate the information needed to log in."""
+
     email_address = EmailField(
         "Email Address",
         validators=[
@@ -179,40 +229,84 @@ class LoginForm(FlaskForm):
     )
 
     def validate_full_name(self, field):
-        if field.data.isspace() == True:
+        """Check that the full name contains valid characters.
+
+        Args:
+            field: The full-name form field.
+
+        Raises:
+            ValidationError: If the full name is not valid.
+        """
+
+        if field.data.isspace():
             raise ValidationError("Full name is empty")
 
         if bool(re.search(r"\d", field.data)):
             raise ValidationError("Full name can not have numbers in it")
 
     def validate_email_address(self, field):
+        """Check that the email address is valid.
+
+        Args:
+            field: The email-address form field.
+
+        Raises:
+            ValidationError: If the email address is not valid.
+        """
+
         if not email_validation(field.data, True):
             raise ValidationError("Not a valid email address")
 
         if not field.data.isascii():
             raise ValidationError("Email must not have unicode characters")
 
-        if field.data.isspace() == True:
+        if field.data.isspace():
             raise ValidationError("Email Address is empty")
 
     def validate_password(self, field):
+        """Check that the password contains valid characters.
+
+        Args:
+            field: The password form field.
+
+        Raises:
+            ValidationError: If the password is not valid.
+        """
+
         if not field.data.isascii():
             raise ValidationError("Password must not have unicode characters")
 
 
 # Settings forms
 class SettingsCodeRequestForm(FlaskForm):
+    """Provide CSRF validation when requesting a settings code."""
+
     pass
 
 
 class SettingsTotpForm(TotpForm):
+    """Collect and validate the settings verification code."""
+
     def validate_code(self, field):
+        """Check that the settings verification code is valid.
+
+        Args:
+            field: The verification-code form field.
+
+        Raises:
+            ValidationError: If the code is invalid or expired.
+        """
+
         super().validate_code(field)
         if not get_totp(interval=600).verify(field.data):
-            raise ValidationError("The verification code is invalid or expired")
+            raise ValidationError(
+                "The verification code is invalid or expired"
+            )
 
 
 class SettingsProfileForm(FlaskForm):
+    """Collect and validate profile setting changes."""
+
     full_name = StringField(
         "Full name",
         filters=[lambda value: value.strip() if value else value],
@@ -231,7 +325,10 @@ class SettingsProfileForm(FlaskForm):
         validators=[
             DataRequired("Email address is empty"),
             Email("Enter a valid email address"),
-            Length(max=255, message="Email address cannot exceed 255 characters"),
+            Length(
+                max=255,
+                message="Email address cannot exceed 255 characters",
+            ),
         ],
     )
     profile_image = FileField(
@@ -246,6 +343,15 @@ class SettingsProfileForm(FlaskForm):
     )
 
     def validate_email(self, field):
+        """Check that the profile email is valid and available.
+
+        Args:
+            field: The email form field.
+
+        Raises:
+            ValidationError: If the email is invalid or already in use.
+        """
+
         if not email_validation(field.data, False):
             raise ValidationError("Enter a valid email address")
 
@@ -260,6 +366,8 @@ class SettingsProfileForm(FlaskForm):
 
 
 class SettingsPasswordForm(FlaskForm):
+    """Collect and validate a password change."""
+
     current_password = PasswordField(
         "Current password",
         validators=[DataRequired("Current password is empty")],
@@ -284,34 +392,62 @@ class SettingsPasswordForm(FlaskForm):
     )
 
     def validate_current_password(self, field):
+        """Check that the current password is correct.
+
+        Args:
+            field: The current-password form field.
+
+        Raises:
+            ValidationError: If the password is incorrect.
+        """
+
         try:
             password_hasher.verify(current_user.password_hash, field.data)
         except (VerifyMismatchError, TypeError):
             raise ValidationError("Current password is incorrect")
 
     def validate_new_password(self, field):
+        """Check that the new password is strong enough.
+
+        Args:
+            field: The new-password form field.
+
+        Raises:
+            ValidationError: If the password is not strong enough.
+        """
+
         strength = password_strength_checker(
             field.data,
             current_user.email,
             current_user.full_name,
         )
         if strength is not True:
-            message = strength.get("warning") or "Please choose a stronger password"
+            message = (
+                strength.get("warning")
+                or "Please choose a stronger password"
+            )
             raise ValidationError(message)
 
 
 class SettingsDeleteForm(FlaskForm):
+    """Collect confirmation before deleting an account."""
+
     confirmation = StringField(
         "Type DELETE to confirm",
         filters=[lambda value: value.strip() if value else value],
         validators=[
             DataRequired("Type DELETE to confirm account deletion"),
-            AnyOf(["DELETE"], message="Type DELETE to confirm account deletion"),
+            AnyOf(
+                ["DELETE"],
+                message="Type DELETE to confirm account deletion",
+            ),
         ],
     )
 
 
 class fileUplaod(FlaskForm):
+    """Collect and validate an uploaded document file."""
+
     file = FileField(
         validators=[
             FileRequired("File is empty"),
@@ -322,6 +458,8 @@ class fileUplaod(FlaskForm):
 
 # Onboarding forms
 class UserInfoForm(FlaskForm):
+    """Collect and validate the user's personal information."""
+
     phone = StringField(
         "Phone", validators=[DataRequired("Please enter your phone number")]
     )
@@ -334,7 +472,10 @@ class UserInfoForm(FlaskForm):
                 min=3,
                 message="City must be at least 3 characters long",
             ),
-            validators.Length(max=100, message="City cannot exceed 100 characters"),
+            validators.Length(
+                max=100,
+                message="City cannot exceed 100 characters",
+            ),
         ],
     )
 
@@ -385,7 +526,10 @@ class UserInfoForm(FlaskForm):
             ("Cuba", "Cuba"),
             ("Cyprus", "Cyprus"),
             ("Czech Republic", "Czech Republic"),
-            ("Democratic Republic of the Congo", "Democratic Republic of the Congo"),
+            (
+                "Democratic Republic of the Congo",
+                "Democratic Republic of the Congo",
+            ),
             ("Denmark", "Denmark"),
             ("Djibouti", "Djibouti"),
             ("Dominica", "Dominica"),
@@ -486,7 +630,10 @@ class UserInfoForm(FlaskForm):
             ("Rwanda", "Rwanda"),
             ("Saint Kitts and Nevis", "Saint Kitts and Nevis"),
             ("Saint Lucia", "Saint Lucia"),
-            ("Saint Vincent and the Grenadines", "Saint Vincent and the Grenadines"),
+            (
+                "Saint Vincent and the Grenadines",
+                "Saint Vincent and the Grenadines",
+            ),
             ("Samoa", "Samoa"),
             ("San Marino", "San Marino"),
             ("Sao Tome and Principe", "Sao Tome and Principe"),
@@ -542,7 +689,9 @@ class UserInfoForm(FlaskForm):
             validators.Length(
                 min=2,
                 max=255,
-                message="Company Name must be between 2 and 255 characters long.",
+                message=(
+                    "Company Name must be between 2 and 255 characters long."
+                ),
             ),
         ],
     )
@@ -556,6 +705,15 @@ class UserInfoForm(FlaskForm):
     )
 
     def validate_phone(self, phone):
+        """Check that the phone number is valid.
+
+        Args:
+            phone: The phone-number form field.
+
+        Raises:
+            ValidationError: If the phone number is not valid.
+        """
+
         try:
             p = phonenumbers.parse(phone.data)
             if not phonenumbers.is_valid_number(p):
@@ -565,16 +723,24 @@ class UserInfoForm(FlaskForm):
 
 
 class EducationForm(FlaskForm):
+    """Collect and validate an education record."""
+
     certificate = StringField(
         "Degree / Certiications",
         validators=[
             DataRequired("Please enter your degree or certification"),
             validators.Length(
                 min=2,
-                message="Degree or certification must be at least 2 characters long",
+                message=(
+                    "Degree or certification must be at least 2 characters "
+                    "long"
+                ),
             ),
             validators.Length(
-                max=255, message="Degree or certification cannot exceed 255 characters"
+                max=255,
+                message=(
+                    "Degree or certification cannot exceed 255 characters"
+                ),
             ),
         ],
     )
@@ -584,10 +750,12 @@ class EducationForm(FlaskForm):
         validators=[
             DataRequired("Please enter the institution name."),
             validators.Length(
-                min=2, message="Institution name must be at least 2 characters long."
+                min=2,
+                message="Institution name must be at least 2 characters long.",
             ),
             validators.Length(
-                max=150, message="Institution name cannot exceed 150 characters."
+                max=150,
+                message="Institution name cannot exceed 150 characters.",
             ),
         ],
     )
@@ -612,7 +780,9 @@ class EducationForm(FlaskForm):
             NumberRange(
                 min=1900,
                 max=2100,
-                message="Please enter a valid 4-digit year between 1900 and 2100.",
+                message=(
+                    "Please enter a valid 4-digit year between 1900 and 2100."
+                ),
             ),
         ],
     )
@@ -624,7 +794,9 @@ class EducationForm(FlaskForm):
             NumberRange(
                 min=1900,
                 max=2100,
-                message="Please enter a valid 4-digit year between 1900 and 2100.",
+                message=(
+                    "Please enter a valid 4-digit year between 1900 and 2100."
+                ),
             ),
         ],
     )
@@ -633,25 +805,31 @@ class EducationForm(FlaskForm):
         "Description",
         validators=[
             Optional(),
-            Length(max=1000, message="Description cannot exceed 1000 characters."),
+            Length(
+                max=1000,
+                message="Description cannot exceed 1000 characters.",
+            ),
         ],
     )
 
 
 class SkillForm(FlaskForm):
+    """Collect and validate a skill selection."""
+
     skill_name = SelectField(
         "Skill Name",
         choices=[],
         validators=[DataRequired("Please enter your skills.")],
-        # Disable built-in WTForms choice validation because the options are loaded
-        # dynamically on the client via Tom Select (AJAX) rather than being populated
-        # in the field's choices list. The submitted skill ID is validated separately
-        # on the server against the database.
+        # Disable built-in choice validation because Tom Select loads the
+        # options using AJAX. The server validates the submitted skill ID
+        # separately against the database.
         validate_choice=False,
     )
 
 
 class ExperienceForm(FlaskForm):
+    """Collect and validate a work experience record."""
+
     job_title = StringField(
         "Job Title",
         validators=[
@@ -671,7 +849,9 @@ class ExperienceForm(FlaskForm):
             validators.Length(
                 min=2,
                 max=150,
-                message="Company name must be between 2 and 150 characters long.",
+                message=(
+                    "Company name must be between 2 and 150 characters long."
+                ),
             ),
         ],
     )
@@ -696,7 +876,9 @@ class ExperienceForm(FlaskForm):
             validators.Length(
                 min=2,
                 max=50,
-                message="Employment type must be between 2 and 50 characters long.",
+                message=(
+                    "Employment type must be between 2 and 50 characters long."
+                ),
             ),
         ],
     )
@@ -750,6 +932,8 @@ class ExperienceForm(FlaskForm):
 
 
 class JobLinkForm(FlaskForm):
+    """Collect and validate a job-posting link."""
+
     job_url = URLField(
         "Job Link",
         validators=[
@@ -759,8 +943,19 @@ class JobLinkForm(FlaskForm):
     )
 
     def validate_url(self, field):
+        """Check that the job-posting link can be reached.
+
+        Args:
+            field: The job-link form field.
+
+        Raises:
+            ValidationError: If the link cannot be reached.
+        """
+
         try:
-            response = requests.get(field.data, timeout=5, allow_redirects=True)
+            response = requests.get(
+                field.data, timeout=5, allow_redirects=True
+            )
 
             if response.status_code >= 400:
                 raise ValidationError("This link is not working.")
@@ -770,6 +965,8 @@ class JobLinkForm(FlaskForm):
 
 
 class JobForm(FlaskForm):
+    """Collect and validate the information from a job posting."""
+
     source_url = URLField(
         "Job Link",
         validators=[
@@ -797,7 +994,9 @@ class JobForm(FlaskForm):
             validators.Length(
                 min=2,
                 max=255,
-                message="Company Name must be between 2 and 255 characters long.",
+                message=(
+                    "Company Name must be between 2 and 255 characters long."
+                ),
             ),
         ],
     )
@@ -849,7 +1048,10 @@ class JobForm(FlaskForm):
             ("Cuba", "Cuba"),
             ("Cyprus", "Cyprus"),
             ("Czech Republic", "Czech Republic"),
-            ("Democratic Republic of the Congo", "Democratic Republic of the Congo"),
+            (
+                "Democratic Republic of the Congo",
+                "Democratic Republic of the Congo",
+            ),
             ("Denmark", "Denmark"),
             ("Djibouti", "Djibouti"),
             ("Dominica", "Dominica"),
@@ -950,7 +1152,10 @@ class JobForm(FlaskForm):
             ("Rwanda", "Rwanda"),
             ("Saint Kitts and Nevis", "Saint Kitts and Nevis"),
             ("Saint Lucia", "Saint Lucia"),
-            ("Saint Vincent and the Grenadines", "Saint Vincent and the Grenadines"),
+            (
+                "Saint Vincent and the Grenadines",
+                "Saint Vincent and the Grenadines",
+            ),
             ("Samoa", "Samoa"),
             ("San Marino", "San Marino"),
             ("Sao Tome and Principe", "Sao Tome and Principe"),
@@ -1006,7 +1211,9 @@ class JobForm(FlaskForm):
             validators.Length(
                 min=2,
                 max=255,
-                message="Company Name must be between 2 and 255 characters long.",
+                message=(
+                    "Company Name must be between 2 and 255 characters long."
+                ),
             ),
         ],
     )
@@ -1018,14 +1225,28 @@ class JobForm(FlaskForm):
             Length(
                 max=8000,
                 min=100,
-                message="Job Description must be between 100 and 8000 characters long",
+                message=(
+                    "Job Description must be between 100 and 8000 characters "
+                    "long"
+                ),
             ),
         ],
     )
 
     def validate_url(self, field):
+        """Check that the job-posting link can be reached.
+
+        Args:
+            field: The job-link form field.
+
+        Raises:
+            ValidationError: If the link cannot be reached.
+        """
+
         try:
-            response = requests.get(field.data, timeout=5, allow_redirects=True)
+            response = requests.get(
+                field.data, timeout=5, allow_redirects=True
+            )
 
             if response.status_code >= 400:
                 raise ValidationError("This link is not working.")

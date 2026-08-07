@@ -1,22 +1,36 @@
-from flask import Blueprint, request, render_template
+"""This module handles the frontend routes for the onboarding pages."""
+
+from flask import Blueprint, render_template, request
 from flask_login import current_user, login_required
-from app.forms import EducationForm, SkillForm, ExperienceForm, UserInfoForm
-from app.models import Education, Skill, UserSkill, WorkExperience
+
 from app.extensions import db
+from app.forms import EducationForm, ExperienceForm, SkillForm, UserInfoForm
+from app.models import Education, Skill, UserSkill, WorkExperience
 
 onboarding_web_bp = Blueprint("onboarding_web", __name__)
 
 
-# NOTE: remeber to remove the user_id from here
 @onboarding_web_bp.route("/", methods=["POST", "GET"])
 @login_required
 def home():
+    """Display the onboarding home page.
+
+    Returns:
+        The rendered onboarding home page.
+    """
+
     return render_template("onboarding/base.html", page="home")
 
 
 @onboarding_web_bp.route("/you", methods=["POST", "GET"])
 @login_required
 def user():
+    """Display the personal information onboarding page.
+
+    Returns:
+        The full page or partial personal information HTML for HTMX.
+    """
+
     form = UserInfoForm()
     if request.headers.get("HX-Request") == "true":
         return render_template(
@@ -26,20 +40,29 @@ def user():
         )
     else:
         return render_template(
-            "onboarding/base.html", page="user_info", form=form, title="Your info"
+            "onboarding/base.html",
+            page="user_info",
+            form=form,
+            title="Your info",
         )
 
 
 @onboarding_web_bp.route("/education/", methods=["POST", "GET"])
 @login_required
 def education():
+    """Display the current user's education information.
+
+    Returns:
+        The full page or partial education HTML for an HTMX request.
+    """
+
     form = EducationForm()
 
     qualifications = db.session.scalars(
         db.select(Education).where(Education.user_id == current_user.user_id)
     ).all()
 
-    # Remove user_id before send SQLAlchemy model to frontend
+    # Remove the user ID before sending the SQLAlchemy data to the frontend.
     qualifications_frontend = []
 
     for qualification in qualifications:
@@ -74,10 +97,18 @@ def education():
 @onboarding_web_bp.route("/experience/", methods=["POST", "GET"])
 @login_required
 def experience():
+    """Display the current user's work experience information.
+
+    Returns:
+        The full page or partial experience HTML for an HTMX request.
+    """
+
     form = ExperienceForm()
 
     work_experiences = db.session.scalars(
-        db.select(WorkExperience).where(WorkExperience.user_id == current_user.user_id)
+        db.select(WorkExperience).where(
+            WorkExperience.user_id == current_user.user_id
+        )
     ).all()
 
     work_experiences_frontend = []
@@ -115,6 +146,12 @@ def experience():
 @onboarding_web_bp.route("/skills/", methods=["POST", "GET"])
 @login_required
 def skills():
+    """Display the current user's skills.
+
+    Returns:
+        The full page or partial skills HTML for an HTMX request.
+    """
+
     form = SkillForm()
 
     user_skill_data_list = db.session.scalars(

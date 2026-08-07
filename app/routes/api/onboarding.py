@@ -1,14 +1,29 @@
-# WARNING: Error handling pending: User can change values, like ids, and options
-# WARNING: Put a limit for everything, otherwise, users will put 10k skills, etc
+"""This module handles the backend routes for the onboarding pages."""
+
 import uuid
 from datetime import date
-from flask import Blueprint, render_template, request, jsonify, redirect, url_for
+
+from flask import (
+    Blueprint,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    url_for,
+)
 from flask_login import current_user, login_required
-from app.forms import EducationForm, SkillForm, ExperienceForm, UserInfoForm
-from app.models import Education, Skill, UserSkill, WorkExperience, UserPersonal
-from app.extensions import db
+from sqlalchemy import Null
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy import Null, delete
+
+from app.extensions import db
+from app.forms import EducationForm, ExperienceForm, SkillForm, UserInfoForm
+from app.models import (
+    Education,
+    Skill,
+    UserPersonal,
+    UserSkill,
+    WorkExperience,
+)
 
 onboarding_api_bp = Blueprint("onboarding_api", __name__)
 
@@ -16,6 +31,12 @@ onboarding_api_bp = Blueprint("onboarding_api", __name__)
 @onboarding_api_bp.route("/user-info/collect", methods=["POST", "GET"])
 @login_required
 def user_info_collect():
+    """Collect and save the user's personal information.
+
+    Returns:
+        A redirect when successful, or a dictionary containing errors.
+    """
+
     form = UserInfoForm(request.form)
 
     stmt = (
@@ -28,7 +49,10 @@ def user_info_collect():
 
     if data_exists:
         return {
-            "error": "You have submited your personal info. Use setting page to do any changes"
+            "error": (
+                "You have submited your personal info. Use setting page to do "
+                "any changes"
+            )
         }
 
     if not (request.method == "POST" and form.validate()):
@@ -58,6 +82,12 @@ def user_info_collect():
 @onboarding_api_bp.route("/education/collect", methods=["POST", "GET"])
 @login_required
 def education_collect():
+    """Collect and save a new education record.
+
+    Returns:
+        The new education HTML, or a dictionary containing errors.
+    """
+
     form = EducationForm(request.form)
 
     if not (request.method == "POST" and form.validate()):
@@ -72,14 +102,15 @@ def education_collect():
     notes = form.description.data
     update_form = EducationForm()
 
+    # Convert the integer years to date objects.
     new_qualification = Education(
         education_id=education_id,
         user_id=current_user.user_id,
         qualification=certificate,
         institution=institution,
         location=location,
-        start_year=date(start_year, 1, 1),  # Convert the integer to a date object
-        end_year=date(end_year, 12, 31),  # Convert the integer to a date object
+        start_year=date(start_year, 1, 1),
+        end_year=date(end_year, 12, 31),
         notes=notes,
     )
 
@@ -109,13 +140,28 @@ def education_collect():
 @onboarding_api_bp.route("/education/update/<id>", methods=["POST", "GET"])
 @login_required
 def education_update(id):
+    """Update an education record if it belongs to the current user.
+
+    Args:
+        id: The ID of the education record.
+
+    Returns:
+        The updated education HTML, or a dictionary containing errors.
+    """
+
     form = EducationForm(request.form)
 
     if not (request.method == "POST" and form.validate()):
         return form.errors
 
-    stmt = db.select(Education).where(Education.education_id == id)
-    education = db.session.execute(stmt).scalar_one()
+    stmt = db.select(Education).where(
+        Education.education_id == id,
+        Education.user_id == current_user.user_id,
+    )
+    education = db.session.execute(stmt).scalar_one_or_none()
+
+    if education is None:
+        return {"error": "The education record does not exist"}
 
     certificate = form.certificate.data
     institution = form.institution.data
@@ -154,8 +200,25 @@ def education_update(id):
 @onboarding_api_bp.route("/education/delete/<id>", methods=["DELETE"])
 @login_required
 def education_delete(id):
-    stmt = delete(Education).where(Education.education_id == id)
-    db.session.execute(stmt)
+    """Delete an education record if it belongs to the current user.
+
+    Args:
+        id: The ID of the education record.
+
+    Returns:
+        An empty response when successful, or an error if it does not exist.
+    """
+
+    stmt = db.select(Education).where(
+        Education.education_id == id,
+        Education.user_id == current_user.user_id,
+    )
+    education = db.session.execute(stmt).scalar_one_or_none()
+
+    if education is None:
+        return {"error": "The education record does not exist"}
+
+    db.session.delete(education)
     db.session.commit()
 
     return "", 200
@@ -164,6 +227,12 @@ def education_delete(id):
 @onboarding_api_bp.route("/skill/search/")
 @login_required
 def search_skills():
+    """Search for skills using the given search text.
+
+    Returns:
+        A JSON list containing the matching skills.
+    """
+
     query_item = request.args.get("q")
     stmt = db.select(Skill).where(Skill.skill_name.ilike(f"%{query_item}%"))
 
@@ -181,6 +250,12 @@ def search_skills():
 @onboarding_api_bp.route("/skill/collect", methods=["POST", "GET"])
 @login_required
 def skill_collect():
+    """Collect and save a new skill for the current user.
+
+    Returns:
+        The new skill HTML, or a dictionary containing errors.
+    """
+
     form = SkillForm(request.form)
 
     if not (request.method == "POST" and form.validate()):
@@ -219,14 +294,29 @@ def skill_collect():
 @onboarding_api_bp.route("/skill/update/<id>", methods=["GET", "POST"])
 @login_required
 def skill_update(id):
+    """Update a user skill if it belongs to the current user.
+
+    Args:
+        id: The ID of the user's skill record.
+
+    Returns:
+        The updated skill HTML, or a dictionary containing errors.
+    """
+
     # id is user_skill_id (primary key of user_skill table)
     form = SkillForm(request.form)
 
     if not (request.method == "POST" and form.validate()):
         return form.errors
 
-    stmt = db.select(UserSkill).where(UserSkill.user_skill_id == id)
-    user_skill = db.session.execute(stmt).scalar_one()
+    stmt = db.select(UserSkill).where(
+        UserSkill.user_skill_id == id,
+        UserSkill.user_id == current_user.user_id,
+    )
+    user_skill = db.session.execute(stmt).scalar_one_or_none()
+
+    if user_skill is None:
+        return {"error": "The user skill does not exist"}
 
     update_skill_id = form.skill_name.data
 
@@ -254,8 +344,25 @@ def skill_update(id):
 @onboarding_api_bp.route("/skill/delete/<id>", methods=["DELETE"])
 @login_required
 def skill_delete(id):
-    stmt = delete(UserSkill).where(UserSkill.user_skill_id == id)
-    db.session.execute(stmt)
+    """Delete a user skill if it belongs to the current user.
+
+    Args:
+        id: The ID of the user's skill record.
+
+    Returns:
+        An empty response when successful, or an error if it does not exist.
+    """
+
+    stmt = db.select(UserSkill).where(
+        UserSkill.user_skill_id == id,
+        UserSkill.user_id == current_user.user_id,
+    )
+    user_skill = db.session.execute(stmt).scalar_one_or_none()
+
+    if user_skill is None:
+        return {"error": "The user skill does not exist"}
+
+    db.session.delete(user_skill)
     db.session.commit()
 
     return "", 200
@@ -264,6 +371,12 @@ def skill_delete(id):
 @onboarding_api_bp.route("/work_experience/collect", methods=["POST", "GET"])
 @login_required
 def work_experience_collect():
+    """Collect and save a new work experience record.
+
+    Returns:
+        The new work experience HTML, or a dictionary containing errors.
+    """
+
     form = ExperienceForm(request.form)
 
     if not (request.method == "POST" and form.validate):
@@ -324,16 +437,33 @@ def work_experience_collect():
     )
 
 
-@onboarding_api_bp.route("/work_experience/update/<id>", methods=["POST", "GET"])
+@onboarding_api_bp.route(
+    "/work_experience/update/<id>", methods=["POST", "GET"]
+)
 @login_required
 def work_experience_update(id):
+    """Update work experience if it belongs to the current user.
+
+    Args:
+        id: The ID of the work experience record.
+
+    Returns:
+        The updated work experience HTML, or a dictionary containing errors.
+    """
+
     form = ExperienceForm(request.form)
 
     if not (request.method == "POST" and form.validate()):
         return form.errors
 
-    stmt = db.select(WorkExperience).where(WorkExperience.experience_id == id)
-    experience = db.session.execute(stmt).scalar_one()
+    stmt = db.select(WorkExperience).where(
+        WorkExperience.experience_id == id,
+        WorkExperience.user_id == current_user.user_id,
+    )
+    experience = db.session.execute(stmt).scalar_one_or_none()
+
+    if experience is None:
+        return {"error": "The work experience does not exist"}
 
     company = form.company.data
     job_title = form.job_title.data
@@ -385,8 +515,25 @@ def work_experience_update(id):
 @onboarding_api_bp.route("/work_experience/delete/<id>", methods=["DELETE"])
 @login_required
 def work_experience_delete(id):
-    stmt = delete(WorkExperience).where(WorkExperience.experience_id == id)
-    db.session.execute(stmt)
+    """Delete work experience if it belongs to the current user.
+
+    Args:
+        id: The ID of the work experience record.
+
+    Returns:
+        An empty response when successful, or an error if it does not exist.
+    """
+
+    stmt = db.select(WorkExperience).where(
+        WorkExperience.experience_id == id,
+        WorkExperience.user_id == current_user.user_id,
+    )
+    experience = db.session.execute(stmt).scalar_one_or_none()
+
+    if experience is None:
+        return {"error": "The work experience does not exist"}
+
+    db.session.delete(experience)
     db.session.commit()
 
     return "", 200

@@ -1,33 +1,33 @@
-"""
-This module covers all the backend for apply pages
-"""
+"""This module covers all the backend routes for the apply pages."""
 
-from datetime import date
 import uuid
-from flask import Blueprint, render_template, request, abort
+from datetime import date
+
+from flask import Blueprint, abort, render_template, request
 from flask_login import current_user, login_required
 from playwright.sync_api import sync_playwright
 from sqlalchemy import or_
+
+from app.ai.prompts.cover_letter import PROMPT as cover_letter_prompt
+from app.ai.prompts.cv import PROMPT as cv_prompt
+from app.ai.prompts.job_analyse import PROMPT as analyse_prompt
+from app.ai.schemas.cover_letter import JSON_SCHEMA as conver_letter_schema
+from app.ai.schemas.cv import JSON_SCHEMA as cv_schema
+from app.ai.schemas.job_analyse import JSON_SCHEMA as analyse_schema
 from app.extensions import db
 from app.forms import JobForm
 from app.models import (
-    UserSkill,
-    Education,
-    WorkExperience,
-    Skill,
-    UserPersonal,
-    User,
-    Document,
-    JobEntry,
     Application,
+    Document,
+    Education,
+    JobEntry,
+    Skill,
+    User,
+    UserPersonal,
+    UserSkill,
+    WorkExperience,
 )
 from app.utilities.ai_service import ai_service
-from app.ai.prompts.job_analyse import PROMPT as analyse_prompt
-from app.ai.schemas.job_analyse import JSON_SCHEMA as analyse_schema
-from app.ai.prompts.cv import PROMPT as cv_prompt
-from app.ai.schemas.cv import JSON_SCHEMA as cv_schema
-from app.ai.prompts.cover_letter import PROMPT as cover_letter_prompt
-from app.ai.schemas.cover_letter import JSON_SCHEMA as conver_letter_schema
 
 apply_api_bp = Blueprint("apply_api", __name__)
 
@@ -35,7 +35,14 @@ apply_api_bp = Blueprint("apply_api", __name__)
 @apply_api_bp.delete("/delete/<id>/")
 @login_required
 def delete_job_entry(id):
-    """Delete a job entry and its generated application documents."""
+    """Delete a job entry and its generated application documents.
+
+    Args:
+        id: The ID of the job entry.
+
+    Returns:
+        An empty response when successful, or an error if it does not exist.
+    """
 
     job_entry_stmt = db.select(JobEntry).where(
         JobEntry.job_entry_id == id,
@@ -101,7 +108,9 @@ def search():
 
     job_entries = db.session.scalars(stmt).all()
 
-    return render_template("user/apply/components/cards.html", job_entries=job_entries)
+    return render_template(
+        "user/apply/components/cards.html", job_entries=job_entries
+    )
 
 
 @apply_api_bp.post("/job_entry")
@@ -121,7 +130,9 @@ def job_entry():
 
     form = JobForm(request.form)
 
-    stmt_skill = db.select(UserSkill).where(UserSkill.user_id == current_user.user_id)
+    stmt_skill = db.select(UserSkill).where(
+        UserSkill.user_id == current_user.user_id
+    )
     stmt_experience = db.select(WorkExperience).where(
         WorkExperience.user_id == current_user.user_id
     )
@@ -139,8 +150,8 @@ def job_entry():
     user_personal = db.session.scalar(stmt_user_personal)
     user_data = db.session.scalar(stmt_user)
 
-    # Check whether user has completed the onboarding
-    # Because ai model needs that data to process the rest
+    # Check whether the user has completed onboarding because the AI model
+    # needs this data to process the rest.
     if (
         len(user_skills_data) == 0
         or len(work_experiences_data) == 0
@@ -160,7 +171,7 @@ def job_entry():
         "job-description": form.job_description.data,
     }
 
-    # Collect all users info
+    # Collect all the user's information.
     user_info = {
         "full_name": user_data.full_name,
         "email": "dev@gmail.com",  # user_data.email
@@ -215,9 +226,9 @@ def job_entry():
         analyse_schema,
     )
 
-    # To prevent from links that are not relevant for job advertising
-    # Go to, app/ai/prompts and app/ai/schemas
-    # to understant the JSON structure of the AI output
+    # Prevent links that are not relevant to job advertising.
+    # Go to app/ai/prompts and app/ai/schemas to understand the JSON
+    # structure of the AI output.
     if not job_entry_json["is_valid"]:
         return {"error": job_entry_json["invalid_reason"]}
 
@@ -313,8 +324,8 @@ def job_entry():
 
     print("new_application is added to the db session")
 
-    # Persist the job entry, generated documents,
-    # and their relationship atomically.
+    # Persist the job entry, generated documents, and their relationship
+    # atomically.
     db.session.commit()
 
     print("commit to the db")
@@ -351,11 +362,14 @@ def show(id):
     if job_entry is None:
         return {"error": "The job you’re looking for could not be found"}
 
-    application_stmt = db.select(Application).where(Application.job_entry_id == id)
+    application_stmt = db.select(Application).where(
+        Application.job_entry_id == id
+    )
     application = db.session.scalars(application_stmt).first()
 
     cv_stmt = db.select(Document).where(
-        Document.doc_id == application.cv_document_id, Document.doc_type == "cv"
+        Document.doc_id == application.cv_document_id,
+        Document.doc_type == "cv",
     )
     cv = db.session.scalars(cv_stmt).first()
 
@@ -371,9 +385,8 @@ def show(id):
         "job_title": job_entry.job_title,
         "company_name": job_entry.company_name,
         "country": job_entry.country_code,
-        "captured_at": job_entry.captured_at.strftime(
-            "%Y-%m-%d"
-        ),  # get only yyyy-mm-dd
+        # Get only the year, month, and day.
+        "captured_at": job_entry.captured_at.strftime("%Y-%m-%d"),
         "relevancy": job_entry.relevancy,
         "matching_skills": job_entry.matching_skills,
         "tips": job_entry.tips,
@@ -385,10 +398,12 @@ def show(id):
     }
 
     # Prevent users from accessing the route by typing the URL directly.
-    # Because I update the same templates/user/apply/base.html page via HTMX,
-    # so if a user direcly acceses to this route, the browser does not
-    # render the full html version (navigation panel + detail.html)
+    # I update the same templates/user/apply/base.html page using HTMX. If a
+    # user directly accesses this route, the browser does not render the full
+    # HTML version (navigation panel + detail.html).
     if request.headers.get("HX-Request") == "true":
-        return render_template("user/apply/components/detail.html", detail=detail)
+        return render_template(
+            "user/apply/components/detail.html", detail=detail
+        )
     else:
         abort(403)

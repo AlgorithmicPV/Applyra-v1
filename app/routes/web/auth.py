@@ -1,11 +1,18 @@
+"""This module handles the frontend routes for authentication pages."""
+
 from flask import (
     Blueprint,
+    abort,
     render_template,
     session,
-    abort,
 )
-from app.forms import AuthResendCodeForm, SignUpForm, TotpForm, LoginForm
-from app.utilities.client_sessions import encrypt_value, decrypt_value, hash_key
+
+from app.forms import AuthResendCodeForm, LoginForm, SignUpForm, TotpForm
+from app.utilities.client_sessions import (
+    decrypt_value,
+    encrypt_value,
+    hash_key,
+)
 from app.utilities.validations import email_confirm
 
 auth_web_bp = Blueprint("auth_web", __name__)
@@ -14,22 +21,42 @@ AUTH_TOTP_INTERVAL = 120
 
 @auth_web_bp.route("/sign-up/", methods=["POST", "GET"])
 def sign_up():
+    """Display the sign-up page.
+
+    Returns:
+        The rendered sign-up page.
+    """
+
     form = SignUpForm()
-    return render_template("auth/base.html", form=form, title="Sign Up", page="sign-up")
+    return render_template(
+        "auth/base.html", form=form, title="Sign Up", page="sign-up"
+    )
 
 
 @auth_web_bp.route("/login/")
 def login():
+    """Display the login page.
+
+    Returns:
+        The rendered login page.
+    """
+
     form = LoginForm()
-    return render_template("auth/base.html", form=form, title="Login", page="login")
+    return render_template(
+        "auth/base.html", form=form, title="Login", page="login"
+    )
 
 
 @auth_web_bp.route("/email-validation/")
 def totp():
+    """Send a verification code and display the email validation page.
 
-    # This session varaible is sent via backend, it has to be verify
-    # Otherwise, users can get into this page, via url
-    # Now, If they do, they get 403
+    Returns:
+        The rendered email validation page.
+    """
+
+    # This session value is sent by the backend and must be verified.
+    # Without it, users receive a 403 response when visiting the URL directly.
     if not (session.get(hash_key("email-confirm"))):
         abort(403)
 
@@ -40,7 +67,7 @@ def totp():
 
     del session[hash_key("email-confirm")]
 
-    # Same as the above, but vice versa, This is for the secuirty of the application
+    # Allow the backend to confirm that the user opened this page correctly.
     session[hash_key("email-confirm-backend")] = encrypt_value("1")
 
     form = TotpForm()
