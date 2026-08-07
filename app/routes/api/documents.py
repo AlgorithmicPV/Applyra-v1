@@ -11,7 +11,7 @@ from app.models import Application, Document, JobEntry
 documents_api_bp = Blueprint("documents_api", __name__)
 
 
-@documents_api_bp.route("/search/", methods=["GET"])
+@documents_api_bp.get("/search/")
 @login_required
 def search():
     """Return documents matching the current search and type filters.
@@ -58,11 +58,7 @@ def search():
 
         role = document.role or ""
         company = job_entry.company_name or ""
-        if (
-            query
-            and query not in role.lower()
-            and query not in company.lower()
-        ):
+        if query and query not in role.lower() and query not in company.lower():
             continue
 
         searched_documents.append(
@@ -92,7 +88,7 @@ def search():
     )
 
 
-@documents_api_bp.route("/save/", methods=["POST"])
+@documents_api_bp.post("/save/")
 @login_required
 def doc_save():
     """Save the updated content of a document.

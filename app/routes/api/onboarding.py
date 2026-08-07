@@ -197,7 +197,7 @@ def education_update(id):
     )
 
 
-@onboarding_api_bp.route("/education/delete/<id>", methods=["DELETE"])
+@onboarding_api_bp.delete("/education/delete/<id>")
 @login_required
 def education_delete(id):
     """Delete an education record if it belongs to the current user.
@@ -224,7 +224,7 @@ def education_delete(id):
     return "", 200
 
 
-@onboarding_api_bp.route("/skill/search/")
+@onboarding_api_bp.get("/skill/search/")
 @login_required
 def search_skills():
     """Search for skills using the given search text.
@@ -341,7 +341,7 @@ def skill_update(id):
     )
 
 
-@onboarding_api_bp.route("/skill/delete/<id>", methods=["DELETE"])
+@onboarding_api_bp.delete("/skill/delete/<id>")
 @login_required
 def skill_delete(id):
     """Delete a user skill if it belongs to the current user.
@@ -512,7 +512,7 @@ def work_experience_update(id):
     )
 
 
-@onboarding_api_bp.route("/work_experience/delete/<id>", methods=["DELETE"])
+@onboarding_api_bp.delete("/work_experience/delete/<id>")
 @login_required
 def work_experience_delete(id):
     """Delete work experience if it belongs to the current user.

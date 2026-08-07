@@ -29,9 +29,7 @@ def apply():
     form = JobForm()
 
     stmt_skill = (
-        db.select(UserSkill)
-        .where(UserSkill.user_id == current_user.user_id)
-        .exists()
+        db.select(UserSkill).where(UserSkill.user_id == current_user.user_id).exists()
     )
     stmt_experience = (
         db.select(WorkExperience)
@@ -39,9 +37,7 @@ def apply():
         .exists()
     )
     stmt_education = (
-        db.select(Education)
-        .where(Education.user_id == current_user.user_id)
-        .exists()
+        db.select(Education).where(Education.user_id == current_user.user_id).exists()
     )
     stmt_user_profile = (
         db.select(UserPersonal)
@@ -62,9 +58,7 @@ def apply():
             "Click here to Continue"
         )
 
-    stmt_job_entry = db.select(JobEntry).where(
-        JobEntry.user_id == current_user.user_id
-    )
+    stmt_job_entry = db.select(JobEntry).where(JobEntry.user_id == current_user.user_id)
     job_entries = db.session.scalars(stmt_job_entry).all()
 
     job_entries_frontend = []

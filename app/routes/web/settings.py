@@ -39,7 +39,7 @@ def remove_settings_verification():
     session.pop("settings-verified-user", None)
 
 
-@settings_web_bp.route("/settings/")
+@settings_web_bp.get("/settings/")
 @login_required
 def settings():
     """Display the settings page for the current user.
@@ -59,9 +59,7 @@ def settings():
     ).all()
 
     experiences = db.session.scalars(
-        db.select(WorkExperience).where(
-            WorkExperience.user_id == current_user.user_id
-        )
+        db.select(WorkExperience).where(WorkExperience.user_id == current_user.user_id)
     ).all()
 
     user_skills = db.session.scalars(
@@ -96,7 +94,7 @@ def settings():
     )
 
 
-@settings_web_bp.route("/logout/")
+@settings_web_bp.get("/logout/")
 @login_required
 def logout():
     """Log out the current user and redirect them to the login page.

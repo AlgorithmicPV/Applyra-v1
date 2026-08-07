@@ -76,8 +76,7 @@ def email_confirm(user_email: str, interval=30):
 
     code = get_totp(interval=interval).now()
     msg.body = (
-        f"Your verification code is {code}. It expires in "
-        f"{interval // 60} minutes."
+        f"Your verification code is {code}. It expires in {interval // 60} minutes."
     )
 
     try:

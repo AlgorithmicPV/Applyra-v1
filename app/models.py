@@ -23,9 +23,7 @@ class User(UserMixin, db.Model):
     documents = db.relationship("Document", backref="user")
     job_entries = db.relationship("JobEntry", backref="user")
     applications = db.relationship("Application", backref="user")
-    user_personal = db.relationship(
-        "UserPersonal", backref="user", uselist=False
-    )
+    user_personal = db.relationship("UserPersonal", backref="user", uselist=False)
 
     def get_id(self):
         """Return the user ID in the format required by Flask-Login.
@@ -41,9 +39,7 @@ class UserPersonal(db.Model):
     """Store a user's personal and contact information."""
 
     user_personal_id = db.Column(db.VARCHAR(36), primary_key=True)
-    user_id = db.Column(
-        db.VARCHAR(36), db.ForeignKey("user.user_id"), nullable=False
-    )
+    user_id = db.Column(db.VARCHAR(36), db.ForeignKey("user.user_id"), nullable=False)
     phone_number = db.Column(db.TEXT, nullable=False)
     city = db.Column(db.TEXT, nullable=False)
     country = db.Column(db.TEXT, nullable=False)
@@ -54,9 +50,7 @@ class Education(db.Model):
     """Store an education record belonging to a user."""
 
     education_id = db.Column(db.VARCHAR(36), primary_key=True)
-    user_id = db.Column(
-        db.VARCHAR(36), db.ForeignKey("user.user_id"), nullable=False
-    )
+    user_id = db.Column(db.VARCHAR(36), db.ForeignKey("user.user_id"), nullable=False)
     qualification = db.Column(db.TEXT, nullable=False)
     institution = db.Column(db.TEXT, nullable=False)
     location = db.Column(db.TEXT, nullable=False)
@@ -65,9 +59,7 @@ class Education(db.Model):
     notes = db.Column(db.TEXT)
 
     __table_args__ = (
-        UniqueConstraint(
-            "user_id", "qualification", "institution", "start_year"
-        ),
+        UniqueConstraint("user_id", "qualification", "institution", "start_year"),
     )
 
 
@@ -84,9 +76,7 @@ class UserSkill(db.Model):
     """Connect a user with one of their selected skills."""
 
     user_skill_id = db.Column(db.VARCHAR(36), primary_key=True)
-    user_id = db.Column(
-        db.VARCHAR(36), db.ForeignKey("user.user_id"), nullable=False
-    )
+    user_id = db.Column(db.VARCHAR(36), db.ForeignKey("user.user_id"), nullable=False)
     skill_id = db.Column(
         db.VARCHAR(36), db.ForeignKey("skill.skill_id"), nullable=False
     )
@@ -98,9 +88,7 @@ class WorkExperience(db.Model):
     """Store a work experience record belonging to a user."""
 
     experience_id = db.Column(db.VARCHAR(36), primary_key=True)
-    user_id = db.Column(
-        db.VARCHAR(36), db.ForeignKey("user.user_id"), nullable=False
-    )
+    user_id = db.Column(db.VARCHAR(36), db.ForeignKey("user.user_id"), nullable=False)
     job_title = db.Column(db.TEXT, nullable=False)
     company = db.Column(db.TEXT, nullable=False)
     employment_type = db.Column(db.TEXT, nullable=False)
@@ -125,9 +113,7 @@ class Document(db.Model):
 
     doc_id = db.Column(db.VARCHAR(36), primary_key=True)
     doc_type = db.Column(db.TEXT, nullable=False)
-    user_id = db.Column(
-        db.VARCHAR(36), db.ForeignKey("user.user_id"), nullable=False
-    )
+    user_id = db.Column(db.VARCHAR(36), db.ForeignKey("user.user_id"), nullable=False)
     content = db.Column(db.TEXT, nullable=False)
     created_at = db.Column(db.TIMESTAMP, nullable=False)
     updated_at = db.Column(db.TIMESTAMP)
@@ -150,9 +136,7 @@ class JobEntry(db.Model):
     """Store information collected from a job posting."""
 
     job_entry_id = db.Column(db.VARCHAR(36), primary_key=True)
-    user_id = db.Column(
-        db.VARCHAR(36), db.ForeignKey("user.user_id"), nullable=False
-    )
+    user_id = db.Column(db.VARCHAR(36), db.ForeignKey("user.user_id"), nullable=False)
     source_url = db.Column(db.TEXT, nullable=False)
     platform = db.Column(db.TEXT, nullable=False)
     job_title = db.Column(db.TEXT, nullable=False)
@@ -171,9 +155,7 @@ class Application(db.Model):
     """Connect a job entry with its generated application documents."""
 
     application_id = db.Column(db.VARCHAR(36), primary_key=True)
-    user_id = db.Column(
-        db.VARCHAR(36), db.ForeignKey("user.user_id"), nullable=False
-    )
+    user_id = db.Column(db.VARCHAR(36), db.ForeignKey("user.user_id"), nullable=False)
     job_entry_id = db.Column(
         db.VARCHAR(36), db.ForeignKey("job_entry.job_entry_id"), nullable=False
     )

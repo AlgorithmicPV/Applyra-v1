@@ -73,9 +73,7 @@ def sign_up():
         # Also remove the Google ID if they previously used Gmail without
         # completing verification.
         email_exist.User.full_name = full_name
-        email_exist.User.password_hasher = password_hasher.hash(
-            form.password.data
-        )
+        email_exist.User.password_hasher = password_hasher.hash(form.password.data)
         email_exist.User.auth_provider = "manual"
         email_exist.User.profile_image = "https://placehold.co/300x300"
         email_exist.User.theme_preference = "dark"
@@ -114,8 +112,7 @@ def confirm_email():
     unverified_user = db.session.execute(
         db.select(User).where(
             and_(
-                User.email
-                == decrypt_value(session.get(hash_key("user-email"))),
+                User.email == decrypt_value(session.get(hash_key("user-email"))),
                 User.is_verified is not True,
             )
         )
@@ -186,9 +183,7 @@ def login():
         return {"error": "User email is not verified"}
 
     try:
-        password_hasher.verify(
-            email_exist.User.password_hash, form.password.data
-        )
+        password_hasher.verify(email_exist.User.password_hash, form.password.data)
     except VerifyMismatchError:
         return {"error": "Login is failed"}
 
@@ -206,9 +201,7 @@ def login():
     # Check whether the user completed onboarding. If yes, redirect them to
     # the app. If not, redirect them to the onboarding page.
     stmt_skill = (
-        db.select(UserSkill)
-        .where(UserSkill.user_id == current_user.user_id)
-        .exists()
+        db.select(UserSkill).where(UserSkill.user_id == current_user.user_id).exists()
     )
     stmt_experience = (
         db.select(WorkExperience)
@@ -216,9 +209,7 @@ def login():
         .exists()
     )
     stmt_education = (
-        db.select(Education)
-        .where(Education.user_id == current_user.user_id)
-        .exists()
+        db.select(Education).where(Education.user_id == current_user.user_id).exists()
     )
     stmt_user_profile = (
         db.select(UserPersonal)

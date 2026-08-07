@@ -106,9 +106,7 @@ def experience():
     form = ExperienceForm()
 
     work_experiences = db.session.scalars(
-        db.select(WorkExperience).where(
-            WorkExperience.user_id == current_user.user_id
-        )
+        db.select(WorkExperience).where(WorkExperience.user_id == current_user.user_id)
     ).all()
 
     work_experiences_frontend = []

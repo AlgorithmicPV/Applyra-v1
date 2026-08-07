@@ -65,9 +65,7 @@ def request_code():
         db.select(Education).where(Education.user_id == current_user.user_id)
     ).all()
     experiences = db.session.scalars(
-        db.select(WorkExperience).where(
-            WorkExperience.user_id == current_user.user_id
-        )
+        db.select(WorkExperience).where(WorkExperience.user_id == current_user.user_id)
     ).all()
     user_skills = db.session.scalars(
         db.select(UserSkill).where(UserSkill.user_id == current_user.user_id)
@@ -117,9 +115,7 @@ def verify_code():
         db.select(Education).where(Education.user_id == current_user.user_id)
     ).all()
     experiences = db.session.scalars(
-        db.select(WorkExperience).where(
-            WorkExperience.user_id == current_user.user_id
-        )
+        db.select(WorkExperience).where(WorkExperience.user_id == current_user.user_id)
     ).all()
     user_skills = db.session.scalars(
         db.select(UserSkill).where(UserSkill.user_id == current_user.user_id)
@@ -202,9 +198,7 @@ def profile_update():
 
         encoded_image = base64.b64encode(image_data).decode("utf-8")
         image_type = image.mimetype or "image/png"
-        current_user.profile_image = (
-            "data:" + image_type + ";base64," + encoded_image
-        )
+        current_user.profile_image = "data:" + image_type + ";base64," + encoded_image
 
     current_user.full_name = form.full_name.data
     current_user.email = form.email.data
@@ -230,10 +224,7 @@ def password_update():
     if session.get("settings-verified-user") != current_user.user_id:
         return {"error": "Please verify your PIN again"}
 
-    if (
-        current_user.auth_provider != "manual"
-        or not current_user.password_hash
-    ):
+    if current_user.auth_provider != "manual" or not current_user.password_hash:
         return {"error": "Password changes are not available for this account"}
 
     form = SettingsPasswordForm()
@@ -586,19 +577,13 @@ def account_delete():
     user_id = current_user.user_id
 
     # Delete child records first because they belong to the user account.
-    db.session.query(Application).filter(
-        Application.user_id == user_id
-    ).delete()
+    db.session.query(Application).filter(Application.user_id == user_id).delete()
     db.session.query(Document).filter(Document.user_id == user_id).delete()
     db.session.query(JobEntry).filter(JobEntry.user_id == user_id).delete()
     db.session.query(Education).filter(Education.user_id == user_id).delete()
     db.session.query(UserSkill).filter(UserSkill.user_id == user_id).delete()
-    db.session.query(WorkExperience).filter(
-        WorkExperience.user_id == user_id
-    ).delete()
-    db.session.query(UserPersonal).filter(
-        UserPersonal.user_id == user_id
-    ).delete()
+    db.session.query(WorkExperience).filter(WorkExperience.user_id == user_id).delete()
+    db.session.query(UserPersonal).filter(UserPersonal.user_id == user_id).delete()
     db.session.query(User).filter(User.user_id == user_id).delete()
     db.session.commit()
 

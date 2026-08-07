@@ -83,9 +83,7 @@ def doc_home():
         )
 
     if request.headers.get("HX-Request") == "true":
-        return render_template(
-            "user/documents-pages/doc-home.html", all_docs=all_docs
-        )
+        return render_template("user/documents-pages/doc-home.html", all_docs=all_docs)
     else:
         return render_template(
             "user/base.html",
@@ -95,7 +93,7 @@ def doc_home():
         )
 
 
-@documents_web_bp.route("/editor/<id>/", methods=["GET"])
+@documents_web_bp.get("/editor/<id>/")
 @login_required
 def editor(id):
     """Display the editor for a selected document.
