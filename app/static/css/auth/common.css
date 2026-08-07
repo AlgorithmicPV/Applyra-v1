@@ -16,6 +16,21 @@
 
 .page.auth {
 
+  .create-account {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    opacity: 50%;
+    transition: 0.4s;
+    text-decoration: none;
+    color: black;
+    font-size: small;
+  }
+
+  .create-account:hover {
+    opacity: 100%;
+  }
+
   .left,
   .right {
     width: 100%;
