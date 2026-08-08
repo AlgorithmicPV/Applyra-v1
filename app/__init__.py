@@ -61,7 +61,7 @@ def create_app(debug=False):
     limiter.init_app(app)
     migrate.init_app(app, db)
     login_manager.init_app(app)
-    # login_manager.login_view = "login"
+    login_manager.login_view = "auth_web.login"
 
     # Load the logged-in user from the database using their session ID.
     @login_manager.user_loader

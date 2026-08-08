@@ -5,6 +5,7 @@ from datetime import date
 
 from flask import (
     Blueprint,
+    abort,
     jsonify,
     redirect,
     render_template,
@@ -28,7 +29,7 @@ from app.models import (
 onboarding_api_bp = Blueprint("onboarding_api", __name__)
 
 
-@onboarding_api_bp.route("/user-info/collect", methods=["POST", "GET"])
+@onboarding_api_bp.post("/user-info/collect")
 @login_required
 def user_info_collect():
     """Collect and save the user's personal information.
@@ -55,7 +56,7 @@ def user_info_collect():
             )
         }
 
-    if not (request.method == "POST" and form.validate()):
+    if not form.validate():
         return form.errors
 
     user_personal_id = str(uuid.uuid4())
@@ -79,7 +80,7 @@ def user_info_collect():
     return redirect(url_for("onboarding_web.education"))
 
 
-@onboarding_api_bp.route("/education/collect", methods=["POST", "GET"])
+@onboarding_api_bp.post("/education/collect")
 @login_required
 def education_collect():
     """Collect and save a new education record.
@@ -90,7 +91,7 @@ def education_collect():
 
     form = EducationForm(request.form)
 
-    if not (request.method == "POST" and form.validate()):
+    if not form.validate():
         return form.errors
 
     education_id = str(uuid.uuid4())
@@ -137,7 +138,7 @@ def education_collect():
     )
 
 
-@onboarding_api_bp.route("/education/update/<id>", methods=["POST", "GET"])
+@onboarding_api_bp.post("/education/update/<id>")
 @login_required
 def education_update(id):
     """Update an education record if it belongs to the current user.
@@ -151,7 +152,7 @@ def education_update(id):
 
     form = EducationForm(request.form)
 
-    if not (request.method == "POST" and form.validate()):
+    if not form.validate():
         return form.errors
 
     stmt = db.select(Education).where(
@@ -247,7 +248,7 @@ def search_skills():
     return jsonify([{"id": k, "name": v} for k, v in searched_dict.items()])
 
 
-@onboarding_api_bp.route("/skill/collect", methods=["POST", "GET"])
+@onboarding_api_bp.post("/skill/collect")
 @login_required
 def skill_collect():
     """Collect and save a new skill for the current user.
@@ -258,7 +259,7 @@ def skill_collect():
 
     form = SkillForm(request.form)
 
-    if not (request.method == "POST" and form.validate()):
+    if not form.validate():
         return form.errors
 
     user_skill_id = str(uuid.uuid4())
@@ -291,7 +292,7 @@ def skill_collect():
     )
 
 
-@onboarding_api_bp.route("/skill/update/<id>", methods=["GET", "POST"])
+@onboarding_api_bp.post("/skill/update/<id>")
 @login_required
 def skill_update(id):
     """Update a user skill if it belongs to the current user.
@@ -306,7 +307,7 @@ def skill_update(id):
     # id is user_skill_id (primary key of user_skill table)
     form = SkillForm(request.form)
 
-    if not (request.method == "POST" and form.validate()):
+    if not form.validate():
         return form.errors
 
     stmt = db.select(UserSkill).where(
@@ -368,7 +369,7 @@ def skill_delete(id):
     return "", 200
 
 
-@onboarding_api_bp.route("/work_experience/collect", methods=["POST", "GET"])
+@onboarding_api_bp.post("/work_experience/collect")
 @login_required
 def work_experience_collect():
     """Collect and save a new work experience record.
@@ -379,7 +380,7 @@ def work_experience_collect():
 
     form = ExperienceForm(request.form)
 
-    if not (request.method == "POST" and form.validate):
+    if not form.validate:
         return form.errors
 
     experience_id = str(uuid.uuid4())
@@ -437,7 +438,7 @@ def work_experience_collect():
     )
 
 
-@onboarding_api_bp.route("/work_experience/update/<id>", methods=["POST", "GET"])
+@onboarding_api_bp.post("/work_experience/update/<id>")
 @login_required
 def work_experience_update(id):
     """Update work experience if it belongs to the current user.
@@ -451,7 +452,7 @@ def work_experience_update(id):
 
     form = ExperienceForm(request.form)
 
-    if not (request.method == "POST" and form.validate()):
+    if not form.validate():
         return form.errors
 
     stmt = db.select(WorkExperience).where(

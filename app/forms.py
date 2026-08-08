@@ -683,7 +683,7 @@ class UserInfoForm(FlaskForm):
         "Country",
         choices=countries,
         validators=[
-            DataRequired("Please paste the Company Name."),
+            DataRequired("Please select the Countr Name."),
             validators.Length(
                 min=2,
                 max=255,
@@ -738,6 +738,23 @@ class UserInfoForm(FlaskForm):
         # Check that the city contains only letters, spaces, hyphens, or apostrophes
         if not bool(re.fullmatch(r"[A-Za-zÀ-ÿ' -]+", field.data)):
             raise ValidationError("Invalid city name. Please enter a valid city name.")
+
+    def validate_linkedin_url(self, field):
+        """Check that the url contains valid characters.
+
+        Args:
+            field: The url form field.
+
+        Raises:
+            ValidationError: If the url is not valid.
+        """
+
+        first_part = "https://www.linkedin.com/in/"
+        # There are 21 characters here
+        # Check first 21 characters in the user provided link with this
+        # to check, is it a valid link or not
+        if field.data.strip().lower()[: len(first_part)] != first_part:
+            raise ValidationError("Please enter a valid LinkedIn personal profile URL.")
 
 
 class EducationForm(FlaskForm):
