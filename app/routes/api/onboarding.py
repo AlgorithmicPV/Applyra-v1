@@ -68,9 +68,9 @@ def user_info_collect():
         user_personal_id=user_personal_id,
         user_id=current_user.user_id,
         phone_number=phone_number,
-        city=city,
+        city=city.strip().lower(),  # Remove spaces and convert to lowercase.
         country=country,
-        linkedin_url=linkedin_url,
+        linkedin_url=linkedin_url.strip(),  # Remove spaces and convert to lowercase.
     )
 
     db.session.add(user_personal)
@@ -94,9 +94,9 @@ def education_collect():
         return form.errors
 
     education_id = str(uuid.uuid4())
-    certificate = form.certificate.data
-    institution = form.institution.data
-    location = form.location.data
+    certificate = form.certificate.data.strip()
+    institution = form.institution.data.strip()
+    location = form.location.data.strip()
     start_year = form.start_year.data
     end_year = form.end_year.data
     notes = form.description.data
@@ -163,9 +163,9 @@ def education_update(id):
     if education is None:
         return {"error": "The education record does not exist"}
 
-    certificate = form.certificate.data
-    institution = form.institution.data
-    location = form.location.data
+    certificate = form.certificate.data.strip()
+    institution = form.institution.data.strip()
+    location = form.location.data.strip()
     start_year = form.start_year.data
     end_year = form.end_year.data
     notes = form.description.data
@@ -383,10 +383,10 @@ def work_experience_collect():
         return form.errors
 
     experience_id = str(uuid.uuid4())
-    company = form.company.data
-    job_title = form.job_title.data
+    company = form.company.data.strip()
+    job_title = form.job_title.data.strip()
     employment_type = form.employment_type.data
-    location = form.location.data
+    location = form.location.data.strip()
     start_year = form.start_year.data
     end_year = form.end_year.data
     responsibilities = form.responsibilities.data
@@ -437,9 +437,7 @@ def work_experience_collect():
     )
 
 
-@onboarding_api_bp.route(
-    "/work_experience/update/<id>", methods=["POST", "GET"]
-)
+@onboarding_api_bp.route("/work_experience/update/<id>", methods=["POST", "GET"])
 @login_required
 def work_experience_update(id):
     """Update work experience if it belongs to the current user.
@@ -465,10 +463,10 @@ def work_experience_update(id):
     if experience is None:
         return {"error": "The work experience does not exist"}
 
-    company = form.company.data
-    job_title = form.job_title.data
+    company = form.company.data.strip()
+    job_title = form.job_title.data.strip()
     employment_type = form.employment_type.data
-    location = form.location.data
+    location = form.location.data.strip()
     start_year = form.start_year.data
     end_year = form.end_year.data
     responsibilities = form.responsibilities.data
