@@ -2,9 +2,27 @@ from flask import render_template
 
 
 def register_error_handlers(app):
+    """
+    Register custom HTTP error handlers for the Flask application.
+
+    Args:
+        app (Flask): The Flask application instance.
+
+    Returns:
+        None: The function registers error handlers directly with the app.
+    """
 
     @app.errorhandler(400)
     def bad_request(error):
+        """
+        Handle a 400 Bad Request error.
+
+        Args:
+            error (Exception): The error raised by Flask.
+
+        Returns:
+            tuple: The rendered error page and HTTP status code 400.
+        """
         return render_template(
             "errors/error.html",
             error_code=400,
@@ -14,6 +32,15 @@ def register_error_handlers(app):
 
     @app.errorhandler(403)
     def forbidden(error):
+        """
+        Handle a 403 Forbidden error.
+
+        Args:
+            error (Exception): The error raised by Flask.
+
+        Returns:
+            tuple: The rendered error page and HTTP status code 403.
+        """
         return render_template(
             "errors/error.html",
             error_code=403,
@@ -23,6 +50,15 @@ def register_error_handlers(app):
 
     @app.errorhandler(404)
     def not_found(error):
+        """
+        Handle a 404 Page Not Found error.
+
+        Args:
+            error (Exception): The error raised by Flask.
+
+        Returns:
+            tuple: The rendered error page and HTTP status code 404.
+        """
         return render_template(
             "errors/error.html",
             error_code=404,
@@ -32,6 +68,15 @@ def register_error_handlers(app):
 
     @app.errorhandler(405)
     def method_not_allowed(error):
+        """
+        Handle a 405 Method Not Allowed error.
+
+        Args:
+            error (Exception): The error raised by Flask.
+
+        Returns:
+            tuple: The rendered error page and HTTP status code 405.
+        """
         return render_template(
             "errors/error.html",
             error_code=405,
@@ -41,6 +86,15 @@ def register_error_handlers(app):
 
     @app.errorhandler(500)
     def internal_server_error(error):
+        """
+        Handle a 500 Internal Server Error.
+
+        Args:
+            error (Exception): The error raised by Flask.
+
+        Returns:
+            tuple: The rendered error page and HTTP status code 500.
+        """
         return render_template(
             "errors/error.html",
             error_code=500,
