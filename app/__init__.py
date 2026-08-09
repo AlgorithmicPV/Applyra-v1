@@ -18,6 +18,8 @@ from app.extensions import (
 )
 from app.models import User
 
+from app.errors.handlers import register_error_handlers
+
 
 def create_app(debug=False):
     """Create and configure the Flask application.
@@ -62,6 +64,7 @@ def create_app(debug=False):
     migrate.init_app(app, db)
     login_manager.init_app(app)
     login_manager.login_view = "auth_web.login"
+    register_error_handlers(app)
 
     # Load the logged-in user from the database using their session ID.
     @login_manager.user_loader
