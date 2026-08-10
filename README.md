@@ -41,7 +41,7 @@ The purpose of this project is to develop a web-based job application platform t
 | Backend | Flask |
 | Frontend | HTMX + Jinja2 |
 | Database | SQLite + SQLAlchemy |
-| AI | OpenAI API |
+| AI | Gemini API |
 | Architecture | Server-side rendered, SPA-like navigation using HTMX |
 
 ---
@@ -80,7 +80,7 @@ The purpose of this project is to develop a web-based job application platform t
 
 ### AI
 
-- OpenAI API
+- Gemini API
 
 ---
 
@@ -167,6 +167,7 @@ GOOGLE_RECAPTCHA_SECRET_KEY=
 OTP_SECRET=
 FERNET_KEY=
 GITHUB_TOKEN=
+GEMINI_API_KEY=
 ```
 
 ---
@@ -247,7 +248,7 @@ LinkedIn: https://www.linkedin.com/in/pasindu-vidunitha-7b3a573a5/
 - Flask
 - SQLAlchemy
 - HTMX
-- OpenAI
+- Google Gemini
 - Bootstrap
 
 

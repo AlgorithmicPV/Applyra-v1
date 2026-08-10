@@ -222,17 +222,20 @@ def job_entry():
         analyse_schema,
     )
 
+    if not job_entry_json["success"]:
+        return {"error": job_entry_json["error"]}
+
     # Prevent links that are not relevant to job advertising.
     # Go to app/ai/prompts and app/ai/schemas to understand the JSON
     # structure of the AI output.
-    if not job_entry_json["is_valid"]:
-        return {"error": job_entry_json["invalid_reason"]}
+    if not job_entry_json["data"]["is_valid"]:
+        return {"error": job_entry_json["data"]["invalid_reason"]}
 
     print("Complete the job analysing part")
 
     cv_json = ai_service(
         cv_prompt.format(
-            job_entry=job_entry,
+            job_entry=job_entry_json["data"],
             user_info=user_info,
             skills_list=skills_list,
             work_experiences_list=work_experiences_list,
@@ -243,9 +246,12 @@ def job_entry():
 
     print("Generate the CV")
 
+    if not cv_json["success"]:
+        return {"error": cv_json["error"]}
+
     cover_letter_json = ai_service(
         cover_letter_prompt.format(
-            job_entry=job_entry,
+            job_entry=job_entry_json["data"],
             user_info=user_info,
             skills_list=skills_list,
             work_experiences_list=work_experiences_list,
@@ -256,21 +262,24 @@ def job_entry():
 
     print("Generate the cover letter")
 
+    if not cover_letter_json["success"]:
+        return {"error": cover_letter_json["error"]}
+
     job_entry_id = str(uuid.uuid4())
 
     new_job_entry = JobEntry(
         job_entry_id=job_entry_id,
         user_id=current_user.user_id,
         source_url=form.source_url.data,
-        platform=job_entry_json["source_platform"],
-        job_title=job_entry_json["job_title"],
-        company_name=job_entry_json["company_name"],
-        country_code=job_entry_json["country"],
-        job_description=job_entry_json["job_description"],
+        platform=job_entry_json["data"]["source_platform"],
+        job_title=job["job-title"],
+        company_name=job["company-name"],
+        country_code=job_entry_json["data"]["country"],
+        job_description=job_entry_json["data"]["job_description"],
         captured_at=date.today(),
-        relevancy=int(job_entry_json["relevancy"]),
-        matching_skills=job_entry_json["matching_skills"],
-        tips=job_entry_json["tips"],
+        relevancy=int(job_entry_json["data"]["relevancy"]),
+        matching_skills=job_entry_json["data"]["matching_skills"],
+        tips=job_entry_json["data"]["tips"],
     )
 
     db.session.add(new_job_entry)
@@ -282,10 +291,10 @@ def job_entry():
         doc_id=cv_id,
         doc_type="cv",
         user_id=current_user.user_id,
-        content=cv_json["html_code"],
+        content=cv_json["data"]["html_code"],
         created_at=date.today(),
-        country_code=cv_json["country"],
-        role=cv_json["role"],
+        country_code=cv_json["data"]["country"],
+        role=job["job-title"],
     )
 
     db.session.add(new_cv)
@@ -297,10 +306,10 @@ def job_entry():
         doc_id=cover_letter_id,
         doc_type="coverLetter",
         user_id=current_user.user_id,
-        content=cover_letter_json["html_code"],
+        content=cover_letter_json["data"]["html_code"],
         created_at=date.today(),
-        country_code=cover_letter_json["country"],
-        role=cover_letter_json["role"],
+        country_code=cover_letter_json["data"]["country"],
+        role=job["job-title"],
     )
 
     db.session.add(new_cover_letter)
@@ -329,9 +338,9 @@ def job_entry():
     return render_template(
         "user/apply/components/card.html",
         job_entry_id=job_entry_id,
-        job_title=job_entry_json["job_title"],
-        company_name=job_entry_json["company_name"],
-        relevancy=job_entry_json["relevancy"],
+        job_title=job["job-title"],
+        company_name=job["company-name"],
+        relevancy=job_entry_json["data"]["relevancy"],
     )
 
 
