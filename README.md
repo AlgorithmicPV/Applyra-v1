@@ -250,6 +250,7 @@ LinkedIn: https://www.linkedin.com/in/pasindu-vidunitha-7b3a573a5/
 - HTMX
 - Google Gemini
 - Bootstrap
+- TinyMCE
 
 
 ---

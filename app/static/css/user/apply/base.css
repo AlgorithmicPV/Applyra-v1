@@ -128,6 +128,57 @@
 }
 
 .apply {
+  .loader {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .htmx-request .loader,
+  .htmx-request.loader {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 200ms ease-in;
+  }
+
+  /* Hide the other elements when the loader appears, for better UI */
+  .htmx-request #source_url,
+  .htmx-request #job_title,
+  .htmx-request #company_name,
+  .htmx-request #country_code,
+  .htmx-request #job_description,
+  .htmx-request .ts-wrapper,
+  .htmx-request .start-btn,
+  .top:has(.htmx-request) .add {
+    display: none;
+  }
+
+  .loader {
+    text-align: center;
+    margin: auto;
+
+    --color-1: #232832;
+    --size: 0.4px;
+
+    font-size: calc(48 * var(--size));
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    display: inline-block;
+    letter-spacing: calc(2 * var(--size));
+    color: var(--color-1);
+    -webkit-mask-image: linear-gradient(90deg,
+        transparent 0%,
+        #000 30%,
+        #000 70%,
+        transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0%, #000 30%, #000 70%, transparent 100%);
+    -webkit-mask-size: 250% 100%;
+    mask-size: 250% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    box-sizing: border-box;
+    animation: animloader 2s linear infinite;
+  }
+
   .left {
     border-right: 3px solid #f3f4f1;
     padding: 5px 20px 5px 20px;
@@ -245,16 +296,6 @@
     font-family: "Inter";
     color: rgba(14, 17, 22, 0.5);
     font-size: smaller;
-  }
-
-  @keyframes growAndShrink {
-    0% {
-      transform: scale(1);
-    }
-
-    100% {
-      transform: scale(1.05);
-    }
   }
 
   .onboarding-banner {
@@ -424,6 +465,30 @@
     display: none;
   }
 }
+
+
+@keyframes growAndShrink {
+  0% {
+    transform: scale(1);
+  }
+
+  100% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes animloader {
+  0% {
+    -webkit-mask-position: 150% 0;
+    mask-position: 150% 0;
+  }
+
+  100% {
+    -webkit-mask-position: -150% 0;
+    mask-position: -150% 0;
+  }
+}
+
 
 
 @media (max-width: 560px) {

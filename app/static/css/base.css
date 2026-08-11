@@ -50,3 +50,15 @@ input[type="search"]::-webkit-search-cancel-button {
   width: 0;
   height: 0;
 }
+
+.htmx-indicator {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.htmx-request .htmx-indicator,
+.htmx-request.htmx-indicator {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 200ms ease-in;
+}

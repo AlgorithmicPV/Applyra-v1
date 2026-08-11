@@ -20,7 +20,8 @@
                     {{ form.company_name(placeholder=form.company_name.label.text) }}
                     {{ form.country_code(placeholder=form.country_code.label.text) }}
                     {{ form.job_description(placeholder=form.job_description.label.text) }}
-                    <button type="submit" class="start-btn">Start</button>
+                    <button type="submit" class="start-btn">Start<span class="loader"></span></button>
+                    <span class="loader">Processing...</span>
                 </form>
             {% endif %}
         </div>
@@ -42,7 +43,6 @@
     </div>
     <div class="right">
         <div class="default">
-            {# TODO: Loading screen #}
             {% if message %}
                 <div class="onboarding-banner"
                      onclick="window.location.href='{{ url_for("onboarding_web.home") }}'">{{ message }}</div>
@@ -89,7 +89,16 @@
                 jobFormShow = true 
             }
         }
-
- e   
+    </script>
+    <script>
+        (() => {
+            /* Hide the form after the process */
+            document.body.addEventListener("htmx:afterRequest", function (event) {
+               document.querySelector(".add.close")?.classList.remove("close")
+                document.querySelector(".job-analyse-form.show")?.classList.remove("show")
+                document.querySelector(".top-body.hide")?.classList.remove("hide")
+                jobFormShow = false 
+            });     
+        })();
     </script>
 </div>
