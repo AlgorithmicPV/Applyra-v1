@@ -9,6 +9,7 @@
     border: none;
     outline: none;
     border-bottom: 1px;
+    width: 100%;
   }
 
   .name #certificate {
