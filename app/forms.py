@@ -793,7 +793,7 @@ class EducationForm(FlaskForm):
     location = StringField(
         "Location",
         validators=[
-            DataRequired("Please enter the institution location."),
+            DataRequired("Please enter the location."),
             validators.Length(
                 min=2, message="Location must be at least 2 characters long."
             ),
@@ -837,6 +837,74 @@ class EducationForm(FlaskForm):
             ),
         ],
     )
+
+    def validate_certificate(self, field):
+        """Check that the certificate contains valid characters.
+
+        Args:
+            field: The certificate form field.
+
+        Raises:
+            ValidationError: If the certificate is not valid.
+        """
+        if field.data.isspace():
+            raise ValidationError("Please enter your degree or certification")
+
+        if not field.data.isascii():
+            raise ValidationError("Certificate must not have unicode characters")
+
+        if field.data.isdigit():
+            raise ValidationError("Certificate can not be a number")
+
+    def validate_institution(self, field):
+        """Check that the institution contains valid characters.
+
+        Args:
+            field: The institution form field.
+
+        Raises:
+            ValidationError: If the institution is not valid.
+        """
+        if field.data.isspace():
+            raise ValidationError("Please enter the institution")
+
+        if not field.data.isascii():
+            raise ValidationError("Institution must not have unicode characters")
+
+        if field.data.isdigit():
+            raise ValidationError("Institution can not be a number")
+
+    def validate_location(self, field):
+        """Check that the location contains valid characters.
+
+        Args:
+            field: The location form field.
+
+        Raises:
+            ValidationError: If the location is not valid.
+        """
+        if field.data.isspace():
+            raise ValidationError("Please enter the location")
+
+        if not field.data.isascii():
+            raise ValidationError("Location must not have unicode characters")
+
+        if field.data.isdigit():
+            raise ValidationError("Location can not be a number")
+
+    def validate_end_year(self, field):
+        """Check that the end year contains valid characters.
+
+        Args:
+            field: The end year form field.
+
+        Raises:
+            ValidationError: If the end year is not valid.
+        """
+        if not self.start_year.data <= field.data:
+            raise ValidationError(
+                "Start year must be less than or equal to the end year."
+            )
 
 
 class SkillForm(FlaskForm):

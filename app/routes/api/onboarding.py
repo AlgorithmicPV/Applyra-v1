@@ -100,7 +100,7 @@ def education_collect():
     location = form.location.data.strip()
     start_year = form.start_year.data
     end_year = form.end_year.data
-    notes = form.description.data
+    notes = form.description.data.strip() if form.description.data else ""
     update_form = EducationForm()
 
     # Convert the integer years to date objects.
@@ -169,7 +169,7 @@ def education_update(id):
     location = form.location.data.strip()
     start_year = form.start_year.data
     end_year = form.end_year.data
-    notes = form.description.data
+    notes = form.description.data.strip() if form.description.data else ""
     update_form = EducationForm()
 
     try:
@@ -390,7 +390,9 @@ def work_experience_collect():
     location = form.location.data.strip()
     start_year = form.start_year.data
     end_year = form.end_year.data
-    responsibilities = form.responsibilities.data
+    responsibilities = (
+        form.responsibilities.data.strip() if form.responsibilities.data else ""
+    )
     update_form = ExperienceForm()
 
     # Currently, I have made end_year complusory,
@@ -470,12 +472,14 @@ def work_experience_update(id):
     location = form.location.data.strip()
     start_year = form.start_year.data
     end_year = form.end_year.data
-    responsibilities = form.responsibilities.data
+    responsibilities = (
+        form.responsibilities.data.strip() if form.responsibilities.data else ""
+    )
     update_form = ExperienceForm()
 
     # Currently, I have made end_year complusory,
     # in future development, I will remove
-    # therefore, I am keeping this code
+    # therefore, I am keeping this code for the future
 
     # Users can use the end_year as the present year
     date_version_end_year = Null
