@@ -13,6 +13,7 @@
   .cont>div {
     flex: 1;
     padding: 25px;
+    width: 100%;
   }
 
   .right-side {
