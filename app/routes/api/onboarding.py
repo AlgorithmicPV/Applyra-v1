@@ -100,7 +100,7 @@ def education_collect():
     location = form.location.data.strip()
     start_year = form.start_year.data
     end_year = form.end_year.data
-    notes = form.description.data.strip() if form.description.data else ""
+    notes = form.description.data.strip()
     update_form = EducationForm()
 
     # Convert the integer years to date objects.
@@ -169,7 +169,7 @@ def education_update(id):
     location = form.location.data.strip()
     start_year = form.start_year.data
     end_year = form.end_year.data
-    notes = form.description.data.strip() if form.description.data else ""
+    notes = form.description.data.strip()
     update_form = EducationForm()
 
     try:
@@ -380,7 +380,7 @@ def work_experience_collect():
 
     form = ExperienceForm(request.form)
 
-    if not form.validate:
+    if not form.validate():
         return form.errors
 
     experience_id = str(uuid.uuid4())
@@ -390,9 +390,7 @@ def work_experience_collect():
     location = form.location.data.strip()
     start_year = form.start_year.data
     end_year = form.end_year.data
-    responsibilities = (
-        form.responsibilities.data.strip() if form.responsibilities.data else ""
-    )
+    responsibilities = form.responsibilities.data.strip()
     update_form = ExperienceForm()
 
     # Currently, I have made end_year complusory,
@@ -417,7 +415,7 @@ def work_experience_collect():
         end_year=date_version_end_year,
         responsibilities=responsibilities,
     )
-
+    print(new_work_experience)
     try:
         db.session.add(new_work_experience)
         db.session.commit()
@@ -472,9 +470,7 @@ def work_experience_update(id):
     location = form.location.data.strip()
     start_year = form.start_year.data
     end_year = form.end_year.data
-    responsibilities = (
-        form.responsibilities.data.strip() if form.responsibilities.data else ""
-    )
+    responsibilities = form.responsibilities.data.strip()
     update_form = ExperienceForm()
 
     # Currently, I have made end_year complusory,

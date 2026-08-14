@@ -1,6 +1,7 @@
 """This module contains the forms and validation used by the application."""
 
 import re
+from datetime import date
 
 import phonenumbers
 import requests
@@ -809,8 +810,10 @@ class EducationForm(FlaskForm):
             DataRequired("Please enter the start year."),
             NumberRange(
                 min=1900,
-                max=2100,
-                message=("Please enter a valid 4-digit year between 1900 and 2100."),
+                max=date.today().year,
+                message=(
+                    f"Please enter a valid 4-digit year between 1900 and {date.today().year}."
+                ),
             ),
         ],
     )
@@ -979,8 +982,8 @@ class ExperienceForm(FlaskForm):
             DataRequired("Please enter the start year."),
             NumberRange(
                 min=1950,
-                max=2100,
-                message="Please enter a valid year between 1950 and 2100.",
+                max=date.today().year,
+                message=f"Please enter a valid year between 1950 and {date.today().year}.",
             ),
         ],
     )
@@ -1019,6 +1022,20 @@ class ExperienceForm(FlaskForm):
             ),
         ],
     )
+
+    def validate_end_year(self, field):
+        """Check that the end year contains valid characters.
+
+        Args:
+            field: The end year form field.
+
+        Raises:
+            ValidationError: If the end year is not valid.
+        """
+        if not self.start_year.data <= field.data:
+            raise ValidationError(
+                "Start year must be less than or equal to the end year."
+            )
 
 
 class JobLinkForm(FlaskForm):

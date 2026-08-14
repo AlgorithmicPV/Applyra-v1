@@ -14,7 +14,8 @@
                 {{ form.company(value=company) }}
                 {{ form.employment_type(id="f"~experience_id, value=employment_type) }}
                 {{ form.location(value=location) }}
-                {{ form.responsibilities(value=responsibilities) }}
+                {% set _ = form.responsibilities.__setattr__('data', responsibilities) %}
+                {{ form.responsibilities() }}
                 <button class="done" type="submit">Update</button>
             </form>
         </div>
