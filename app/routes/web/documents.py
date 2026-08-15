@@ -111,6 +111,24 @@ def editor(id):
     if not doc:
         abort(404)
 
+    # Check whether document belongs to the logged user
+    doc_type = doc.doc_type
+    application_stmt = (
+        db.select(Application).where(
+            Application.cv_document_id == id,
+            Application.user_id == current_user.user_id,
+        )
+        if doc_type == "cv"
+        else db.select(Application).where(
+            Application.cover_letter_document_id == id,
+            Application.user_id == current_user.user_id,
+        )
+    )
+    application = db.session.scalars(application_stmt).first()
+
+    if not application:
+        abort(404)
+
     content = doc.content
 
     if request.headers.get("HX-Request") == "true":
