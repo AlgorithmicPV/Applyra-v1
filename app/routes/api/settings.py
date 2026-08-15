@@ -1,15 +1,11 @@
 """This module handles the backend routes for the settings pages."""
 
 import base64
-import uuid
-from datetime import date
 
 from flask import (
     Blueprint,
-    jsonify,
     make_response,
     render_template,
-    request,
     session,
     url_for,
 )
@@ -18,21 +14,17 @@ from sqlalchemy.exc import IntegrityError
 
 from app.extensions import db, password_hasher
 from app.forms import (
-    EducationForm,
-    ExperienceForm,
     SettingsCodeRequestForm,
     SettingsDeleteForm,
     SettingsPasswordForm,
     SettingsProfileForm,
     SettingsTotpForm,
-    SkillForm,
 )
 from app.models import (
     Application,
     Document,
     Education,
     JobEntry,
-    Skill,
     User,
     UserPersonal,
     UserSkill,
@@ -61,30 +53,11 @@ def request_code():
     if result:
         return result
 
-    educations = db.session.scalars(
-        db.select(Education).where(Education.user_id == current_user.user_id)
-    ).all()
-    experiences = db.session.scalars(
-        db.select(WorkExperience).where(WorkExperience.user_id == current_user.user_id)
-    ).all()
-    user_skills = db.session.scalars(
-        db.select(UserSkill).where(UserSkill.user_id == current_user.user_id)
-    ).all()
-
-    skills = []
-    for user_skill in user_skills:
-        skill = db.session.get(Skill, user_skill.skill_id)
-        if skill:
-            skills.append(skill.skill_name)
-
     return render_template(
         "user/settings/settings-static.html",
         code_form=SettingsCodeRequestForm(),
         pin_form=SettingsTotpForm(),
         code_sent=True,
-        educations=educations,
-        experiences=experiences,
-        skills=skills,
     )
 
 
@@ -106,71 +79,14 @@ def verify_code():
 
     profile_form = SettingsProfileForm()
     password_form = SettingsPasswordForm()
-    skill_form = SkillForm()
-    education_form = EducationForm()
-    experience_form = ExperienceForm()
     delete_form = SettingsDeleteForm()
-
-    educations = db.session.scalars(
-        db.select(Education).where(Education.user_id == current_user.user_id)
-    ).all()
-    experiences = db.session.scalars(
-        db.select(WorkExperience).where(WorkExperience.user_id == current_user.user_id)
-    ).all()
-    user_skills = db.session.scalars(
-        db.select(UserSkill).where(UserSkill.user_id == current_user.user_id)
-    ).all()
-
-    skills = []
-    for user_skill in user_skills:
-        skill = db.session.get(Skill, user_skill.skill_id)
-        if skill:
-            skills.append(
-                {
-                    "user_skill_id": user_skill.user_skill_id,
-                    "skill_id": skill.skill_id,
-                    "skill_name": skill.skill_name,
-                }
-            )
 
     return render_template(
         "user/settings/settings-editable/settings-edit.html",
         profile_form=profile_form,
         password_form=password_form,
-        skill_form=skill_form,
-        education_form=education_form,
-        experience_form=experience_form,
         delete_form=delete_form,
-        educations=educations,
-        experiences=experiences,
-        skills=skills,
     )
-
-
-@settings_api_bp.get("/skill/search/")
-@login_required
-def search_skills():
-    """Search for skills using the given search text.
-
-    Returns:
-        A JSON list containing the matching skills.
-    """
-
-    if session.get("settings-verified-user") != current_user.user_id:
-        return {"error": "Please verify your PIN again"}
-
-    query = request.args.get("q", "").strip()
-    if not query:
-        return jsonify([])
-
-    skills = db.session.scalars(
-        db.select(Skill).where(Skill.skill_name.ilike(f"%{query}%")).limit(20)
-    ).all()
-
-    result = []
-    for skill in skills:
-        result.append({"id": skill.skill_id, "name": skill.skill_name})
-    return jsonify(result)
 
 
 @settings_api_bp.post("/profile/update/")
@@ -235,326 +151,6 @@ def password_update():
     current_user.password_hash = password_hasher.hash(form.new_password.data)
     db.session.commit()
     return {"success": "Password updated"}
-
-
-@settings_api_bp.post("/skill/add/")
-@login_required
-def skill_add():
-    """Add a new skill to the current user's profile.
-
-    Returns:
-        The new skill HTML, or a dictionary containing an error.
-    """
-
-    if session.get("settings-verified-user") != current_user.user_id:
-        return {"error": "Please verify your PIN again"}
-
-    form = SkillForm()
-    if not form.validate_on_submit():
-        for errors in form.errors.values():
-            return {"error": errors[0]}
-
-    skill = db.session.get(Skill, form.skill_name.data)
-    if not skill:
-        return {"error": "Please select a valid skill"}
-
-    user_skill = UserSkill(
-        user_skill_id=str(uuid.uuid4()),
-        user_id=current_user.user_id,
-        skill_id=skill.skill_id,
-    )
-
-    try:
-        db.session.add(user_skill)
-        db.session.commit()
-    except IntegrityError:
-        db.session.rollback()
-        return {"error": "That skill has already been added"}
-
-    return render_template(
-        "user/settings/components/skill.html",
-        user_skill=user_skill,
-        skill=skill,
-    )
-
-
-@settings_api_bp.delete("/skill/delete/<user_skill_id>/")
-@login_required
-def skill_delete(user_skill_id):
-    """Delete a skill from the current user's profile.
-
-    Args:
-        user_skill_id: The ID of the user's skill record.
-
-    Returns:
-        An empty response when successful, or a dictionary containing an error.
-    """
-
-    if session.get("settings-verified-user") != current_user.user_id:
-        return {"error": "Please verify your PIN again"}
-
-    user_skill = db.session.scalar(
-        db.select(UserSkill).where(
-            UserSkill.user_skill_id == user_skill_id,
-            UserSkill.user_id == current_user.user_id,
-        )
-    )
-    if not user_skill:
-        return {"error": "Skill was not found"}
-
-    db.session.delete(user_skill)
-    db.session.commit()
-    return "", 200
-
-
-@settings_api_bp.post("/education/add/")
-@login_required
-def education_add():
-    """Add a new education record to the current user's profile.
-
-    Returns:
-        The new education HTML, or a dictionary containing an error.
-    """
-
-    if session.get("settings-verified-user") != current_user.user_id:
-        return {"error": "Please verify your PIN again"}
-
-    form = EducationForm()
-    if not form.validate_on_submit():
-        for errors in form.errors.values():
-            return {"error": errors[0]}
-    if form.start_year.data > form.end_year.data:
-        return {"error": "Start year cannot be after end year"}
-
-    education = Education(
-        education_id=str(uuid.uuid4()),
-        user_id=current_user.user_id,
-        qualification=form.certificate.data,
-        institution=form.institution.data,
-        location=form.location.data,
-        start_year=date(form.start_year.data, 1, 1),
-        end_year=date(form.end_year.data, 12, 31),
-        notes=form.description.data,
-    )
-
-    try:
-        db.session.add(education)
-        db.session.commit()
-    except IntegrityError:
-        db.session.rollback()
-        return {"error": "That education record already exists"}
-
-    return render_template(
-        "user/settings/components/education.html",
-        education=education,
-        form=EducationForm(),
-    )
-
-
-@settings_api_bp.post("/education/update/<education_id>/")
-@login_required
-def education_update(education_id):
-    """Update an education record in the current user's profile.
-
-    Args:
-        education_id: The ID of the education record.
-
-    Returns:
-        The updated education HTML, or a dictionary containing an error.
-    """
-
-    if session.get("settings-verified-user") != current_user.user_id:
-        return {"error": "Please verify your PIN again"}
-
-    form = EducationForm()
-    if not form.validate_on_submit():
-        for errors in form.errors.values():
-            return {"error": errors[0]}
-    if form.start_year.data > form.end_year.data:
-        return {"error": "Start year cannot be after end year"}
-
-    education = db.session.scalar(
-        db.select(Education).where(
-            Education.education_id == education_id,
-            Education.user_id == current_user.user_id,
-        )
-    )
-    if not education:
-        return {"error": "Education record was not found"}
-
-    education.qualification = form.certificate.data
-    education.institution = form.institution.data
-    education.location = form.location.data
-    education.start_year = date(form.start_year.data, 1, 1)
-    education.end_year = date(form.end_year.data, 12, 31)
-    education.notes = form.description.data
-
-    try:
-        db.session.commit()
-    except IntegrityError:
-        db.session.rollback()
-        return {"error": "That education record already exists"}
-
-    return render_template(
-        "user/settings/components/education.html",
-        education=education,
-        form=EducationForm(),
-    )
-
-
-@settings_api_bp.delete("/education/delete/<education_id>/")
-@login_required
-def education_delete(education_id):
-    """Delete an education record from the current user's profile.
-
-    Args:
-        education_id: The ID of the education record.
-
-    Returns:
-        An empty response when successful, or a dictionary containing an error.
-    """
-
-    if session.get("settings-verified-user") != current_user.user_id:
-        return {"error": "Please verify your PIN again"}
-
-    education = db.session.scalar(
-        db.select(Education).where(
-            Education.education_id == education_id,
-            Education.user_id == current_user.user_id,
-        )
-    )
-    if not education:
-        return {"error": "Education record was not found"}
-
-    db.session.delete(education)
-    db.session.commit()
-    return "", 200
-
-
-@settings_api_bp.post("/experience/add/")
-@login_required
-def experience_add():
-    """Add a new work experience to the current user's profile.
-
-    Returns:
-        The new experience HTML, or a dictionary containing an error.
-    """
-
-    if session.get("settings-verified-user") != current_user.user_id:
-        return {"error": "Please verify your PIN again"}
-
-    form = ExperienceForm()
-    if not form.validate_on_submit():
-        for errors in form.errors.values():
-            return {"error": errors[0]}
-    if form.start_year.data > form.end_year.data:
-        return {"error": "Start year cannot be after end year"}
-
-    experience = WorkExperience(
-        experience_id=str(uuid.uuid4()),
-        user_id=current_user.user_id,
-        job_title=form.job_title.data,
-        company=form.company.data,
-        employment_type=form.employment_type.data,
-        location=form.location.data,
-        start_year=date(form.start_year.data, 1, 1),
-        end_year=date(form.end_year.data, 12, 31),
-        responsibilities=form.responsibilities.data,
-    )
-
-    try:
-        db.session.add(experience)
-        db.session.commit()
-    except IntegrityError:
-        db.session.rollback()
-        return {"error": "That work experience already exists"}
-
-    return render_template(
-        "user/settings/components/experience.html",
-        experience=experience,
-        form=ExperienceForm(),
-    )
-
-
-@settings_api_bp.post("/experience/update/<experience_id>/")
-@login_required
-def experience_update(experience_id):
-    """Update a work experience in the current user's profile.
-
-    Args:
-        experience_id: The ID of the work experience record.
-
-    Returns:
-        The updated experience HTML, or a dictionary containing an error.
-    """
-
-    if session.get("settings-verified-user") != current_user.user_id:
-        return {"error": "Please verify your PIN again"}
-
-    form = ExperienceForm()
-    if not form.validate_on_submit():
-        for errors in form.errors.values():
-            return {"error": errors[0]}
-    if form.start_year.data > form.end_year.data:
-        return {"error": "Start year cannot be after end year"}
-
-    experience = db.session.scalar(
-        db.select(WorkExperience).where(
-            WorkExperience.experience_id == experience_id,
-            WorkExperience.user_id == current_user.user_id,
-        )
-    )
-    if not experience:
-        return {"error": "Work experience was not found"}
-
-    experience.job_title = form.job_title.data
-    experience.company = form.company.data
-    experience.employment_type = form.employment_type.data
-    experience.location = form.location.data
-    experience.start_year = date(form.start_year.data, 1, 1)
-    experience.end_year = date(form.end_year.data, 12, 31)
-    experience.responsibilities = form.responsibilities.data
-
-    try:
-        db.session.commit()
-    except IntegrityError:
-        db.session.rollback()
-        return {"error": "That work experience already exists"}
-
-    return render_template(
-        "user/settings/components/experience.html",
-        experience=experience,
-        form=ExperienceForm(),
-    )
-
-
-@settings_api_bp.delete("/experience/delete/<experience_id>/")
-@login_required
-def experience_delete(experience_id):
-    """Delete a work experience from the current user's profile.
-
-    Args:
-        experience_id: The ID of the work experience record.
-
-    Returns:
-        An empty response when successful, or a dictionary containing an error.
-    """
-
-    if session.get("settings-verified-user") != current_user.user_id:
-        return {"error": "Please verify your PIN again"}
-
-    experience = db.session.scalar(
-        db.select(WorkExperience).where(
-            WorkExperience.experience_id == experience_id,
-            WorkExperience.user_id == current_user.user_id,
-        )
-    )
-    if not experience:
-        return {"error": "Work experience was not found"}
-
-    db.session.delete(experience)
-    db.session.commit()
-    return "", 200
 
 
 @settings_api_bp.post("/account/delete/")

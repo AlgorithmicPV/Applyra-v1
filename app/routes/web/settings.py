@@ -12,7 +12,7 @@ from flask_login import current_user, login_required, logout_user
 
 from app.extensions import db
 from app.forms import SettingsCodeRequestForm, SettingsTotpForm
-from app.models import Education, Skill, UserSkill, WorkExperience
+from app.models import Education, Skill, UserSkill, WorkExperience, UserPersonal
 
 settings_web_bp = Blueprint("settings_web", __name__)
 
@@ -54,32 +54,11 @@ def settings():
     code_form = SettingsCodeRequestForm()
     pin_form = SettingsTotpForm()
 
-    educations = db.session.scalars(
-        db.select(Education).where(Education.user_id == current_user.user_id)
-    ).all()
-
-    experiences = db.session.scalars(
-        db.select(WorkExperience).where(WorkExperience.user_id == current_user.user_id)
-    ).all()
-
-    user_skills = db.session.scalars(
-        db.select(UserSkill).where(UserSkill.user_id == current_user.user_id)
-    ).all()
-
-    skills = []
-    for user_skill in user_skills:
-        skill = db.session.get(Skill, user_skill.skill_id)
-        if skill:
-            skills.append(skill.skill_name)
-
     if request.headers.get("HX-Request") == "true":
         return render_template(
             "user/settings/settings-static.html",
             code_form=code_form,
             pin_form=pin_form,
-            educations=educations,
-            experiences=experiences,
-            skills=skills,
         )
 
     return render_template(
@@ -88,9 +67,6 @@ def settings():
         page="settings",
         code_form=code_form,
         pin_form=pin_form,
-        educations=educations,
-        experiences=experiences,
-        skills=skills,
     )
 
 

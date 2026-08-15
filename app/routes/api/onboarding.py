@@ -40,22 +40,6 @@ def user_info_collect():
 
     form = UserInfoForm(request.form)
 
-    stmt = (
-        db.select(UserPersonal)
-        .where(UserPersonal.user_id == current_user.user_id)
-        .exists()
-    )
-
-    data_exists = db.session.scalar(db.select(stmt))
-
-    if data_exists:
-        return {
-            "error": (
-                "You have submited your personal info. Use setting page to do "
-                "any changes"
-            )
-        }
-
     if not form.validate():
         return form.errors
 

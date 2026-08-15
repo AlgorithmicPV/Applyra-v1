@@ -39,7 +39,7 @@
             <div class="settings-card">
                 <div class="card-heading">
                     <div>
-                        <h2>Personal details</h2>
+                        <h2>Profile</h2>
                         <p>Your account information.</p>
                     </div>
                 </div>
@@ -73,52 +73,14 @@
                     </label>
                 </div>
             </div>
-            <div class="settings-card profile-section">
+            <div class="settings-card">
                 <div class="card-heading">
                     <div>
-                        <h2>Skills</h2>
-                        <p>Your application skills.</p>
+                        <h2>Personal Information</h2>
+                        <p>Update your personal details, education, work experience and skills used to create your documents.</p>
                     </div>
                 </div>
-                <div class="skill-list">
-                    {% for skill in skills %}<div class="skill-pill"><span>{{ skill }}</span></div>{% endfor %}
-                    {% if not skills %}<p>No skills added yet.</p>{% endif %}
-                </div>
-            </div>
-            <div class="settings-card profile-section">
-                <div class="card-heading">
-                    <div>
-                        <h2>Education</h2>
-                        <p>Your qualifications and certifications.</p>
-                    </div>
-                </div>
-                <div class="record-list">
-                    {% for education in educations %}
-                        <div class="record-row">
-                            <div>
-                                <h3>{{ education.qualification }}</h3>
-                                <p>{{ education.institution }} · {{ education.start_year.year }}–{{ education.end_year.year }}</p>
-                            </div>
-                        </div>
-                    {% endfor %}
-                    {% if not educations %}<p>No education added yet.</p>{% endif %}
-                </div>
-            </div>
-            <div class="settings-card profile-section">
-                <div class="card-heading">
-                    <div>
-                        <h2>Work experience</h2>
-                        <p>Your professional experience.</p>
-                    </div>
-                </div>
-                <div class="record-list">
-                    {% for experience in experiences %}
-                        <div class="record-row">
-                            <div><h3>{{ experience.job_title }}</h3><p>{{ experience.company }} · {{ experience.start_year.year }}–{% if experience.end_year %}{{ experience.end_year.year }}{% else %}Present{% endif %}</p></div>
-                        </div>
-                    {% endfor %}
-                    {% if not experiences %}<p>No work experience added yet.</p>{% endif %}
-                </div>
+                <button class="secondary-btn settings-action-btn">Edit Information</button>
             </div>
             <div class="settings-card delete-section">
                 <div class="danger-card">
