@@ -160,17 +160,17 @@ def job_entry():
         return form.errors
 
     job = {
-        "job-url": form.source_url.data,
-        "job-title": form.job_title.data,
-        "company-name": form.company_name.data,
-        "country-code": form.country_code.data,
-        "job-description": form.job_description.data,
+        "job-url": form.source_url.data.strip(),
+        "job-title": form.job_title.data.strip(),
+        "company-name": form.company_name.data.strip(),
+        "country-code": form.country_code.data.strip(),
+        "job-description": form.job_description.data.strip(),
     }
 
     # Collect all the user's information.
     user_info = {
         "full_name": user_data.full_name,
-        "email": "dev@gmail.com",  # user_data.email
+        "email": user_data.email,
         "phone_number": user_personal.phone_number,
         "city": user_personal.city,
         "country": user_personal.country,
