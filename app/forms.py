@@ -355,8 +355,8 @@ class SignUpForm(FlaskForm):
 
         strength = password_strength_checker(
             field.data,
-            current_user.email,
-            current_user.full_name,
+            self.email_address.data,
+            self.full_name.data,
         )
         if strength is not True:
             message = strength.get("warning") or "Please choose a stronger password"

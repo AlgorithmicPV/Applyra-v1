@@ -160,10 +160,6 @@ body {
     --header-padding: 12px;
   }
 
-  body {
-    overflow: hidden;
-  }
-
   .main-content.app {
     display: flex;
     flex-direction: column-reverse;

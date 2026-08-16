@@ -383,7 +383,8 @@ h1 {
   padding: 110px 60px;
 }
 
-.outcomes img{
+.outcomes img {
+  width: 100%;
   max-width: 515px;
   height: auto;
 }
@@ -542,6 +543,10 @@ footer p {
     height: 68px;
   }
 
+  .brand {
+    font-size: 18px;
+  }
+
   .site-nav {
     display: none;
   }
@@ -551,8 +556,8 @@ footer p {
   }
 
   h1 {
-    font-size: 44px;
-    letter-spacing: -2.2px;
+    font-size: clamp(36px, 12vw, 44px);
+    letter-spacing: -2px;
   }
 
   .hero {
@@ -568,7 +573,13 @@ footer p {
     gap: 20px;
   }
 
+  .hero-actions .button {
+    width: 100%;
+    max-width: 280px;
+  }
+
   .hero-points {
+    justify-content: center;
     align-items: center;
     gap: 9px 17px;
   }
@@ -582,8 +593,8 @@ footer p {
   }
 
   .visual-glow {
-    width: 340px;
-    height: 340px;
+    width: min(340px, 100%);
+    height: min(340px, 100vw);
   }
 
   .match-pill {
@@ -603,6 +614,10 @@ footer p {
   .outcomes {
     padding-top: 80px;
     padding-bottom: 80px;
+  }
+
+  .outcomes img {
+    margin-inline: auto;
   }
   .document-stack {
     min-height: 390px;
@@ -638,6 +653,67 @@ footer p {
   footer p {
     order: 3;
     flex-basis: 100%;
+  }
+}
+
+@media (max-width: 400px) {
+  .site-header,
+  .hero,
+  .how-it-works,
+  .outcomes,
+  footer {
+    width: calc(100% - 24px);
+  }
+
+  .site-header .button-small {
+    min-height: 36px;
+    padding-inline: 12px;
+  }
+
+  .hero {
+    padding-top: 45px;
+  }
+
+  .hero-visual {
+    height: 330px;
+  }
+
+  .hero-visual img {
+    width: 82%;
+    height: 315px;
+  }
+
+  .match-pill {
+    top: 35px;
+    padding: 9px 12px;
+  }
+
+  .skills-card {
+    bottom: 32px;
+    padding: 10px 12px;
+  }
+
+  .skills-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .how-it-works,
+  .outcomes {
+    padding-block: 60px;
+  }
+
+  .step-card {
+    padding: 28px 24px;
+  }
+
+  .final-cta {
+    width: calc(100% - 24px);
+    padding: 36px 22px;
+  }
+
+  .final-cta .button {
+    width: 100%;
   }
 }
 

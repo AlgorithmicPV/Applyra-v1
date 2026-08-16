@@ -9,7 +9,10 @@
   gap: 10px;
   top: 30px;
   left: 50%;
-  position: absolute;
+  position: fixed;
+  z-index: 1000;
+  width: max-content;
+  max-width: calc(100vw - 32px);
 
   transform: translate(-50%, -20px) scale(0.96);
   opacity: 0;
@@ -56,6 +59,8 @@
   margin: 0;
   font-size: 14px;
   font-family: "Inter";
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .close-btn {
@@ -66,4 +71,23 @@
   color: white;
   border: none;
   padding: 0;
+  flex-shrink: 0;
+}
+
+@media (max-width: 560px) {
+
+  .success-notification,
+  .error-notification,
+  .warning-notification {
+    top: 16px;
+    width: calc(100vw - 50px);
+    padding: 12px;
+    justify-content: space-between;
+  }
+
+  .error-notification p,
+  .success-notification p,
+  .warning-notification p {
+    font-size: 13px;
+  }
 }
