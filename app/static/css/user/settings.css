@@ -14,6 +14,13 @@
 
 .settings-page {
 
+  #send-pin-btn {
+    padding-left: calc(30px + 24px);
+    /* There is a loader beside the text and its total width is 24px */
+    /* To make the button balance */
+    /* 30px is the normal padding */
+  }
+
   .settings-heading,
   .verification-card,
   .settings-grid,

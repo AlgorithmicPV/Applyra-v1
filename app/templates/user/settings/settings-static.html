@@ -20,7 +20,9 @@
                   hx-target="closest .settings-page"
                   hx-swap="outerHTML">
                 {{ code_form.hidden_tag() }}
-                <button class="secondary-btn settings-action-btn" type="submit">Send PIN</button>
+                <button class="secondary-btn settings-action-btn"
+                        type="submit"
+                        id="send-pin-btn">Send PIN<span class="btn-loader"></span></button>
             </form>
             {% if code_sent %}
                 <form class="code-entry"

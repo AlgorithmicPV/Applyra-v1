@@ -16,8 +16,7 @@
             {{ form.email_address(placeholder="Email Address") }}
             {{ form.password(placeholder="Password") }}
             {{ form.confirm_password(placeholder="Confirm Password") }}
-            <!--<p>By continuing, you agree to our Terms and Privacy Policy</p>-->
-            <button class="auth-btn" type="submit">Sign Up</button>
+            <button class="auth-btn" type="submit">Sign Up<span class="btn-loader"></span></button>
         </form>
         <!--<button hx-get="{{ url_for("auth_web.login") }}" hx-target="#app" hx-swag="innerHTML" hx-push-url="true">Login</button> -->
     </div>

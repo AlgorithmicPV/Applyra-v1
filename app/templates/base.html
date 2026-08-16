@@ -76,6 +76,9 @@
         {# Settings CSS end #}
         {# App CSS End #}
         {##############################################}
+        <link rel="stylesheet"
+              href="https://cdn.jsdelivr.net/npm/driver.js@1.3.6/dist/driver.css">
+        <script src="https://cdn.jsdelivr.net/npm/driver.js@1.3.6/dist/driver.js.iife.js"></script>
         <script src="https://unpkg.com/htmx.org@1.9.10"></script>
         <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/json-enc.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/tom-select@2.6.1/dist/js/tom-select.complete.min.js"></script>
@@ -87,5 +90,61 @@
         </main>
         <script src="{{ url_for('static', filename='js/base.js') }}"></script>
         <script src="{{ url_for('static', filename='js/user/settings.js') }}"></script>
+        <script>
+            const driver = window.driver.js.driver;
+
+            const tour = driver({
+                animate: true,
+                showProgress: true,
+                showButtons: ['next', 'previous'],
+
+                steps: [
+                    {
+                        element: '#apply',
+                        popover: {
+                            title: 'Applications',
+                            description: 'Create and manage your job applications here. Analyse job details, check your relevancy, and access your generated CV and cover letter.'
+                        }
+                    },
+                    {
+                        element: '.add',
+                        popover: {
+                            title: 'Create a New Application',
+                            description: 'Click here to add a new job. Copy and paste the job details to analyse the role and generate a tailored CV and cover letter.'
+                        }
+                    },
+                    {
+                        element: '#docs',
+                        popover: {
+                            title: 'Your Documents',
+                            description: 'Find all your generated CVs and cover letters here. Click any document to open, edit, save, or download it.'
+                        }
+                    },
+                    {
+                        element: '#settings',
+                        popover: {
+                            title: 'Settings',
+                            description: 'Manage your profile and account here, including updating your personal information, changing your password, or deleting your account.'
+                        }
+                    }
+                ]
+            });
+
+            function startProductTour() {
+                if (
+                    !localStorage.getItem("productTourCompleted") &&
+                    document.querySelector("#apply") &&
+                    document.querySelector(".add")
+                ) {
+                    tour.drive();
+                    localStorage.setItem("productTourCompleted", "true");
+                }
+            }
+
+            document.addEventListener("DOMContentLoaded", startProductTour);
+            htmx.onLoad(function () {
+                startProductTour();
+            });
+        </script>
     </body>
 </html>

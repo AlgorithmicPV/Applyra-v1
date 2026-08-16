@@ -353,15 +353,14 @@ class SignUpForm(FlaskForm):
         if not field.data.isascii():
             raise ValidationError("Password must not have unicode characters")
 
-        if not (
-            password_strength_checker(
-                field.data, self.full_name.data, self.email_address.data
-            )
-        ):
-            password_feedback = password_strength_checker(
-                field.data, self.full_name.data, self.email_address.data
-            )
-            raise ValidationError(password_feedback)
+        strength = password_strength_checker(
+            field.data,
+            current_user.email,
+            current_user.full_name,
+        )
+        if strength is not True:
+            message = strength.get("warning") or "Please choose a stronger password"
+            raise ValidationError(message)
 
 
 class TotpForm(FlaskForm):
