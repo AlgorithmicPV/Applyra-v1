@@ -7,6 +7,7 @@
                      alt="{{ current_user.full_name }}" />
             </div>
             <button class="nav-page-btn{% if page == 'apply' %} active{% endif %}"
+                    id="apply"
                     data-nav-path="/apply/"
                     hx-get="{{ url_for("apply_web.apply") }}"
                     hx-target=".page-body"
@@ -17,6 +18,7 @@
                 <p>Apply</p>
             </button>
             <button class="nav-page-btn{% if page in ['doc-home', 'document-editor'] %} active{% endif %}"
+                    id="docs"
                     data-nav-path="/files/"
                     hx-get="{{ url_for("documents_web.doc_home") }}"
                     hx-target=".page-body"
@@ -27,6 +29,7 @@
                 <p>Docs</p>
             </button>
             <button class="nav-page-btn settings-btn{% if page == 'settings' %} active{% endif %}"
+                    id="settings"
                     data-nav-path="/settings/"
                     hx-get="{{ url_for("settings_web.settings") }}"
                     hx-target=".page-body"
