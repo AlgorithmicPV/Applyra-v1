@@ -171,7 +171,7 @@ GEMINI_API_KEY=
 
 If you are unfamiliar with setting up TOTP, this tutorial may help:
 
-[▶ TOTP Setup Tutorial by NeuralNine](https://youtu.be/o0XZZkI69E8)
+[TOTP Setup Tutorial by NeuralNine](https://youtu.be/o0XZZkI69E8)
 
 **Credit:** [NeuralNine](https://www.youtube.com/@NeuralNine) — external tutorial used for reference only.
 
@@ -188,11 +188,11 @@ This application uses the Gemini API for AI-powered features.
 
 If you need help setting up the email system for this application, you can follow this external tutorial:
 
-[▶ Watch Email Setup Tutorial by Arpan Neupane](https://youtu.be/L7Cslucyyyo)
+[Watch Email Setup Tutorial by Arpan Neupane](https://youtu.be/L7Cslucyyyo)
 
 **Credit:** Arpan Neupane — external tutorial provided for setup reference only.
 
-#### Generate a Fernet Key
+### Generate a Fernet Key
 
 This application uses a Fernet key to encrypt sensitive data such as TOTP secrets.
 
@@ -204,7 +204,7 @@ from cryptography.fernet import Fernet
 print(Fernet.generate_key().decode())
 ```
 
-#### Generate a Secret Key
+### Generate a Secret Key
 
 The application requires a `SECRET_KEY` for Flask security features such as sessions and CSRF protection.
 
