@@ -162,12 +162,58 @@ SECRET_KEY=
 MAIL_SERVER=
 MAIL_USERNAME=
 MAIL_PASSWORD=
-GOOGLE_RECAPTCHA_SITE_KEY=
-GOOGLE_RECAPTCHA_SECRET_KEY=
 OTP_SECRET=
 FERNET_KEY=
-GITHUB_TOKEN=
 GEMINI_API_KEY=
+```
+
+### TOTP Setup Tutorial
+
+If you are unfamiliar with setting up TOTP, this tutorial may help:
+
+[▶ TOTP Setup Tutorial by NeuralNine](https://youtu.be/o0XZZkI69E8)
+
+**Credit:** [NeuralNine](https://www.youtube.com/@NeuralNine) — external tutorial used for reference only.
+
+### Gemini API Key
+
+This application uses the Gemini API for AI-powered features.
+
+1. Go to [Google AI Studio](https://aistudio.google.com/api-keys).
+2. Sign in with your Google account.
+3. Create a Gemini API key.
+4. Add the API key to your `.env` file:
+
+### Email Setup Tutorial
+
+If you need help setting up the email system for this application, you can follow this external tutorial:
+
+[▶ Watch Email Setup Tutorial by Arpan Neupane](https://youtu.be/L7Cslucyyyo)
+
+**Credit:** Arpan Neupane — external tutorial provided for setup reference only.
+
+#### Generate a Fernet Key
+
+This application uses a Fernet key to encrypt sensitive data such as TOTP secrets.
+
+Generate a key by running:
+
+```python
+from cryptography.fernet import Fernet
+
+print(Fernet.generate_key().decode())
+```
+
+#### Generate a Secret Key
+
+The application requires a `SECRET_KEY` for Flask security features such as sessions and CSRF protection.
+
+You can generate a random key using UUID4:
+
+```python
+import uuid
+
+print(uuid.uuid4().hex)
 ```
 
 ---

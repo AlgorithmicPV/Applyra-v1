@@ -332,7 +332,8 @@
   .cards {
     width: 100%;
     overflow-y: auto;
-    height: 100%;
+    height: calc(100vh - (36px + 25px + 10px + 50px + 10px + 10px + 50px));
+    /* To get the scroll bar, height has to be specific, and i used 100vh, and removed all the padding, and top elements heights from that */
     display: flex;
     flex-direction: column;
     gap: 10px;
