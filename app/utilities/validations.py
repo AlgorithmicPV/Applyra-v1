@@ -81,6 +81,7 @@ def email_confirm(user_email: str, interval=30):
 
     try:
         mail.send(msg)
+        return {"error": None}
     except (smtplib.SMTPException, OSError) as e:
         error = f"Error sending email: {e}"
         print(error)

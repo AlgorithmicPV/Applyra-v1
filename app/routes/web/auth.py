@@ -56,10 +56,13 @@ def totp():
     if not (session.get(hash_key("email-confirm"))):
         abort(403)
 
-    email_confirm(
+    email_send_result = email_confirm(
         user_email=decrypt_value(session.get(hash_key("user-email"))),
         interval=AUTH_TOTP_INTERVAL,
     )
+
+    if email_send_result.get("error"):
+        return {"error": email_send_result.get("error")}
 
     del session[hash_key("email-confirm")]
 

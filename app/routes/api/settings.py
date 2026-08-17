@@ -50,8 +50,8 @@ def request_code():
             return {"error": errors[0]}
 
     result = email_confirm(current_user.email, interval=600)
-    if result:
-        return result
+    if result.get("error"):
+        return {"error": result.get("error")}
 
     return render_template(
         "user/settings/settings-static.html",
