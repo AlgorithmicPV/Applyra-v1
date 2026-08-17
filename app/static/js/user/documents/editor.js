@@ -1,206 +1,179 @@
-import { Editor } from 'https://esm.sh/@tiptap/core'
-import StarterKit from 'https://esm.sh/@tiptap/starter-kit'
-import { FontSize, TextStyle } from 'https://esm.sh/@tiptap/extension-text-style'
-import { Focus, Selection } from 'https://esm.sh/@tiptap/extensions'
-// import Bold from 'https://esm.sh/@tiptap/extension-bold'
-import Underline from 'https://esm.sh/@tiptap/extension-underline'
+(() => {
+  function extractDocumentParts(html) {
+    let parser = new DOMParser();
+    let documentObject = parser.parseFromString(html, "text/html");
 
-
-const boldBtn = document.getElementById('bold-btn')
-const italicBtn = document.getElementById('italic-btn')
-const underlineBtn = document.getElementById('underline-btn')
-const fontSizeInputBox = document.getElementById('font-size')
-const workspace = document.getElementById('workspace')
-
-
-let isBold = false
-let isItalic = false
-let isUnderline = false
-const navKeys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown']
-let fontSize = 16
-
-let editor = null;
-
-function initEditor(root = document) {
-  const el = root.querySelector('#workspace');
-
-  if (!el) return;
-
-  // prevent duplicate init
-  if (el.dataset.initialized) return;
-  el.dataset.initialized = "true";
-
-  // optional: clean up old editor
-  if (editor) {
-    editor.destroy();
-    editor = null;
+    return {
+      bodyHtml: documentObject.body.innerHTML,
+      css: Array.from(documentObject.querySelectorAll("style"))
+        .map(function (style) {
+          return style.textContent;
+        })
+        .join("\n"),
+    };
   }
 
-  editor = new Editor({
-    element: el,
-    extensions: [
-      StarterKit,
-      Underline,
-      TextStyle,
-      FontSize,
-      Focus.configure({
-        className: 'has-focus',
-        mode: 'all',
-      }),
-      Selection.configure({
-        className: 'selection',
-      }),
+  let cvDocument = extractDocumentParts(doc);
+
+  tinymce.init({
+    selector: "#editor",
+    inline: false,
+    height: 900,
+    menubar: true,
+    resize: true,
+
+    menu: {
+      view: {
+        title: "View",
+        items: "visualaid",
+      },
+      tools: {
+        title: "Tools",
+        items: "wordcount",
+      },
+    },
+
+    plugins: [
+      "lists",
+      "link",
+      "table",
+      "searchreplace",
+      "code",
+      "fullscreen",
+      "wordcount",
     ],
-    autofocus: true,
-    shouldRerenderOnTransaction: true,
-    immediatelyRender: true,
+
+    toolbar:
+      "mysave undo redo | " +
+      "blocks fontfamily fontsize | " +
+      "bold italic underline forecolor | " +
+      "alignleft aligncenter alignright alignjustify | " +
+      "bullist numlist outdent indent | " +
+      "link table | " +
+      "removeformat | " +
+      "searchreplace | " +
+      "download ",
+
+    content_style:
+      cvDocument.css +
+      `
+          body {
+              width: 210mm;
+              min-height: 297mm;
+              margin: 0 auto;
+              padding: 16mm 18mm;
+              box-sizing: border-box;
+              background: white;
+          }
+          `,
+
+    setup: function (editor) {
+      editor.on("init", function () {
+        editor.setContent(cvDocument.bodyHtml);
+      });
+
+      editor.ui.registry.addButton("mysave", {
+        text: "Save",
+        tooltip: "Save document",
+        onAction: () => {
+          saveDocument();
+        },
+      });
+
+      editor.ui.registry.addButton("download", {
+        icon: "save",
+        tooltip: "Downlaod DOCX",
+        onAction: () => {
+          download();
+        },
+      });
+
+      editor.addShortcut("ctrl+s", "Save document", function () {
+        saveDocument();
+      });
+    },
   });
 
-  const boldFunction = () => {
-    if (!isBold) {
-      isBold = true
-      boldBtn.children[0].style.backgroundColor = '#0E1116';
-    } else {
-      isBold = false
-      boldBtn.children[0].style.backgroundColor = 'rgba(14, 17, 22, 0.5)';
+  const finalHtml = () => {
+    let editor = tinymce.get("editor");
+
+    return `
+      <!DOCTYPE html>
+        <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+            <style>
+              ${cvDocument.css}
+            </style>
+          </head>
+
+          <body>
+            ${editor.getContent()}
+          </body>
+
+        </html>
+    `;
+  };
+
+  const saveDocument = () => {
+    if (!editor) {
+      console.error("Editor is not initialized.");
+      return;
     }
-  }
 
-  boldBtn.addEventListener('click', () => {
-    boldFunction();
-    editor.chain().focus().toggleBold().run();
-  })
+    let fHtml = finalHtml();
 
-}
+    // Send finalHtml to Backend
+    const doc_data = {
+      doc_id: doc_id,
+      doc_content: fHtml,
+    };
 
-// run on first load
-initEditor();
+    axios
+      .post(BackendUrl, doc_data)
+      .then(function (response) {
+        console.log(response.status);
 
-editor.commands.setFontSize('16px')
+        if (response.data.success) {
+          const status = document.getElementById("save-status");
+          status.classList.add("show");
+          clearTimeout(status.timer);
+          status.timer = setTimeout(() => {
+            status.classList.remove("show");
+          }, 2500);
+        }
 
+        if (response.data.error) {
+          const message = document.getElementById("document-error");
+          message.classList.add("show");
+          clearTimeout(message.timer);
+          message.timer = setTimeout(() => {
+            message.classList.remove("show");
+          }, 3000);
+        }
+      })
+      .catch(function (error) {
+        console.error(error.message);
+      });
+  };
 
-const docPage = document.querySelector('.tiptap')
+  const download = () => {
+    const HTML = finalHtml();
 
+    const blob = new Blob(["\ufeff", HTML], {
+      type: "application/msword;charset=utf-8",
+    });
 
+    const downloadURL = URL.createObjectURL(blob);
+    const downloadLink = document.createElement("a");
 
+    downloadLink.href = downloadURL;
+    downloadLink.download = `${doc_title} ${doc_type}.doc`;
 
+    downloadLink.click();
 
-const italicFunction = () => {
-  editor.chain().focus().toggleItalic().run()
-  if (!isItalic) {
-    isItalic = true
-    italicBtn.children[0].style.backgroundColor = '#0E1116';
-  } else {
-    isItalic = false
-    italicBtn.children[0].style.backgroundColor = 'rgba(14, 17, 22, 0.5)';
-  }
-}
-
-
-const underlineFunction = () => {
-  editor.chain().focus().toggleUnderline().run()
-  if (!isUnderline) {
-    isUnderline = true
-    underlineBtn.children[0].style.backgroundColor = '#0E1116';
-  } else {
-    isUnderline = false
-    underlineBtn.children[0].style.backgroundColor = 'rgba(14, 17, 22, 0.5)';
-  }
-}
-
-
-const updateFontSize = () => {
-  if (fontSize == '') return // If user clicks somewhere except the text, there would be no font size, so if it is true, it will return and stop the rest of the function
-  fontSizeInputBox.value = parseFloat(fontSize) // Convert the px value to an int
-}
-
-
-const getElementAtCursor = () => {
-  const selection = window.getSelection();
-  if (selection.rangeCount > 0) {
-    let node = selection.anchorNode
-    return node.nodeType === 3 ? node.parentNode : node;
-  }
-  return null;
-}
-
-
-// const updateFontStyle = (clickedElement) => {
-//   let selectedElementTagName = clickedElement.tagName;
-//   while (selectedElementTagName != 'SPAN') {
-//     console.log(selectedElementTagName)
-//     clickedElement = clickedElement.parentElement;
-//     selectedElementTagName = clickedElement.tagName
-//   }
-// }
-
-
-const updateFontStyle = () => {
-  if (editor.isActive('bold')) {
-    boldBtn.children[0].style.backgroundColor = '#0E1116';
-  } else {
-    boldBtn.children[0].style.backgroundColor = 'rgba(14, 17, 22, 0.5)';
-  }
-
-  if (editor.isActive('underline')) {
-    underlineBtn.children[0].style.backgroundColor = '#0E1116';
-  } else {
-    underlineBtn.children[0].style.backgroundColor = 'rgba(14, 17, 22, 0.5)';
-  }
-}
-
-
-
-
-italicBtn.addEventListener('click', italicFunction)
-underlineBtn.addEventListener('click', underlineFunction)
-
-
-// Short Cut keys for the tool bar
-document.addEventListener('keydown', (event) => {
-  if (event.ctrlKey) {
-    if (event.key.toLowerCase() === 'b') {
-      event.preventDefault();
-      boldFunction();
-    } else if (event.key.toLowerCase() === 'i') {
-      event.preventDefault()
-      italicFunction()
-    } else if (event.key.toLowerCase() === 'u') {
-      event.preventDefault();
-      underlineFunction();
-    }
-  }
-})
-
-
-fontSizeInputBox.addEventListener('keyup', (event) => {
-  if (event.key.toLowerCase() === 'enter') {
-    editor.commands.setFontSize(`${fontSizeInputBox.value}px`)
-  }
-})
-
-
-// Update the font size input box value, when the user uses the mouse cursor to select texts on the page
-docPage.addEventListener('mouseup', (event) => {
-  let selectedText = event.target
-  fontSize = selectedText.style.getPropertyValue('font-size')
-  updateFontSize()
-  updateFontStyle()
-})
-
-
-docPage.addEventListener('keyup', (event) => {
-  let clickedKey = event.key
-  if (navKeys.includes(clickedKey)) {
-    let selectedElement = getElementAtCursor()
-    fontSize = selectedElement.style.getPropertyValue('font-size')
-    updateFontSize()
-    updateFontStyle()
-  }
-})
-
-// TODO: Italic, and undelrin dont work like bold
-//
-document.body.addEventListener('htmx:load', (e) => {
-  initEditor(e.target);
-});
+    URL.revokeObjectURL(downloadURL);
+  };
+})();
