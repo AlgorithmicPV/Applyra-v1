@@ -1,7 +1,7 @@
 """This module handles all authentication routes in the system."""
 
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from argon2.exceptions import VerifyMismatchError
 from flask import Blueprint, abort, redirect, request, session, url_for
@@ -190,8 +190,7 @@ def login():
     login_user(
         user=email_exist.User,
         remember=True,
-        duration=None,
-        # NOTE: Change this later: duration
+        duration=timedelta(days=30),
         force=False,
         fresh=True,
     )
