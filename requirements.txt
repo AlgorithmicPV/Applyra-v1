@@ -21,3 +21,4 @@ SQLAlchemy==2.0.52
 WTForms==3.2.2
 zxcvbn==4.5.0
 argon2-cffi==25.1.0
+google-genai==2.17.0
