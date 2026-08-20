@@ -17,7 +17,6 @@ const serverResponseHandler = (evt) => {
 document.body.removeEventListener("htmx:beforeSwap", serverResponseHandler);
 document.body.addEventListener("htmx:beforeSwap", serverResponseHandler);
 
-/* Remember the csrf_toke, this will expire, so remember to make it as a seperate rror for that */
 
 const notificationBox = (className, message) => {
   const page = document.getElementById("page");

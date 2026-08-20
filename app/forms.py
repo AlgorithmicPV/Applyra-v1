@@ -359,7 +359,10 @@ class SignUpForm(FlaskForm):
             self.full_name.data,
         )
         if strength is not True:
-            message = strength.get("warning") or "Please choose a stronger password"
+            message = (
+                strength.get("warning")
+                or "Please choose a stronger password"
+            )
             raise ValidationError(message)
 
 
@@ -504,7 +507,9 @@ class SettingsTotpForm(TotpForm):
 
         super().validate_code(field)
         if not get_totp(interval=600).verify(field.data):
-            raise ValidationError("The verification code is invalid or expired")
+            raise ValidationError(
+                "The verification code is invalid or expired"
+            )
 
 
 class SettingsProfileForm(FlaskForm):
@@ -625,7 +630,10 @@ class SettingsPasswordForm(FlaskForm):
             current_user.full_name,
         )
         if strength is not True:
-            message = strength.get("warning") or "Please choose a stronger password"
+            message = (
+                strength.get("warning")
+                or "Please choose a stronger password"
+            )
             raise ValidationError(message)
 
 
@@ -687,7 +695,9 @@ class UserInfoForm(FlaskForm):
             validators.Length(
                 min=2,
                 max=255,
-                message=("Company Name must be between 2 and 255 characters long."),
+                message=(
+                    "Company Name must be between 2 and 255 characters long."
+                ),
             ),
         ],
     )
@@ -735,9 +745,12 @@ class UserInfoForm(FlaskForm):
         if field.data.isdigit():
             raise ValidationError("City name can not be a number")
 
-        # Check that the city contains only letters, spaces, hyphens, or apostrophes
+        # Check that the city contains only letters, spaces, hyphens, or
+        # apostrophes
         if not bool(re.fullmatch(r"[A-Za-zÀ-ÿ' -]+", field.data)):
-            raise ValidationError("Invalid city name. Please enter a valid city name.")
+            raise ValidationError(
+                "Invalid city name. Please enter a valid city name."
+            )
 
     def validate_linkedin_url(self, field):
         """Check that the url contains valid characters.
@@ -754,7 +767,9 @@ class UserInfoForm(FlaskForm):
         # Check first 21 characters in the user provided link with this
         # to check, is it a valid link or not
         if field.data.strip().lower()[: len(first_part)] != first_part:
-            raise ValidationError("Please enter a valid LinkedIn personal profile URL.")
+            raise ValidationError(
+                "Please enter a valid LinkedIn personal profile URL."
+            )
 
 
 class EducationForm(FlaskForm):
@@ -766,11 +781,16 @@ class EducationForm(FlaskForm):
             DataRequired("Please enter your degree or certification"),
             validators.Length(
                 min=2,
-                message=("Degree or certification must be at least 2 characters long"),
+                message=(
+                    "Degree or certification must be at least 2 "
+                    "characters long"
+                ),
             ),
             validators.Length(
                 max=255,
-                message=("Degree or certification cannot exceed 255 characters"),
+                message=(
+                    "Degree or certification cannot exceed 255 characters"
+                ),
             ),
         ],
     )
@@ -811,7 +831,8 @@ class EducationForm(FlaskForm):
                 min=1900,
                 max=date.today().year,
                 message=(
-                    f"Please enter a valid 4-digit year between 1900 and {date.today().year}."
+                    "Please enter a valid 4-digit year between 1900 and "
+                    f"{date.today().year}."
                 ),
             ),
         ],
@@ -824,7 +845,9 @@ class EducationForm(FlaskForm):
             NumberRange(
                 min=1900,
                 max=2100,
-                message=("Please enter a valid 4-digit year between 1900 and 2100."),
+                message=(
+                    "Please enter a valid 4-digit year between 1900 and 2100."
+                ),
             ),
         ],
     )
@@ -853,7 +876,9 @@ class EducationForm(FlaskForm):
             raise ValidationError("Please enter your degree or certification")
 
         if not field.data.isascii():
-            raise ValidationError("Certificate must not have unicode characters")
+            raise ValidationError(
+                "Certificate must not have unicode characters"
+            )
 
         if field.data.isdigit():
             raise ValidationError("Certificate can not be a number")
@@ -871,7 +896,9 @@ class EducationForm(FlaskForm):
             raise ValidationError("Please enter the institution")
 
         if not field.data.isascii():
-            raise ValidationError("Institution must not have unicode characters")
+            raise ValidationError(
+                "Institution must not have unicode characters"
+            )
 
         if field.data.isdigit():
             raise ValidationError("Institution can not be a number")
@@ -945,7 +972,9 @@ class ExperienceForm(FlaskForm):
             validators.Length(
                 min=2,
                 max=150,
-                message=("Company name must be between 2 and 150 characters long."),
+                message=(
+                    "Company name must be between 2 and 150 characters long."
+                ),
             ),
         ],
     )
@@ -970,7 +999,9 @@ class ExperienceForm(FlaskForm):
             validators.Length(
                 min=2,
                 max=50,
-                message=("Employment type must be between 2 and 50 characters long."),
+                message=(
+                    "Employment type must be between 2 and 50 characters long."
+                ),
             ),
         ],
     )
@@ -982,7 +1013,10 @@ class ExperienceForm(FlaskForm):
             NumberRange(
                 min=1950,
                 max=date.today().year,
-                message=f"Please enter a valid year between 1950 and {date.today().year}.",
+                message=(
+                    "Please enter a valid year between 1950 and "
+                    f"{date.today().year}."
+                ),
             ),
         ],
     )
@@ -1059,7 +1093,9 @@ class JobLinkForm(FlaskForm):
         """
 
         try:
-            response = requests.get(field.data, timeout=5, allow_redirects=True)
+            response = requests.get(
+                field.data, timeout=5, allow_redirects=True
+            )
 
             if response.status_code >= 400:
                 raise ValidationError("This link is not working.")
@@ -1098,7 +1134,9 @@ class JobForm(FlaskForm):
             validators.Length(
                 min=2,
                 max=255,
-                message=("Company Name must be between 2 and 255 characters long."),
+                message=(
+                    "Company Name must be between 2 and 255 characters long."
+                ),
             ),
         ],
     )
@@ -1111,7 +1149,9 @@ class JobForm(FlaskForm):
             validators.Length(
                 min=2,
                 max=255,
-                message=("Company Name must be between 2 and 255 characters long."),
+                message=(
+                    "Company Name must be between 2 and 255 characters long."
+                ),
             ),
         ],
     )
@@ -1124,7 +1164,8 @@ class JobForm(FlaskForm):
                 max=8000,
                 min=100,
                 message=(
-                    "Job Description must be between 100 and 8000 characters long"
+                    "Job Description must be between 100 and 8000 "
+                    "characters long"
                 ),
             ),
         ],
@@ -1141,7 +1182,9 @@ class JobForm(FlaskForm):
         """
 
         try:
-            response = requests.get(field.data, timeout=5, allow_redirects=True)
+            response = requests.get(
+                field.data, timeout=5, allow_redirects=True
+            )
 
             if response.status_code >= 400:
                 raise ValidationError("This link is not working.")

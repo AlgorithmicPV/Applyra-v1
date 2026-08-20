@@ -28,7 +28,9 @@ def sign_up():
     """
 
     form = SignUpForm()
-    return render_template("auth/base.html", form=form, title="Sign Up", page="sign-up")
+    return render_template(
+        "auth/base.html", form=form, title="Sign Up", page="sign-up"
+    )
 
 
 @auth_web_bp.get("/login/")
@@ -40,7 +42,9 @@ def login():
     """
 
     form = LoginForm()
-    return render_template("auth/base.html", form=form, title="Login", page="login")
+    return render_template(
+        "auth/base.html", form=form, title="Login", page="login"
+    )
 
 
 @auth_web_bp.get("/email-validation/")

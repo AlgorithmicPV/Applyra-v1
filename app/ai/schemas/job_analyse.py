@@ -1,18 +1,22 @@
+"""JSON schema for job advertisement analysis."""
+
 JSON_SCHEMA = {
     "type": "object",
     "properties": {
         "is_valid": {
             "type": "boolean",
             "description": (
-                "True only if the supplied content is a valid job advertisement "
-                "for a single vacancy and contains enough information to analyse."
+                "True only if the supplied content is a valid job "
+                "advertisement for a single vacancy and contains enough "
+                "information to analyse."
             ),
         },
         "invalid_reason": {
             "type": "string",
             "nullable": True,
             "description": (
-                "The reason the supplied content is not a valid job advertisement. "
+                "The reason the supplied content is not a valid job "
+                "advertisement. "
                 "Must be null when is_valid is true."
             ),
         },
@@ -39,7 +43,8 @@ JSON_SCHEMA = {
             "type": "string",
             "nullable": True,
             "description": (
-                "The employer or company name extracted from the advertisement. "
+                "The employer or company name extracted from the "
+                "advertisement. "
                 "Must be null when is_valid is false."
             ),
         },
@@ -47,7 +52,8 @@ JSON_SCHEMA = {
             "type": "string",
             "nullable": True,
             "description": (
-                "The country or job location extracted from the advertisement. "
+                "The country or job location extracted from the "
+                "advertisement. "
                 "Must be null when is_valid is false."
             ),
         },
@@ -76,8 +82,9 @@ JSON_SCHEMA = {
         "tips": {
             "type": "string",
             "description": (
-                "Practical and truthful advice for improving the user's suitability "
-                "for the job, focusing on important missing skills, qualifications, "
+                "Practical and truthful advice for improving the user's "
+                "suitability for the job, focusing on important missing "
+                "skills, qualifications, "
                 "certifications, or experience. Must be an empty string when "
                 "is_valid is false."
             ),
@@ -86,8 +93,9 @@ JSON_SCHEMA = {
             "type": "array",
             "description": (
                 "A comparison of each required job skill, qualification, "
-                "certification, technology, experience requirement, competency, "
-                "or soft skill against the user's supplied skills, work experience, "
+                "certification, technology, experience requirement, "
+                "competency, or soft skill against the user's supplied "
+                "skills, work experience, "
                 "and education. Must be an empty array when is_valid is false."
             ),
             "items": {
@@ -105,7 +113,8 @@ JSON_SCHEMA = {
                         "type": "boolean",
                         "description": (
                             "True only when the user's supplied skills, work "
-                            "experience, or education clearly demonstrate this "
+                            "experience, or education clearly demonstrate "
+                            "this "
                             "requirement. Do not infer unsupported abilities."
                         ),
                     },
@@ -130,4 +139,3 @@ JSON_SCHEMA = {
         "matching_skills",
     ],
 }
-

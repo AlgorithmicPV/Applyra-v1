@@ -8,11 +8,9 @@ from flask import (
     session,
     url_for,
 )
-from flask_login import current_user, login_required, logout_user
+from flask_login import login_required, logout_user
 
-from app.extensions import db
 from app.forms import SettingsCodeRequestForm, SettingsTotpForm
-from app.models import Education, Skill, UserSkill, WorkExperience, UserPersonal
 
 settings_web_bp = Blueprint("settings_web", __name__)
 

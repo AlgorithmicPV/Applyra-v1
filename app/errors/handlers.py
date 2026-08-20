@@ -1,3 +1,5 @@
+"""Custom HTTP error handlers for the Flask application."""
+
 from flask import render_template
 
 
@@ -13,12 +15,12 @@ def register_error_handlers(app):
     """
 
     @app.errorhandler(400)
-    def bad_request(error):
+    def bad_request(_error):
         """
         Handle a 400 Bad Request error.
 
         Args:
-            error (Exception): The error raised by Flask.
+            _error (Exception): The error raised by Flask.
 
         Returns:
             tuple: The rendered error page and HTTP status code 400.
@@ -31,12 +33,12 @@ def register_error_handlers(app):
         ), 400
 
     @app.errorhandler(403)
-    def forbidden(error):
+    def forbidden(_error):
         """
         Handle a 403 Forbidden error.
 
         Args:
-            error (Exception): The error raised by Flask.
+            _error (Exception): The error raised by Flask.
 
         Returns:
             tuple: The rendered error page and HTTP status code 403.
@@ -49,12 +51,12 @@ def register_error_handlers(app):
         ), 403
 
     @app.errorhandler(404)
-    def not_found(error):
+    def not_found(_error):
         """
         Handle a 404 Page Not Found error.
 
         Args:
-            error (Exception): The error raised by Flask.
+            _error (Exception): The error raised by Flask.
 
         Returns:
             tuple: The rendered error page and HTTP status code 404.
@@ -67,12 +69,12 @@ def register_error_handlers(app):
         ), 404
 
     @app.errorhandler(405)
-    def method_not_allowed(error):
+    def method_not_allowed(_error):
         """
         Handle a 405 Method Not Allowed error.
 
         Args:
-            error (Exception): The error raised by Flask.
+            _error (Exception): The error raised by Flask.
 
         Returns:
             tuple: The rendered error page and HTTP status code 405.
@@ -85,12 +87,12 @@ def register_error_handlers(app):
         ), 405
 
     @app.errorhandler(500)
-    def internal_server_error(error):
+    def internal_server_error(_error):
         """
         Handle a 500 Internal Server Error.
 
         Args:
-            error (Exception): The error raised by Flask.
+            _error (Exception): The error raised by Flask.
 
         Returns:
             tuple: The rendered error page and HTTP status code 500.

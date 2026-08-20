@@ -1,16 +1,20 @@
+"""JSON schema for generated cover letters."""
+
 JSON_SCHEMA = {
     "type": "object",
     "properties": {
         "role": {
             "type": "string",
             "description": (
-                "The target role or job title identified from the job advertisement."
+                "The target role or job title identified from the job "
+                "advertisement."
             ),
         },
         "country": {
             "type": "string",
             "description": (
-                "The country relevant to the job advertisement and cover letter."
+                "The country relevant to the job advertisement and cover "
+                "letter."
             ),
         },
         "html_code": {

@@ -83,7 +83,9 @@ def doc_home():
         )
 
     if request.headers.get("HX-Request") == "true":
-        return render_template("user/documents-pages/doc-home.html", all_docs=all_docs)
+        return render_template(
+            "user/documents-pages/doc-home.html", all_docs=all_docs
+        )
     else:
         return render_template(
             "user/base.html",

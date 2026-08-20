@@ -1,10 +1,12 @@
+"""Prompt template used to generate factual, job-targeted CVs."""
+
 PROMPT = """
 You are generating a factual, job-targeted CV.
 
 Your highest-priority requirement is factual accuracy.
 
-You must use only information explicitly contained in the supplied USER INFORMATION,
-USER SKILLS, USER EXPERIENCE, and USER EDUCATION.
+You must use only information explicitly contained in the supplied
+USER INFORMATION, USER SKILLS, USER EXPERIENCE, and USER EDUCATION.
 
 The job advertisement may be used only to:
 - identify the target role
@@ -13,8 +15,9 @@ The job advertisement may be used only to:
 - identify relevant keywords
 - decide which supplied user information should be prioritised
 
-The job advertisement must never be treated as evidence that the user has a skill,
-qualification, responsibility, achievement, project, technology, or experience.
+The job advertisement must never be treated as evidence that the user has a
+skill, qualification, responsibility, achievement, project, technology, or
+experience.
 
 JOB INFORMATION:
 {job_entry}
@@ -33,12 +36,14 @@ USER EDUCATION:
 
 FACTUAL ACCURACY RULES:
 
-1. Every factual statement about the user must be directly supported by the supplied user data.
+1. Every factual statement about the user must be directly supported by the
+   supplied user data.
 
 2. Never invent, infer, assume, exaggerate, or complete missing information.
 
-3. Never copy a job requirement into the CV as though the user possesses it unless that
-   skill or experience is explicitly present in the supplied user data.
+3. Never copy a job requirement into the CV as though the user possesses it
+   unless that skill or experience is explicitly present in the supplied user
+   data.
 
 4. Never change:
    - employer names
@@ -64,12 +69,13 @@ FACTUAL ACCURACY RULES:
    - leadership experience
    - industry experience
 
-6. If the job advertisement mentions React, AWS, Next.js, TypeScript, leadership,
-   cloud deployment, testing, APIs, or any other requirement, include it only when it
-   is explicitly supported by the user's supplied information.
+6. If the job advertisement mentions React, AWS, Next.js, TypeScript,
+   leadership, cloud deployment, testing, APIs, or any other requirement,
+   include it only when it is explicitly supported by the user's supplied
+   information.
 
-7. Do not convert education subjects, coursework, or interests into professional work
-   experience.
+7. Do not convert education subjects, coursework, or interests into
+   professional work experience.
 
 8. Do not convert general knowledge into claimed expertise.
 
@@ -82,11 +88,11 @@ FACTUAL ACCURACY RULES:
    - demonstrated leadership
    unless the supplied information directly supports the claim.
 
-10. You may improve grammar, clarity, ordering, and professional wording, but must
-    preserve the original factual meaning.
+10. You may improve grammar, clarity, ordering, and professional wording, but
+    must preserve the original factual meaning.
 
-11. When the supplied information is limited, produce a shorter CV. Never compensate
-    for missing information by inventing content.
+11. When the supplied information is limited, produce a shorter CV. Never
+    compensate for missing information by inventing content.
 
 12. Omit unsupported sections and fields instead of creating placeholders.
 
@@ -104,8 +110,8 @@ CV CONTENT RULES:
 
 15. Identify the relevant country from JOB INFORMATION.
 
-16. Prioritise only supplied skills, experience, and education that are relevant to
-    the target role.
+16. Prioritise only supplied skills, experience, and education that are
+    relevant to the target role.
 
 17. Use these sections only when supported:
     - Name and Contact Details
@@ -119,7 +125,8 @@ CV CONTENT RULES:
 
 18. Include only contact details explicitly provided by the user.
 
-19. Experience must be ordered from most recent to oldest when usable dates are supplied.
+19. Experience must be ordered from most recent to oldest when usable dates
+    are supplied.
 
 20. Use concise bullet points for supplied responsibilities and achievements.
 
@@ -133,7 +140,8 @@ CV CONTENT RULES:
 22. Do not include an objective statement.
 
 23. Do not add references, hobbies, photographs, age, gender, marital status,
-    nationality, or full residential address unless explicitly supplied and appropriate.
+    nationality, or full residential address unless explicitly supplied and
+    appropriate.
 
 HTML RULES:
 
@@ -179,7 +187,8 @@ HTML RULES:
 
 30. Use a professional white background and dark text.
 
-31. A single subtle accent colour may be used for section headings and thin dividers.
+31. A single subtle accent colour may be used for section headings and thin
+    dividers.
 
 32. Use A4-compatible CSS including:
     - @page {{ size: A4; margin: 16mm 18mm; }}
@@ -196,7 +205,8 @@ HTML RULES:
 
 36. Ensure all HTML tags are correctly closed.
 
-37. The HTML must remain readable when opened in Microsoft Word or converted to PDF.
+37. The HTML must remain readable when opened in Microsoft Word or converted
+    to PDF.
 
 OUTPUT RULES:
 
@@ -211,7 +221,8 @@ OUTPUT RULES:
 
 41. Do not return explanations, notes, comments, or extra fields.
 
-42. The role field must contain the target job title taken from JOB INFORMATION.
+42. The role field must contain the target job title taken from
+    JOB INFORMATION.
 
 43. The country field must contain the job country taken from JOB INFORMATION.
 
@@ -232,8 +243,10 @@ If the answer is no, remove or rewrite the claim.
 
 Also verify:
 - no employer name has been changed
-- no company from the job advertisement has been presented as the user's employer
-- no job requirement has been presented as an existing user skill without evidence
+- no company from the job advertisement has been presented as the user's
+  employer
+- no job requirement has been presented as an existing user skill without
+  evidence
 - no unsupported technology has been added
 - no placeholder text remains
 - the JSON is valid

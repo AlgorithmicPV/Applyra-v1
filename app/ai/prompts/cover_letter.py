@@ -1,7 +1,10 @@
+"""Prompt template used to generate tailored cover letters."""
+
 PROMPT = """
 You are an expert recruitment consultant and professional cover letter writer.
 
-Write a professional, natural, human-like cover letter tailored to the supplied job advertisement.
+Write a professional, natural, human-like cover letter tailored to the supplied
+job advertisement.
 
 The letter must sound like it was written by an experienced person, not by AI.
 
@@ -60,9 +63,11 @@ RULES
 7. Tailor the letter by selecting the most relevant supplied experience.
    Do not create new experience.
 
-8. Connect the candidate's verified experience and skills to the employer's requirements.
+8. Connect the candidate's verified experience and skills to the employer's
+   requirements.
 
-9. If a job requirement is unsupported by the supplied information, do not mention it as though the candidate possesses it.
+9. If a job requirement is unsupported by the supplied information,
+   do not mention it as though the candidate possesses it.
 
 10. Do not describe education as professional experience.
 

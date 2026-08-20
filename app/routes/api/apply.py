@@ -5,7 +5,6 @@ from datetime import date
 
 from flask import Blueprint, abort, render_template, request
 from flask_login import current_user, login_required
-from playwright.sync_api import sync_playwright
 from sqlalchemy import or_
 
 from app.ai.prompts.cover_letter import PROMPT as cover_letter_prompt
@@ -108,7 +107,10 @@ def search():
 
     job_entries = db.session.scalars(stmt).all()
 
-    return render_template("user/apply/components/cards.html", job_entries=job_entries)
+    return render_template(
+        "user/apply/components/cards.html",
+        job_entries=job_entries,
+    )
 
 
 @apply_api_bp.post("/job_entry")
@@ -128,7 +130,9 @@ def job_entry():
 
     form = JobForm(request.form)
 
-    stmt_skill = db.select(UserSkill).where(UserSkill.user_id == current_user.user_id)
+    stmt_skill = db.select(UserSkill).where(
+        UserSkill.user_id == current_user.user_id
+    )
     stmt_experience = db.select(WorkExperience).where(
         WorkExperience.user_id == current_user.user_id
     )
@@ -367,7 +371,9 @@ def show(id):
     if job_entry is None:
         return {"error": "The job you’re looking for could not be found"}
 
-    application_stmt = db.select(Application).where(Application.job_entry_id == id)
+    application_stmt = db.select(Application).where(
+        Application.job_entry_id == id
+    )
     application = db.session.scalars(application_stmt).first()
 
     cv_stmt = db.select(Document).where(
@@ -405,6 +411,9 @@ def show(id):
     # user directly accesses this route, the browser does not render the full
     # HTML version (navigation panel + detail.html).
     if request.headers.get("HX-Request") == "true":
-        return render_template("user/apply/components/detail.html", detail=detail)
+        return render_template(
+            "user/apply/components/detail.html",
+            detail=detail,
+        )
     else:
         abort(403)

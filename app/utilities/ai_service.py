@@ -83,19 +83,27 @@ def ai_service(content, json_schema):
         if error.code >= 500:
             return {
                 "success": False,
-                "error": "The AI service is temporarily unavailable. Please try again later.",
+                "error": (
+                    "The AI service is temporarily unavailable. "
+                    "Please try again later."
+                ),
             }
 
         return {
             "success": False,
-            "error": "The AI service encountered an unexpected error. Please try again later.",
+            "error": (
+                "The AI service encountered an unexpected error. "
+                "Please try again later."
+            ),
         }
 
     except json.JSONDecodeError:
         print("Gemini returned an invalid JSON response")
         return {
             "success": False,
-            "error": "The AI response could not be processed. Please try again.",
+            "error": (
+                "The AI response could not be processed. Please try again."
+            ),
         }
 
     except Exception as error:

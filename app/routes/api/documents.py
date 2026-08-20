@@ -2,7 +2,7 @@
 
 from datetime import date, datetime
 
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, abort
 from flask_login import current_user, login_required
 
 from app.extensions import db
@@ -58,7 +58,11 @@ def search():
 
         role = document.role or ""
         company = job_entry.company_name or ""
-        if query and query not in role.lower() and query not in company.lower():
+        if (
+            query
+            and query not in role.lower()
+            and query not in company.lower()
+        ):
             continue
 
         searched_documents.append(

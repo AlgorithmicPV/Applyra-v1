@@ -1,3 +1,5 @@
+"""Prompt template used to analyse job advertisement webpages."""
+
 PROMPT = """
 You are analysing the extracted content of a webpage.
 

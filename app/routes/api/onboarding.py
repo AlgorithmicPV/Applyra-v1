@@ -55,7 +55,8 @@ def user_info_collect():
         phone_number=phone_number,
         city=city.strip().lower(),  # Remove spaces and convert to lowercase.
         country=country,
-        linkedin_url=linkedin_url.strip(),  # Remove spaces and convert to lowercase.
+        # Remove spaces and convert to lowercase.
+        linkedin_url=linkedin_url.strip(),
     )
 
     db.session.add(user_personal)
